@@ -25,6 +25,7 @@ $ php artisan migrate:fresh
 ```
 ### Add the following to .env file
 `SESSION_DOMAIN=http://localhost:3000`
+
 `SANCTUM_STATEFUL_DOMAINS=http://localhost:3000`
 #### Frontend
 ```sh 
