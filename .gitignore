@@ -1,0 +1,31 @@
+# BACKEND
+/elearning-backend/node_modules
+/elearning-backend/public/hot
+/elearning-backend/public/storage
+/elearning-backend/storage/*.key
+/elearning-backend/vendor
+/elearning-backend/.env
+/elearning-backend/.env.backup
+/elearning-backend/.phpunit.result.cache
+/elearning-backend/docker-compose.override.yml
+/elearning-backend/Homestead.json
+/elearning-backend/Homestead.yaml
+/elearning-backend/npm-debug.log
+/elearning-backend/yarn-error.log
+/elearning-backend/.idea
+/elearning-backend/.vscode
+
+# FRONTEND
+/elearning-frontend/node_modules
+/elearning-frontend/.pnp
+/elearning-frontend/.pnp.js
+/elearning-frontend/coverage
+/elearning-frontend/build
+/elearning-frontend/.DS_Store
+/elearning-frontend/.env.local
+/elearning-frontend/.env.development.local
+/elearning-frontend/.env.test.local
+/elearning-frontend/.env.production.local
+/elearning-frontend/npm-debug.log*
+/elearning-frontend/yarn-debug.log*
+/elearning-frontend/yarn-error.log*
