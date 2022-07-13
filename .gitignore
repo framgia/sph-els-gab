@@ -14,6 +14,9 @@
 /elearning-backend/yarn-error.log
 /elearning-backend/.idea
 /elearning-backend/.vscode
+/elearning-backend/.git
+/elearning-backend/.gitignore
+/elearning-backend/Procfile
 
 # FRONTEND
 /elearning-frontend/node_modules
@@ -29,3 +32,5 @@
 /elearning-frontend/npm-debug.log*
 /elearning-frontend/yarn-debug.log*
 /elearning-frontend/yarn-error.log*
+/elearning-frontend/.git
+/elearning-frontend/.gitignore
