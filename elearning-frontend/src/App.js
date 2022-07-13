@@ -11,6 +11,7 @@ import Login from './components/Login';
 import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
 import Register from './components/Register';
+import ProfileSettings from './components/ProfileSettings';
 
 const App = () => {
 
@@ -64,11 +65,9 @@ const App = () => {
           <Route path="/register" element={<Register login={login} session={loggedIn} />} />
 
           <Route path='/dashboard' element={<Dashboard session={loggedIn} />} />
-          {/* <Route path="/view-all" element={<ViewUser session={loggedIn} />} /> */}
-
-
-          {/* path="/edit-user/:id" */}
-          {/* <Route path="/edit-user" component={<EditUser />} /> */}
+          <Route path='/settings' element={<ProfileSettings session={loggedIn} />} />
+          
+          
         </Routes>
       </Router>
     </>

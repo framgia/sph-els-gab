@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie'
 import apiClient from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +7,12 @@ const Login = (props) => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (props.session) {
+            navigate('/dashboard')
+        }
+    }, [navigate, props.session])
+
     const handleSubmit = (e) => {
         e.preventDefault();
         localStorage.removeItem('user');
@@ -15,10 +20,7 @@ const Login = (props) => {
         apiClient.get('/sanctum/csrf-cookie').then(response => {
             apiClient({
                 method: "post",
-                url: "http://127.0.0.1:8000/api/login",
-                headers: {
-                    'X-CSRFToken': Cookies.get('csrftoken')
-                },
+                url: "/api/login",
                 data: {
                     email: email,
                     password: password
@@ -36,12 +38,6 @@ const Login = (props) => {
             console.log(error);
         });
     }
-
-    useEffect(() => {
-        if (props.session) {
-            navigate('/dashboard')
-        }
-    }, [navigate, props.session])
     
     return (
         <div className="login-card w-1/3 mx-auto">

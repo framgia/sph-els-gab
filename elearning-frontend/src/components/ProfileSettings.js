@@ -1,78 +1,96 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react'
 import apiClient from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
-const Register = (props) => {
+const ProfileSettings = (props) => {
 
     const navigate = useNavigate();
 
+    // User Details
     const [profilepic, setProfilepic] = useState('https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg');
     const [avatar, setAvatar] = useState(null);
     const avatarRef = useRef(null);
     const [firstname, setFirstname] = useState('');
     const [middlename, setMiddlename] = useState('');
     const [lastname, setLastname] = useState('');
-    const [sex, setSex] = useState('-');
+    const [sex, setSex] = useState('');
     const [birthdate, setBirthdate] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    
+
+    const [loading, setLoading] = useState(true);
     const usertoken = localStorage.getItem('user');
 
     useEffect(() => {
-        if (props.session) {
-            navigate('/dashboard')
+        if (!props.session) {
+            navigate('/')
         }
-    }, [navigate, props.session])
-    
-    const saveUser = async (e) => {
-        e.preventDefault();
-        localStorage.removeItem('user');
-
-        await apiClient.get('/sanctum/csrf-cookie').then((response) => {
+        else {
             apiClient({
                 method: "post",
-                url: "/api/register",
+                url: "/api/user",
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    Authorization: 'Bearer ' + usertoken
                 },
                 data: {
-                    profilepic: profilepic,
-                    avatar: avatar,
-                    firstname: firstname,
-                    middlename: middlename,
-                    lastname: lastname,
-                    sex: sex,
-                    birthdate: birthdate,
-                    phone: phone,
-                    address: address,
-                    email: email,
-                    username: username,
-                    password: password,
+                    token: usertoken
                 }
-            }).then((response) => {
-                setProfilepic('https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg');
-                setAvatar(null);
-                setFirstname('');
-                setMiddlename('');
-                setLastname('');
-                setSex('-');
-                setBirthdate('');
-                setPhone('');
-                setAddress('');
-                setEmail('');
-                setUsername('');
-                setPassword('');
+            }).then(response => {
+                
+                if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
+                    setAvatar(response.data.user.profile.avatar);
+                    setProfilepic('http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar);
+                }
 
-                localStorage.setItem('user', response.data.token);
-                props.login();
-                navigate('/dashboard');
-            }).catch((error) => {
+                setFirstname(response.data.user.profile.firstname);
+                setMiddlename(response.data.user.profile.middlename);
+                setLastname(response.data.user.profile.lastname);
+                setSex(response.data.user.profile.sex);
+                setBirthdate(response.data.user.profile.birthdate);
+                setPhone(response.data.user.profile.phone);
+                setAddress(response.data.user.profile.address);
+                setEmail(response.data.user.email);
+                setUsername(response.data.user.username);
+                setPassword(response.data.user.password);
+
+                setLoading(false);
+            }).catch(error => {
                 console.log(error);
             });
+        }
+    }, []);
+
+    const saveUser = (e) => {
+        e.preventDefault();
+        apiClient({
+            method: "post",
+            url: "/api/update-user",
+            headers: {
+                Authorization: 'Bearer ' + usertoken,
+                'Content-Type': 'multipart/form-data'
+            },
+            data: {
+                token: usertoken,
+                profilepic: profilepic,
+                avatar: avatar,
+                firstname: firstname,
+                middlename: middlename,
+                lastname: lastname,
+                sex: sex,
+                birthdate: birthdate,
+                phone: phone,
+                address: address,
+                email: email,
+                username: username,
+                password: password,
+            }
+        }).then(response => {
+            console.log(response);
+        }).catch(error => {
+            console.log(error);
         });
     }
 
@@ -82,32 +100,35 @@ const Register = (props) => {
         setProfilepic('https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg')
     }
 
-    return (
-        <div className="register-card w-3/5 mx-auto">
-            <div className="mb-5">
-                <h4 className='title text-center'>REGISTER</h4>
-            </div>
-            <hr className='mb-5'/>
-            <div>
-                {/* Form */}
+    var view_element = "";
+
+    if(loading) {
+        view_element = <div><h2>LOADING</h2></div>
+    }
+    else {
+        view_element = 
+            <>
                 <form onSubmit={saveUser} encType="multipart/form-data">
                     <div className='grid grid-cols-4 gap-5'>
                         <div className="col-span-1">
                             {/* Avatar */}
                             <div className="form-group mb-8 avatar-section">
-                                <img src={profilepic} alt="dp" className='mb-5' />
-                                <label>Profile Picture</label>
+                                <img
+                                    src={ profilepic }
+                                    alt="dp"
+                                    className='mb-5' />
+                                <label>Avatar</label>
                                 <div className='grid grid-cols-5 items-center gap-2'>
                                     <div className='col-span-4'>
                                         <input
                                             type="file"
                                             name="avatar"
                                             ref={ avatarRef }
-                                            onChange={e => {
-                                                setAvatar(e.target.files[0])
-                                                setProfilepic(URL.createObjectURL(e.target.files[0]))
+                                            onInput={e => {
+                                                setAvatar(e.target.files[0]);
+                                                setProfilepic(URL.createObjectURL(e.target.files[0]));
                                             }}
-                                            className="appearance-none w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none"
+                                            className="appearance-none w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none avatar"
                                             accept="image/*"
                                             multiple={ false } />
                                     </div>
@@ -143,7 +164,6 @@ const Register = (props) => {
                                 <div className="form-group mb-8">
                                     <label>Sex</label>
                                     <select name='sex' onChange={e => setSex(e.target.value)} value={sex} className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" >
-                                        <option value='-'>-</option>
                                         <option value='M'>Male</option>
                                         <option value='F'>Female</option>
                                     </select>
@@ -163,7 +183,7 @@ const Register = (props) => {
                                 {/* Email Address */}
                                 <div className="form-group mb-8">
                                     <label>User Email</label>
-                                    <input type="email" name="email" onChange={e => setEmail(e.target.value)} value={email}  className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                    <p className='input py-1 px-3 text-gray-700 leading-tight'>{ email }</p>
                                 </div>
                                 {/* Phone */}
                                 <div className="form-group mb-8">
@@ -174,7 +194,7 @@ const Register = (props) => {
                             {/* Username */}
                             <div className="form-group mb-8">
                                 <label>Username</label>
-                                <input type="text" name="username" onChange={e => setUsername(e.target.value)} value={username}  className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                <p className='input py-1 px-3 text-gray-700 leading-tight'>{username}</p>
                             </div>
                             {/* Password */}
                             <div className="form-group mb-8">
@@ -182,14 +202,27 @@ const Register = (props) => {
                                 <input type="text" name="password" onChange={e => setPassword(e.target.value)} value={password}  className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                             </div>
                             <div className="form-group text-right mt-4">
-                                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{minWidth:'200px'}}>CREATE ACCOUNT</button>
+                                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{minWidth:'200px'}}>Save Information</button>
                             </div>
                         </div>
                     </div>
                 </form>
+            </>
+    }
+
+    return (
+        <>
+            <div className="dashboard py-20 px-10">
+                <div className="mb-5">
+                    <h4 className='title text-left'>ACCOUNT SETTINGS</h4>
+                </div>
+                <hr className='mb-5'/>
+                <div>
+                    { view_element }
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
-export default Register;
+export default ProfileSettings;

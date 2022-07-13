@@ -14,6 +14,7 @@
 /elearning-backend/yarn-error.log
 /elearning-backend/.idea
 /elearning-backend/.vscode
+elearning-backend/public/uploads
 /elearning-backend/.git
 /elearning-backend/.gitignore
 /elearning-backend/Procfile

@@ -56,6 +56,11 @@ p, a, label, table, tr, td, div, input, button {
   left: 0;
 }
 
+.avatar {
+  width: 100%;
+  max-width: 150px;
+}
+
 /* dashboard */
 .dashboard input:not([type=file]),
 .dashboard select,

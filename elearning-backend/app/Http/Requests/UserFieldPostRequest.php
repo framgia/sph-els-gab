@@ -47,7 +47,6 @@ class UserFieldPostRequest extends FormRequest
                 'max:100'
             ],
             'middlename' => [
-                'required',
                 'max:100'
             ],
             'lastname' => [
@@ -91,7 +90,6 @@ class UserFieldPostRequest extends FormRequest
                 'max:100'
             ],
             'middlename' => [
-                'required',
                 'max:100'
             ],
             'lastname' => [
