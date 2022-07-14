@@ -61,6 +61,17 @@ p, a, label, table, tr, td, div, input, button {
   max-width: 150px;
 }
 
+/* navbar */
+.dropdown {
+  position: relative;
+}
+
+.dropdown .dropdownitems {
+  position: absolute;
+  bottom: -230%;
+  left: -10px
+}
+
 /* dashboard */
 .dashboard input:not([type=file]),
 .dashboard select,
