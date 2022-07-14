@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
 import Register from './components/Register';
 import ProfileSettings from './components/ProfileSettings';
+import Users from './components/admin/Users';
 
 const App = () => {
 
@@ -66,7 +67,7 @@ const App = () => {
 
           <Route path='/dashboard' element={<Dashboard session={loggedIn} />} />
           <Route path='/settings' element={<ProfileSettings session={loggedIn} />} />
-          
+          <Route path='/admin/users' element={<Users session={loggedIn} />} /> 
           
         </Routes>
       </Router>
