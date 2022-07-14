@@ -11,6 +11,18 @@ p, a, label, table, tr, td, div, input, button {
   font-size: 12px;
 }
 
+/* Navbar */
+.dropdown-parent {
+  position: relative;
+}
+
+.dropdown-box {
+  position: absolute;
+  margin: 0px;
+  bottom: -580%;
+  left: -10px;
+}
+
 .register-card, .login-card {
   position: absolute;
   top: 50%;
