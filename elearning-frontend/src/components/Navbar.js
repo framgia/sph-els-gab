@@ -27,7 +27,7 @@ const Navbar = (props) => {
         console.log(error)
       })
     }
-  }, [])
+  }, [props.session])
 
   if (props.session)
   {
@@ -75,7 +75,12 @@ const Navbar = (props) => {
                             className={`z-10 ${dropDown ? 'block' : 'hidden'} bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dropdownitems`}>
                             <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefault">
                               <li>
-                                <Link to="/admin/users" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">User Management</Link>
+                                <Link
+                                    to="/admin/users"
+                                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    onClick={() => {
+                                      setDropdown(!dropDown);
+                                    }}>User Management</Link>
                               </li>
                             </ul>
                         </div>
