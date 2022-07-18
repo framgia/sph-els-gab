@@ -6,9 +6,11 @@ const ProfileSettings = (props) => {
     const navigate = useNavigate()
 
     // User Details
+    const [hasAvatar, setHasAvatar] = useState(false)
+    const defaultPicture = 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
     const avatarRef = useRef(null)
     const [user, setUser] = useState({
-        profilepic: 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg',
+        profilepic: defaultPicture,
         avatar: null,
         firstname: '',
         middlename: null,
@@ -19,7 +21,6 @@ const ProfileSettings = (props) => {
         address: '',
         email: '',
         username: '',
-        password: ''
     })
 
     const [loading, setLoading] = useState(true)
@@ -41,19 +42,15 @@ const ProfileSettings = (props) => {
                 }
             }).then(response => {
                 setUser({
-                    profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'),
+                    ...user,
+                    ...response.data.user.profile,
+                    profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : defaultPicture),
                     avatar: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? response.data.user.profile.avatar : null),
-                    firstname: response.data.user.profile.firstname,
-                    middlename: response.data.user.profile.middlename,
-                    lastname: response.data.user.profile.lastname,
-                    sex: response.data.user.profile.sex,
-                    birthdate: response.data.user.profile.birthdate,
-                    phone: response.data.user.profile.phone,
-                    address: response.data.user.profile.address,
-                    email: response.data.user.email,
-                    username: response.data.user.username,
-                    password: response.data.user.password,
                 })
+
+                if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
+                    setHasAvatar(true)
+                }
 
                 setLoading(false)
             }).catch( error => {
@@ -74,6 +71,7 @@ const ProfileSettings = (props) => {
             },
             data: {
                 token: usertoken,
+                hasAvatar: hasAvatar,
                 profilepic: user.profilepic,
                 avatar: user.avatar,
                 firstname: user.firstname,
@@ -85,7 +83,6 @@ const ProfileSettings = (props) => {
                 address: user.address,
                 email: user.email,
                 username: user.username,
-                password: user.password,
             }
         }).then(response => {
             console.log(response)
@@ -95,12 +92,13 @@ const ProfileSettings = (props) => {
     }
 
     const deleteAvatar = () => {
-        avatarRef.current.value = null;
+        avatarRef.current.value = null
         setUser({
             ...user,
             avatar: null,
             profilepic: 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
         })
+        setHasAvatar(false)
     }
 
     var view_element = ""
@@ -124,12 +122,13 @@ const ProfileSettings = (props) => {
                                             type="file"
                                             name="avatar"
                                             ref={ avatarRef }
-                                            onChange={e => {
+                                            onInput={e => {
                                                 setUser({
                                                     ...user,
                                                     avatar: e.target.files[0],
                                                     profilepic: URL.createObjectURL(e.target.files[0])
                                                 })
+                                                setHasAvatar(true)
                                             }}
                                             className="appearance-none w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none"
                                             accept="image/*"

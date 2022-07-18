@@ -25,7 +25,6 @@ class UserProfileInformationPostRequest extends FormRequest
     public function rules()
     {
         return [
-            'token' => [],
             'firstname' => [
                 'required',
                 'max:100'
@@ -52,7 +51,7 @@ class UserProfileInformationPostRequest extends FormRequest
             'birthdate' => [
                 'required',
                 'before:today'
-            ]
+            ],
         ];
     }
 }

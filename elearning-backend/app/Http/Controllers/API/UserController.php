@@ -24,7 +24,6 @@ class UserController extends Controller
 
     public function store(UserRegisterPostRequest $request)
     {
-        $validator = $request->validated();
         $avatarfile = "";
 
         if ($request->hasFile('avatar')) {
@@ -37,21 +36,21 @@ class UserController extends Controller
         }
 
         $user = User::create([
-            "username" => $validator["username"],
-            "password" => $validator["password"],
-            "email" => $validator["email"]
+            "username" => $request->input("username"),
+            "password" => $request->input("password"),
+            "email" => $request->input("email"),
         ]);
 
         Userprofile::create([
             'user_id' => $user->id,
             'avatar' => $avatarfile,
-            'firstname' => $validator['firstname'],
-            'middlename' => $validator['middlename'],
-            'lastname' => $validator['lastname'],
-            'sex' => $validator['sex'],
-            'phone' => $validator['phone'],
-            'address' => $validator['address'],
-            'birthdate' => $validator['birthdate'],
+            'firstname' => $request->input('firstname'),
+            'middlename' => $request->input('middlename'),
+            'lastname' => $request->input('lastname'),
+            'sex' => $request->input('sex'),
+            'phone' => $request->input('phone'),
+            'address' => $request->input('address'),
+            'birthdate' => $request->input('birthdate'),
         ]);
 
         $token = $user->createToken('myapptoken')->plainTextToken;
@@ -64,35 +63,35 @@ class UserController extends Controller
     
     public function update(UserProfileInformationPostRequest $request)
     {
-        $validator = $request->validated();
         $user = PersonalAccessToken::findToken($request->input('token'))->tokenable()->with('profile')->get()->first();
-        $avatarfile = "";
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
             $extension = $file->getClientOriginalExtension();
-            $filename = $request->input("username"). '.' . $extension;
+            $filename = $user->username . '.' . $extension;
             $file->move(public_path() . '\\uploads\\avatar\\', $filename);
 
-            $avatarfile = $filename;
+            UserProfile::where("user_id", $user->id)->update(['avatar' => $filename]);
         }
-        else {
-            $filepath = public_path() . '\\uploads\\avatar\\' . $request->input("username") . '.*';
+
+        if ($request->input('hasAvatar') == 'false') {
+            $filepath = public_path() . '\\uploads\\avatar\\' . $user->username . '.*';
 
             if ($result = glob($filepath)) {
                 File::delete($result[0]);
             }
+
+            UserProfile::where("user_id", $user->id)->update(['avatar' => ""]);
         }
 
         UserProfile::where("user_id", $user->id)->update([  
-            'firstname' => $validator['firstname'],
-            'avatar' => $avatarfile,
-            'middlename' => $validator['middlename'],
-            'lastname' => $validator['lastname'],
-            'sex' => $validator['sex'],
-            'phone' => $validator['phone'],
-            'address' => $validator['address'],
-            'birthdate' => $validator['birthdate'],
+            'firstname' => $request->input('firstname'),
+            'middlename' => $request->input('middlename'),
+            'lastname' => $request->input('lastname'),
+            'sex' => $request->input('sex'),
+            'phone' => $request->input('phone'),
+            'address' => $request->input('address'),
+            'birthdate' => $request->input('birthdate'),
         ]);
     }
 
