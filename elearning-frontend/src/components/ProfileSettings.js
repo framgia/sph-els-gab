@@ -20,7 +20,6 @@ const ProfileSettings = (props) => {
         phone: null,
         address: '',
         email: '',
-        username: '',
     })
 
     const [loading, setLoading] = useState(true)
@@ -44,6 +43,7 @@ const ProfileSettings = (props) => {
                 setUser({
                     ...user,
                     ...response.data.user.profile,
+                    email: response.data.user.email,
                     profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : defaultPicture),
                     avatar: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? response.data.user.profile.avatar : null),
                 })
@@ -248,24 +248,6 @@ const ProfileSettings = (props) => {
                                         value={ user.phone === null ? '' : user.phone }
                                         className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                                 </div>
-                            </div>
-                            {/* Username */}
-                            <div className="form-group mb-8">
-                                <label>Username</label>
-                                <p className='input py-1 px-3 text-gray-700 leading-tight'>{ user.username }</p>
-                            </div>
-                            {/* Password */}
-                            <div className="form-group mb-8">
-                                <label>Password</label>
-                                <input
-                                    type="text"
-                                    name="password"
-                                    onChange={e => setUser({
-                                        ...user,
-                                        password: e.target.value
-                                    })}
-                                    value={ user.password }
-                                    className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                             </div>
                             <div className="form-group text-right mt-4">
                                 <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{minWidth:'200px'}}>Save Information</button>
