@@ -1,34 +1,36 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import apiClient from '../../services/api';
+import { useNavigate } from 'react-router-dom'
+import apiClient from '../../services/api'
 
 const Users = (props) => {
     
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
-    const [changeData, setChangeData] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
+    const [changeData, setChangeData] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
 
     // Users
-    const [userList, setUserList] = useState([]);
+    const [userList, setUserList] = useState([])
 
     // User profile
-    const [hasSelectedUser, setHasSelectedUser] = useState(false);
-    const [selectedUser, setSelectedUser] = useState('');
-    const [profilepic, setProfilepic] = useState('https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg');
-    const [hasAvatar, setHasAvatar] = useState(false);
-    const [avatar, setAvatar] = useState(null);
-    const avatarRef = useRef(null);
-    const [firstname, setFirstname] = useState('');
-    const [middlename, setMiddlename] = useState('');
-    const [lastname, setLastname] = useState('');
-    const [sex, setSex] = useState('');
-    const [birthdate, setBirthdate] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
+    const [hasSelectedUser, setHasSelectedUser] = useState(false)
+    const [selectedUser, setSelectedUser] = useState('')
+    const [hasAvatar, setHasAvatar] = useState(false)
+    const defaultPicture = 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
+    const avatarRef = useRef(null)
+    const [user, setUser] = useState({
+        profilepic: defaultPicture,
+        avatar: null,
+        firstname: '',
+        middlename: null,
+        lastname: '',
+        sex: '-',
+        birthdate: '',
+        phone: null,
+        address: '',
+    })
 
-    const [profileLoading, setProfileLoading] = useState(true);
-    const usertoken = localStorage.getItem('user');
+    const usertoken = localStorage.getItem('user')
 
     const FetchUser = useCallback(async () => {
         const data = await apiClient({
@@ -41,8 +43,8 @@ const Users = (props) => {
                 token: usertoken
             }
         }).then(response => {
-            setUserList(response.data.users);
-            setChangeData(false);
+            setUserList(response.data.users)
+            setChangeData(false)
         }).catch(error => {
             console.log(error)
         })
@@ -64,14 +66,13 @@ const Users = (props) => {
                 }
             }).then(response => {
                 if (!!response.data.user.profile.is_admin) {
-                    FetchUser();
+                    FetchUser()
                 }
                 else {
                     navigate('/dashboard')
                 }
-                
-                console.log(userList);
-                setIsLoading(false);
+
+                setIsLoading(false)
             }).catch(error => {
                 console.log(error)
             })
@@ -79,11 +80,11 @@ const Users = (props) => {
     }, [props.session, FetchUser, changeData])
 
     const SaveUser = (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
         if(!hasSelectedUser) {
-            window.alert('No user selected!');
-            return;
+            window.alert('No user selected!')
+            return
         }
 
         apiClient({
@@ -96,47 +97,57 @@ const Users = (props) => {
             data: {
                 hasAvatar: hasAvatar,
                 user: selectedUser,
-                profilepic: profilepic,
-                avatar: avatar,
-                firstname: firstname,
-                middlename: middlename,
-                lastname: lastname,
-                sex: sex,
-                birthdate: birthdate,
-                phone: phone,
-                address: address,
+                profilepic: user.profilepic,
+                avatar: user.avatar,
+                firstname: user.firstname,
+                middlename: user.middlename,
+                lastname: user.lastname,
+                sex: user.sex,
+                birthdate: user.birthdate,
+                phone: user.phone,
+                address: user.address,
             }
         }).then(response => {
-            ClearFields();
+            ClearFields()
+            console.log(response.data);
         }).catch(error => {
-            console.log(error);
-        });
+            console.log(error)
+        })
     }
 
     const ClearFields = () => {
-        DeleteAvatar();
+        DeleteAvatar()
 
-        setHasSelectedUser(false);
-        setSelectedUser('');
-        setFirstname('');
-        setMiddlename('');
-        setLastname('');
-        setSex('-');
-        setBirthdate('');
-        setPhone('');
-        setAddress('');
+        setHasSelectedUser(false)
+        setSelectedUser('')
+
+        setUser({
+            ...user, 
+            profilepic: defaultPicture,
+            avatar: null,
+            firstname: '',
+            middlename: null,
+            lastname: '',
+            sex: '-',
+            birthdate: '',
+            phone: null,
+            address: '',
+        })
         
-        setChangeData(true);
+        setChangeData(true)
     }
 
     const DeleteAvatar = () => {
-        avatarRef.current.value = null;
-        setAvatar(null);
-        setProfilepic('https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg');
-        setHasAvatar(false);
+        avatarRef.current.value = null
+        setUser({
+            ...user,
+            avatar: null,
+            profilepic: defaultPicture,
+        })
+        setHasAvatar(false)
     }
 
-    var view_element = "";
+    var view_element = ""
 
     if (isLoading) {
         view_element = <tr><td colSpan={2}>LOADING DATA</td></tr>
@@ -148,11 +159,11 @@ const Users = (props) => {
                     userList.map((user) => {
                         return (
                             <tr key={user.id}>
-                                <td>{user.profile.firstname + " " + (user.profile.middlename !== null && user.profile.middlename !== "" ? user.profile.middlename : "") + user.profile.lastname}</td>
+                                <td>{user.profile.firstname + " " + (user.profile.middlename !== null && user.profile.middlename !== "" ? user.profile.middlename + " " : "") + user.profile.lastname}</td>
                                 <td>
                                     <div className='flex'>
                                         <button onClick={(e) => {
-                                            e.preventDefault();
+                                            e.preventDefault()
 
                                             apiClient({
                                                 method: "post",
@@ -164,28 +175,37 @@ const Users = (props) => {
                                                     user: user.id
                                                 }
                                             }).then(response => {
-                                                if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
-                                                    setHasAvatar(true);
-                                                    setAvatar(response.data.user.profile.avatar);
-                                                    setProfilepic('http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar);
-                                                }
-                                    
-                                                setSelectedUser(response.data.user.id);
-                                                setFirstname(response.data.user.profile.firstname);
-                                                setMiddlename(response.data.user.profile.middlename);
-                                                setLastname(response.data.user.profile.lastname);
-                                                setSex(response.data.user.profile.sex);
-                                                setBirthdate(response.data.user.profile.birthdate);
-                                                setPhone(response.data.user.profile.phone);
-                                                setAddress(response.data.user.profile.address);
+                                                ClearFields()
 
-                                                setHasSelectedUser(true);
+                                                if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
+                                                    setHasAvatar(true)
+                                                    setUser({
+                                                        ...user,
+                                                        avatar: response.data.user.profile.avatar,
+                                                        profilepic: ('http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar)
+                                                    })
+                                                }
+
+                                                setSelectedUser(response.data.user.id)
+                                                setUser({
+                                                    profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'),
+                                                    avatar: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? response.data.user.profile.avatar : null),
+                                                    firstname: response.data.user.profile.firstname,
+                                                    middlename: response.data.user.profile.middlename,
+                                                    lastname: response.data.user.profile.lastname,
+                                                    sex: response.data.user.profile.sex,
+                                                    birthdate: response.data.user.profile.birthdate,
+                                                    phone: response.data.user.profile.phone,
+                                                    address: response.data.user.profile.address,
+                                                })
+
+                                                setHasSelectedUser(true)
                                             }).catch(error => {
                                                 console.log(error)
                                             })
                                         }}>EDIT</button>
                                         <button onClick={(e) => {
-                                            e.preventDefault();
+                                            e.preventDefault()
 
                                             if (window.confirm('Are you sure you want to delete this user?')) {
                                                 apiClient({
@@ -198,16 +218,16 @@ const Users = (props) => {
                                                         user: user.id
                                                     }
                                                 }).then(response => {
-                                                    ClearFields();
+                                                    ClearFields()
                                                 }).catch(error => {
-                                                    console.log(error);
+                                                    console.log(error)
                                                 })
                                             }
                                         }}>DELETE</button>
                                     </div>
                                 </td>
                             </tr>
-                        );
+                        )
                     })
                 }
             </>
@@ -238,7 +258,7 @@ const Users = (props) => {
                                     {/* Avatar */}
                                     <div className="form-group mb-8 avatar-section">
                                         <img
-                                            src={ profilepic }
+                                            src={ user.profilepic }
                                             alt="dp"
                                             className='mb-5' />
                                         <label>Avatar</label>
@@ -249,9 +269,12 @@ const Users = (props) => {
                                                     name="avatar"
                                                     ref={ avatarRef }
                                                     onInput={e => {
-                                                        setHasAvatar(true);
-                                                        setAvatar(e.target.files[0]);
-                                                        setProfilepic(URL.createObjectURL(e.target.files[0]));
+                                                        setHasAvatar(true)
+                                                        setUser({
+                                                            ...user,
+                                                            avatar: e.target.files[0],
+                                                            profilepic: URL.createObjectURL(e.target.files[0])
+                                                        })
                                                     }}
                                                     className="appearance-none w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none avatar"
                                                     accept="image/*"
@@ -271,24 +294,57 @@ const Users = (props) => {
                                         {/* First Name */}
                                         <div className="form-group mb-8">
                                             <label>First Name</label>
-                                            <input type="text" name="firstname" onChange={e => setFirstname(e.target.value)} value={firstname} className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                            <input
+                                                type="text"
+                                                name="firstname"
+                                                onChange={e => {
+                                                    setUser({
+                                                        ...user,
+                                                        firstname: e.target.value
+                                                    })
+                                                }}
+                                                value={ user.firstname }
+                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                                         </div>
                                         {/* Middle Name */}
                                         <div className="form-group mb-8">
                                             <label>Middle Name</label>
-                                            <input type="text" name="middlename" onChange={e => setMiddlename(e.target.value)} value={middlename} className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                            <input
+                                                type="text"
+                                                name="middlename"
+                                                onChange={e => setUser({
+                                                    ...user,
+                                                    middlename: e.target.value
+                                                })}
+                                                value={ user.middlename === null ? '' : user.middlename }
+                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                                         </div>
                                         {/* Last Name */}
                                         <div className="form-group mb-8">
                                             <label>Last Name</label>
-                                            <input type="text" name="lastname" onChange={e => setLastname(e.target.value)} value={lastname} className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                            <input
+                                                type="text"
+                                                name="lastname"
+                                                onChange={e => setUser({
+                                                    ...user,
+                                                    lastname: e.target.value
+                                                })}
+                                                value={ user.lastname }
+                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                                         </div>
                                     </div>
                                     <div className='grid grid-cols-3 gap-5'>
                                         {/* Sex */}
                                         <div className="form-group mb-8">
                                             <label>Sex</label>
-                                            <select name='sex' onChange={e => setSex(e.target.value)} value={sex} className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" >
+                                            <select
+                                                name='sex'
+                                                onChange={e => setUser({
+                                                    ...user,
+                                                    sex: e.target.value
+                                                })}
+                                                value={ user.sex }
+                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
                                                 <option value='M'>Male</option>
                                                 <option value='F'>Female</option>
                                             </select>
@@ -296,19 +352,43 @@ const Users = (props) => {
                                         {/* Birthdate */}
                                         <div className="form-group mb-8">
                                             <label>Birth Date</label>
-                                            <input type="date" name="birthdate" onChange={e => setBirthdate(e.target.value)} value={birthdate}  className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                            <input
+                                                type="date"
+                                                name="birthdate"
+                                                onChange={e => setUser({
+                                                    ...user,
+                                                    birthdate: e.target.value
+                                                })}
+                                                value={ user.birthdate }
+                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                                         </div>
                                     </div>
                                     {/* Address */}
                                     <div className="form-group mb-8">
                                         <label>Address</label>
-                                        <input type="text" name="address" onChange={e => setAddress(e.target.value)} value={address}  className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                        <input
+                                            type="text"
+                                            name="address"
+                                            onChange={e => setUser({
+                                                ...user,
+                                                address: e.target.value
+                                            })}
+                                            value={ user.address }
+                                            className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                                     </div>
                                     <div className='grid grid-cols-2 gap-5'>
                                         {/* Phone */}
                                         <div className="form-group mb-8">
                                             <label>Contact No</label>
-                                            <input type="text" name="phone" onChange={e => setPhone(e.target.value)} value={phone}  className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                            <input
+                                                type="text"
+                                                name="phone"
+                                                onChange={e => setUser({
+                                                    ...user,
+                                                    phone: e.target.value
+                                                })}
+                                                value={ user.phone === null ? '' : user.phone }
+                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                                         </div>
                                     </div>
                                     <div className="form-group text-right mt-4">
@@ -323,7 +403,6 @@ const Users = (props) => {
             
         </>
     )
-
 }
 
 export default Users

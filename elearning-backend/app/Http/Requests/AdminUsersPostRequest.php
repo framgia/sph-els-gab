@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class AdminFieldPostRequest extends FormRequest
+class AdminUsersPostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,7 @@ class AdminFieldPostRequest extends FormRequest
      *
      * @return array
      */
-
-    public function updateProfile_rules()
+    public function rules()
     {
         return [
             'firstname' => [
@@ -31,6 +30,7 @@ class AdminFieldPostRequest extends FormRequest
                 'max:100'
             ],
             'middlename' => [
+                'nullable',
                 'max:100'
             ],
             'lastname' => [
@@ -45,20 +45,16 @@ class AdminFieldPostRequest extends FormRequest
                 'required',
                 'max:200'
             ],
+            'phone' => [
+                'nullable'
+            ],
             'birthdate' => [
                 'required',
                 'before:today'
+            ],
+            'avatar' => [
+                'nullable'
             ]
         ];
-    }
-
-    public function rules()
-    {
-        switch($this->module) {
-            case 'update_profile': {
-                $this->updateProfile_rules();
-            }
-            default: {}
-        }
     }
 }

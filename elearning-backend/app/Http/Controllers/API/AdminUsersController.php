@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminFieldPostRequest;
+use App\Http\Requests\AdminUsersPostRequest;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
@@ -32,11 +32,9 @@ class AdminUsersController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(AdminUsersPostRequest $request)
     {
-        $validator = AdminFieldPostRequest::createFrom($request);
-        $validator->module = 'update_profile';
-
+        $validator = $request->validated();
         $user = User::where("id", $request->input("user"))->with('profile')->get()->first();
 
         if ($request->hasFile('avatar')) {
@@ -59,24 +57,25 @@ class AdminUsersController extends Controller
         }
 
         UserProfile::where("user_id", $user->id)->update([  
-            'firstname' => $validator->input('firstname'),
-            'middlename' => $validator->input('middlename'),
-            'lastname' => $validator->input('lastname'),
-            'sex' => $validator->input('sex'),
-            'phone' => $validator->input('phone'),
-            'address' => $validator->input('address'),
-            'birthdate' => $validator->input('birthdate'),
+            'firstname' => $validator['firstname'],
+            'middlename' => $validator['middlename'],
+            'lastname' => $validator['lastname'],
+            'sex' => $validator['sex'],
+            'phone' => $validator['phone'],
+            'address' => $validator['address'],
+            'birthdate' => $validator['birthdate'],
         ]);
         
         return response()->json([
             'users'=> $user->username,
+            'request' => $request->hasFile('avatar'),
+            'hasAvatar' => $request->input('hasAvatar')
         ]);
     }
 
     public function delete(Request $request)
     {
         $user = User::where("id", $request->input("user"))->with('profile')->get()->first();
-
         File::delete(public_path() . '\\uploads\\avatar\\' . $user->profile['avatar']);
         User::where("id", $request->input("user"))->delete();
     }
