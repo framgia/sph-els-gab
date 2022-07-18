@@ -17,7 +17,7 @@ class CreateUserProfilesTable extends Migration
             $table->id();
             $table->string('lastname');
             $table->string('firstname');
-            $table->string('middlename')->nullable();
+            $table->string('middlename');
             $table->string('sex');
             $table->string('birthdate');
             $table->string('phone');
