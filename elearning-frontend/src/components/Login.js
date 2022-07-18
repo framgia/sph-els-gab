@@ -1,42 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import apiClient from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import apiClient from '../services/api'
+import { useNavigate } from 'react-router-dom'
 
 const Login = (props) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (props.session) {
             navigate('/dashboard')
         }
-    }, [navigate, props.session])
+    }, [props.session])
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        localStorage.removeItem('user');
+        localStorage.removeItem('user')
 
-        apiClient.get('/sanctum/csrf-cookie').then(response => {
-            apiClient({
-                method: "post",
-                url: "/api/login",
-                data: {
-                    email: email,
-                    password: password
-                }
-            }).then((response) => {
-                localStorage.setItem('user', response.data.token)
-                props.login();
-                navigate('/dashboard')
-            }).catch(error => {
-                console.log(error);
-            });
-        }).then(response => {
-            console.log(response);
+        apiClient({
+            method: "post",
+            url: "/api/login",
+            data: {
+                email: email,
+                password: password
+            }
+        }).then((response) => {
+            localStorage.setItem('user', response.data.token)
+            props.login()
+            navigate('/dashboard')
         }).catch(error => {
-            console.log(error);
-        });
+            console.log(error)
+        })
     }
     
     return (
@@ -47,7 +41,6 @@ const Login = (props) => {
             <hr className='mb-5'/>
             <div>
                 <form onSubmit={handleSubmit}>
-
                     {/* Email */}
                     <div className="form-group mb-8">
                         <label>User Email</label>
@@ -82,6 +75,6 @@ const Login = (props) => {
                 </form>
             </div>
         </div>
-    );
+    )
 }
-export default Login;
+export default Login

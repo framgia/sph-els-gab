@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserFieldPostRequest;
+use App\Http\Requests\UserProfileInformationPostRequest;
+use App\Http\Requests\UserRegisterPostRequest;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
@@ -21,10 +22,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(UserRegisterPostRequest $request)
     {
-        $validator = UserFieldPostRequest::createFrom($request);
-        $validator->module = 'register';
+        $validator = $request->validated();
         $avatarfile = "";
 
         if ($request->hasFile('avatar')) {
@@ -37,21 +37,21 @@ class UserController extends Controller
         }
 
         $user = User::create([
-            "username" => $validator->input("username"),
-            "password" => $validator->input("password"),
-            "email" => $validator->input("email")
+            "username" => $validator["username"],
+            "password" => $validator["password"],
+            "email" => $validator["email"]
         ]);
 
         Userprofile::create([
             'user_id' => $user->id,
             'avatar' => $avatarfile,
-            'firstname' => $validator->input('firstname'),
-            'middlename' => $validator->input('middlename'),
-            'lastname' => $validator->input('lastname'),
-            'sex' => $validator->input('sex'),
-            'phone' => $validator->input('phone'),
-            'address' => $validator->input('address'),
-            'birthdate' => $validator->input('birthdate'),
+            'firstname' => $validator['firstname'],
+            'middlename' => $validator['middlename'],
+            'lastname' => $validator['lastname'],
+            'sex' => $validator['sex'],
+            'phone' => $validator['phone'],
+            'address' => $validator['address'],
+            'birthdate' => $validator['birthdate'],
         ]);
 
         $token = $user->createToken('myapptoken')->plainTextToken;
@@ -62,24 +62,22 @@ class UserController extends Controller
         ]);
     }
     
-    public function update(Request $request)
+    public function update(UserProfileInformationPostRequest $request)
     {
-        $validator = UserFieldPostRequest::createFrom($request);
-        $validator->module = 'update_profile';
-
-        $user = PersonalAccessToken::findToken($validator->input('token'))->tokenable()->with('profile')->get()->first();
+        $validator = $request->validated();
+        $user = PersonalAccessToken::findToken($request->input('token'))->tokenable()->with('profile')->get()->first();
         $avatarfile = "";
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
             $extension = $file->getClientOriginalExtension();
-            $filename = $validator->input("username") . '.' . $extension;
+            $filename = $request->input("username"). '.' . $extension;
             $file->move(public_path() . '\\uploads\\avatar\\', $filename);
 
             $avatarfile = $filename;
         }
         else {
-            $filepath = public_path() . '\\uploads\\avatar\\' . $validator->input("username") . '.*';
+            $filepath = public_path() . '\\uploads\\avatar\\' . $request->input("username") . '.*';
 
             if ($result = glob($filepath)) {
                 File::delete($result[0]);
@@ -87,14 +85,14 @@ class UserController extends Controller
         }
 
         UserProfile::where("user_id", $user->id)->update([  
-            'firstname' => $validator->input('firstname'),
+            'firstname' => $validator['firstname'],
             'avatar' => $avatarfile,
-            'middlename' => $validator->input('middlename'),
-            'lastname' => $validator->input('lastname'),
-            'sex' => $validator->input('sex'),
-            'phone' => $validator->input('phone'),
-            'address' => $validator->input('address'),
-            'birthdate' => $validator->input('birthdate'),
+            'middlename' => $validator['middlename'],
+            'lastname' => $validator['lastname'],
+            'sex' => $validator['sex'],
+            'phone' => $validator['phone'],
+            'address' => $validator['address'],
+            'birthdate' => $validator['birthdate'],
         ]);
     }
 

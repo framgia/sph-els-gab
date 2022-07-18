@@ -3,20 +3,18 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserFieldPostRequest;
+use App\Http\Requests\UserLoginPostRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class SessionsController extends Controller
 {
-    public function login(Request $request)
+    public function login(UserLoginPostRequest $request)
     {
-        $validator = UserFieldPostRequest::createFrom($request);
-        $validator->module = "login";
+        $validator = $request->validated();
 
         if(auth()->attempt([
-            "email" => $validator->input('email'),
-            "password" => $validator->input('password')
+            "email" => $validator['email'],
+            "password" => $validator['password'],
         ])) {
             session()->regenerate();
 
