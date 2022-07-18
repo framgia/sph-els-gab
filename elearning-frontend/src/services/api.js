@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 import Cookies from 'js-cookie'
 
 const apiClient = axios.create({
@@ -7,6 +7,6 @@ const apiClient = axios.create({
     headers: {
         'X-CSRFToken': Cookies.get('csrftoken'),
     }
-});
+})
 
-export default apiClient;
+export default apiClient
