@@ -109,7 +109,7 @@ const Users = (props) => {
             }
         }).then(response => {
             ClearFields()
-            console.log(response.data);
+            console.log(response.data)
         }).catch(error => {
             console.log(error)
         })
@@ -177,29 +177,20 @@ const Users = (props) => {
                                             }).then(response => {
                                                 ClearFields()
 
-                                                if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
-                                                    setHasAvatar(true)
-                                                    setUser({
-                                                        ...user,
-                                                        avatar: response.data.user.profile.avatar,
-                                                        profilepic: ('http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar)
-                                                    })
-                                                }
-
+                                                setHasSelectedUser(true)
                                                 setSelectedUser(response.data.user.id)
                                                 setUser({
-                                                    profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'),
+                                                    ...user,
+                                                    ...response.data.user.profile,
+                                                    email: response.data.user.email,
+                                                    profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : defaultPicture),
                                                     avatar: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? response.data.user.profile.avatar : null),
-                                                    firstname: response.data.user.profile.firstname,
-                                                    middlename: response.data.user.profile.middlename,
-                                                    lastname: response.data.user.profile.lastname,
-                                                    sex: response.data.user.profile.sex,
-                                                    birthdate: response.data.user.profile.birthdate,
-                                                    phone: response.data.user.profile.phone,
-                                                    address: response.data.user.profile.address,
                                                 })
+                                
+                                                if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
+                                                    setHasAvatar(true)
+                                                }
 
-                                                setHasSelectedUser(true)
                                             }).catch(error => {
                                                 console.log(error)
                                             })
@@ -345,6 +336,7 @@ const Users = (props) => {
                                                 })}
                                                 value={ user.sex }
                                                 className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
+                                                <option value='-'>-</option>
                                                 <option value='M'>Male</option>
                                                 <option value='F'>Female</option>
                                             </select>

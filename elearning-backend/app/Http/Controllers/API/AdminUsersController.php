@@ -34,7 +34,6 @@ class AdminUsersController extends Controller
 
     public function update(AdminUsersPostRequest $request)
     {
-        $validator = $request->validated();
         $user = User::where("id", $request->input("user"))->with('profile')->get()->first();
 
         if ($request->hasFile('avatar')) {
@@ -57,19 +56,13 @@ class AdminUsersController extends Controller
         }
 
         UserProfile::where("user_id", $user->id)->update([  
-            'firstname' => $validator['firstname'],
-            'middlename' => $validator['middlename'],
-            'lastname' => $validator['lastname'],
-            'sex' => $validator['sex'],
-            'phone' => $validator['phone'],
-            'address' => $validator['address'],
-            'birthdate' => $validator['birthdate'],
-        ]);
-        
-        return response()->json([
-            'users'=> $user->username,
-            'request' => $request->hasFile('avatar'),
-            'hasAvatar' => $request->input('hasAvatar')
+            'firstname' => $request->firstname,
+            'middlename' => $request->middlename,
+            'lastname' => $request->lastname,
+            'sex' => $request->sex,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'birthdate' => $request->birthdate,
         ]);
     }
 

@@ -18,12 +18,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login', [SessionsController::class, 'login']);
-Route::post('/register', [UserController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Authenticated Routes
     Route::post('/user', [UserProfileController::class, 'index']);
-    Route::post('/update-user', [UserController::class, 'update']);
     Route::post('/logout', [SessionsController::class, 'logout']);
 
     // Admin Routes
