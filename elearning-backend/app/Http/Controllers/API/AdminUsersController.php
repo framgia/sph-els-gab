@@ -12,6 +12,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AdminUsersController extends Controller
 {
+    // Retrieve all users
     public function index(Request $request)
     {
         // Exculde current user
@@ -23,7 +24,8 @@ class AdminUsersController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    // Get selected user and its profile
+    public function getUserProfile(Request $request)
     {
         $user = User::where("id", $request->input('user'))->with('profile')->get()->first();
 
@@ -32,6 +34,7 @@ class AdminUsersController extends Controller
         ]);
     }
 
+    // Update selected user's profile
     public function update(AdminUsersPostRequest $request)
     {
         $user = User::where("id", $request->input("user"))->with('profile')->get()->first();
@@ -66,6 +69,7 @@ class AdminUsersController extends Controller
         ]);
     }
 
+    // Delete selected user
     public function delete(Request $request)
     {
         $user = User::where("id", $request->input("user"))->with('profile')->get()->first();

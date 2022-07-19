@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login', [SessionsController::class, 'login']);
+Route::post('/register', [UserController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Authenticated Routes
@@ -27,7 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin Routes
     Route::post('/admin/all-users', [AdminUsersController::class, 'index']);
-    Route::post('/admin/single-user', [AdminUsersController::class, 'store']);
+    Route::post('/admin/single-user', [AdminUsersController::class, 'getUser']);
     Route::post('/admin/update-user', [AdminUsersController::class, 'update']);
     Route::post('/admin/delete-user', [AdminUsersController::class, 'delete']);
 });

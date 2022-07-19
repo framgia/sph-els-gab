@@ -44,7 +44,7 @@ const App = () => {
         <Navbar session={ loggedIn } links={ authLink } />
         <Routes>
           <Route path='/' element={ <Login login={ login } session={ loggedIn } /> } />
-          <Route path="/register" element={<Register session={ loggedIn } />} />
+          <Route path="/register" element={<Register login={ login } session={ loggedIn } />} />
 
           <Route path='/dashboard' element={<Dashboard session={loggedIn} />} />
           <Route path='/settings' element={<ProfileSettings session={loggedIn} />} />
