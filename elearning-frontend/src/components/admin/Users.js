@@ -32,15 +32,13 @@ const Users = (props) => {
 
     const usertoken = localStorage.getItem('user')
 
-    const FetchUser = useCallback(async () => {
+    // Fetch User
+    const GetUsers = useCallback(async () => {
         const data = await apiClient({
-            method: "post",
-            url: "/api/admin/all-users",
+            method: "get",
+            url: "/api/admin/get-users",
             headers: {
                 Authorization: 'Bearer ' + usertoken
-            },
-            data: {
-                token: usertoken
             }
         }).then(response => {
             setUserList(response.data.users)
@@ -66,7 +64,7 @@ const Users = (props) => {
                 }
             }).then(response => {
                 if (!!response.data.user.profile.is_admin) {
-                    FetchUser()
+                    GetUsers()
                 }
                 else {
                     navigate('/dashboard')
@@ -77,9 +75,10 @@ const Users = (props) => {
                 console.log(error)
             })
         }
-    }, [props.session, FetchUser, changeData])
+    }, [props.session, GetUsers, changeData])
 
-    const SaveUser = (e) => {
+    // Save User
+    const SaveUser = async (e) => {
         e.preventDefault()
 
         if(!hasSelectedUser) {
@@ -89,12 +88,13 @@ const Users = (props) => {
 
         apiClient({
             method: "post",
-            url: "/api/admin/update-user",
+            url: `/api/admin/update-user`,
             headers: {
                 Authorization: 'Bearer ' + usertoken,
                 'Content-Type': 'multipart/form-data'
             },
             data: {
+                _method: "patch",
                 hasAvatar: hasAvatar,
                 user: selectedUser,
                 profilepic: user.profilepic,
@@ -109,7 +109,6 @@ const Users = (props) => {
             }
         }).then(response => {
             ClearFields()
-            console.log(response.data)
         }).catch(error => {
             console.log(error)
         })
@@ -166,13 +165,10 @@ const Users = (props) => {
                                             e.preventDefault()
 
                                             apiClient({
-                                                method: "post",
-                                                url: "/api/admin/single-user",
+                                                method: "get",
+                                                url: "/api/admin/get-user/" + user.id,
                                                 headers: {
                                                     Authorization: 'Bearer ' + usertoken
-                                                },
-                                                data: {
-                                                    user: user.id
                                                 }
                                             }).then(response => {
                                                 ClearFields()
@@ -200,13 +196,11 @@ const Users = (props) => {
 
                                             if (window.confirm('Are you sure you want to delete this user?')) {
                                                 apiClient({
-                                                    method: "post",
-                                                    url: "/api/admin/delete-user",
+                                                    method: "delete",
+                                                    url: "/api/admin/delete-user/" + user.id,
                                                     headers: {
-                                                        Authorization: 'Bearer ' + usertoken
-                                                    },
-                                                    data: {
-                                                        user: user.id
+                                                        Authorization: 'Bearer ' + usertoken,
+                                                        'Content-Type': 'multipart/form-data'
                                                     }
                                                 }).then(response => {
                                                     ClearFields()
@@ -243,7 +237,7 @@ const Users = (props) => {
                         </table>
                     </div>
                     <div className='col-span-4'>
-                        <form onSubmit={ SaveUser } encType="multipart/form-data">
+                        <form onSubmit={ SaveUser } encType='multipart/form-data'>
                             <div className='grid grid-cols-4 gap-5'>
                                 <div className="col-span-1">
                                     {/* Avatar */}

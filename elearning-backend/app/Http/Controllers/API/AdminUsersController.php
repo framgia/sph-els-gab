@@ -16,8 +16,8 @@ class AdminUsersController extends Controller
     public function index(Request $request)
     {
         // Exculde current user
-        $currentUser = PersonalAccessToken::findToken($request->input('token'))->tokenable()->with('profile')->get()->first();
-        $users = User::where("id", "!=", $currentUser->id)->with('profile')->get();
+        $currentUser = auth()->user()->id;
+        $users = User::where("id", "!=", $currentUser)->with('profile')->get();
 
         return response()->json([
             'users'=> $users,
@@ -25,9 +25,9 @@ class AdminUsersController extends Controller
     }
 
     // Get selected user and its profile
-    public function getUserProfile(Request $request)
+    public function getUser(Request $request)
     {
-        $user = User::where("id", $request->input('user'))->with('profile')->get()->first();
+        $user = User::where("id", $request->id)->with('profile')->get()->first();
 
         return response()->json([
             'user'=> $user,
@@ -72,8 +72,8 @@ class AdminUsersController extends Controller
     // Delete selected user
     public function delete(Request $request)
     {
-        $user = User::where("id", $request->input("user"))->with('profile')->get()->first();
+        $user = User::where("id", $request->id)->with('profile')->get()->first();
         File::delete(public_path() . '\\uploads\\avatar\\' . $user->profile['avatar']);
-        User::where("id", $request->input("user"))->delete();
+        User::where("id", $request->id)->delete();
     }
 }
