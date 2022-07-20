@@ -13,13 +13,10 @@ const Navbar = (props) => {
       const usertoken = localStorage.getItem('user')
 
       apiClient({
-          method: "post",
+          method: "get",
           url: "/api/user",
           headers: {
               Authorization: 'Bearer ' + usertoken
-          },
-          data: {
-              token: usertoken
           }
       }).then(response => {
         setIsAdmin(!!response.data.user.profile.is_admin)

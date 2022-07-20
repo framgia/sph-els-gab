@@ -10,15 +10,12 @@ class SessionsController extends Controller
 {
     public function login(UserLoginPostRequest $request)
     {
-        $validator = $request->validated();
-
         if(auth()->attempt([
-            "email" => $validator['email'],
-            "password" => $validator['password'],
+            "email" => $request->email,
+            "password" => $request->password,
         ])) {
             session()->regenerate();
 
-            $data = [];
             $user = User::with('profile')->find(auth()->user()->id);
             $token = $user->createToken('myapptoken')->plainTextToken;
 
