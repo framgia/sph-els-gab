@@ -1,5 +1,5 @@
 import apiClient from "../../services/api"
-import Cookies from 'js-cookie'
+import Toastify from "../../core/Toastify";
 
 export default function SessionReducer(state, action) {
     switch (action.type) {
@@ -18,11 +18,6 @@ export default function SessionReducer(state, action) {
               apiClient({
                 method: 'post',
                 url: '/api/logout',
-                headers: {
-                  'X-CSRFToken': Cookies.get('csrftoken'),
-                  accept: 'application/json',
-                  Authorization: 'Bearer ' + user
-                }
               }).then(response => {
                 if (response.data.status === undefined) {
                   sessionStorage.setItem('loggedIn', false);
@@ -37,7 +32,7 @@ export default function SessionReducer(state, action) {
                 }
                 else { return state }
             }).catch(error => {
-                console.log(error)
+                Toastify(Object.values(error.response.data.errors)[0][0])
             })
             
         default:

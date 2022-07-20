@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../services/api'
+import { ToastContainer } from 'react-toastify'
+import Toastify from '../../core/Toastify'
 
 const Users = (props) => {
     
@@ -19,6 +21,7 @@ const Users = (props) => {
     const defaultPicture = 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
     const avatarRef = useRef(null)
     const [user, setUser] = useState({
+        id: '',
         profilepic: defaultPicture,
         avatar: null,
         firstname: '',
@@ -36,15 +39,12 @@ const Users = (props) => {
     const GetUsers = useCallback(async () => {
         const data = await apiClient({
             method: "get",
-            url: "/api/admin/get-users",
-            headers: {
-                Authorization: 'Bearer ' + usertoken
-            }
+            url: "/api/admin/users",
         }).then(response => {
             setUserList(response.data.users)
             setChangeData(false)
         }).catch(error => {
-            console.log(error)
+            Toastify(Object.values(error.response.data.errors)[0][0])
         })
     }, [changeData])
     
@@ -56,11 +56,8 @@ const Users = (props) => {
             apiClient({
                 method: "get",
                 url: "/api/user",
-                headers: {
-                    Authorization: 'Bearer ' + usertoken
-                }
             }).then(response => {
-                if (!!response.data.user.profile.is_admin) {
+                if (!!response.data.is_admin) {
                     GetUsers()
                 }
                 else {
@@ -69,7 +66,7 @@ const Users = (props) => {
 
                 setIsLoading(false)
             }).catch(error => {
-                console.log(error)
+                Toastify(Object.values(error.response.data.errors)[0][0])
             })
         }
     }, [props.session, GetUsers, changeData])
@@ -77,6 +74,7 @@ const Users = (props) => {
     // Save User
     const SaveUser = async (e) => {
         e.preventDefault()
+        console.log(user)
 
         if(!hasSelectedUser) {
             window.alert('No user selected!')
@@ -85,15 +83,13 @@ const Users = (props) => {
 
         apiClient({
             method: "post",
-            url: `/api/admin/update-user`,
+            url: `/api/admin/user/` + selectedUser,
             headers: {
-                Authorization: 'Bearer ' + usertoken,
                 'Content-Type': 'multipart/form-data'
             },
             data: {
                 _method: "patch",
                 hasAvatar: hasAvatar,
-                user: selectedUser,
                 profilepic: user.profilepic,
                 avatar: user.avatar,
                 firstname: user.firstname,
@@ -106,8 +102,9 @@ const Users = (props) => {
             }
         }).then(response => {
             ClearFields()
+            Toastify("Succesfully saved user information")
         }).catch(error => {
-            console.log(error)
+            Toastify(Object.values(error.response.data.errors)[0][0])
         })
     }
 
@@ -163,10 +160,7 @@ const Users = (props) => {
 
                                             apiClient({
                                                 method: "get",
-                                                url: "/api/admin/get-user/" + user.id,
-                                                headers: {
-                                                    Authorization: 'Bearer ' + usertoken
-                                                }
+                                                url: "/api/admin/user/" + user.id,
                                             }).then(response => {
                                                 ClearFields()
 
@@ -175,7 +169,6 @@ const Users = (props) => {
                                                 setUser({
                                                     ...user,
                                                     ...response.data.user.profile,
-                                                    email: response.data.user.email,
                                                     profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : defaultPicture),
                                                     avatar: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? response.data.user.profile.avatar : null),
                                                 })
@@ -183,9 +176,8 @@ const Users = (props) => {
                                                 if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
                                                     setHasAvatar(true)
                                                 }
-
                                             }).catch(error => {
-                                                console.log(error)
+                                                Toastify(Object.values(error.response.data.errors)[0][0])
                                             })
                                         }}>EDIT</button>
                                         <button onClick={(e) => {
@@ -194,15 +186,14 @@ const Users = (props) => {
                                             if (window.confirm('Are you sure you want to delete this user?')) {
                                                 apiClient({
                                                     method: "delete",
-                                                    url: "/api/admin/delete-user/" + user.id,
+                                                    url: "/api/admin/user/" + user.id,
                                                     headers: {
-                                                        Authorization: 'Bearer ' + usertoken,
                                                         'Content-Type': 'multipart/form-data'
                                                     }
                                                 }).then(response => {
-                                                    ClearFields()
+                                                    Toastify("Succesfully deleted user")
                                                 }).catch(error => {
-                                                    console.log(error)
+                                                    Toastify(Object.values(error.response.data.errors)[0][0])
                                                 })
                                             }
                                         }}>DELETE</button>
@@ -383,7 +374,7 @@ const Users = (props) => {
                     </div>
                 </div>
             </div>
-            
+            <ToastContainer />
         </>
     )
 }

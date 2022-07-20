@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import apiClient from '../services/api'
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import Toastify from '../core/Toastify'
 
 const ProfileSettings = (props) => {
     const navigate = useNavigate()
@@ -18,8 +20,7 @@ const ProfileSettings = (props) => {
         sex: '-',
         birthdate: '',
         phone: null,
-        address: '',
-        email: '',
+        address: ''
     })
 
     const [loading, setLoading] = useState(true)
@@ -33,25 +34,22 @@ const ProfileSettings = (props) => {
             apiClient({
                 method: "get",
                 url: "/api/user",
-                headers: {
-                    Authorization: 'Bearer ' + usertoken
-                }
             }).then(response => {
                 setUser({
                     ...user,
-                    ...response.data.user.profile,
-                    email: response.data.user.email,
-                    profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : defaultPicture),
-                    avatar: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? response.data.user.profile.avatar : null),
+                    ...response.data,
+                    email: response.data.email,
+                    profilepic: (response.data.avatar !== null && response.data.avatar !== "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.avatar : defaultPicture),
+                    avatar: (response.data.avatar !== null && response.data.avatar !== "" ? response.data.avatar : null),
                 })
 
-                if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
+                if (response.data.avatar !== null && response.data.avatar !== "") {
                     setHasAvatar(true)
                 }
 
                 setLoading(false)
             }).catch( error => {
-                console.log(error)
+                Toastify(Object.values(error.response.data.errors)[0][0])
              })
         }
     }, [])
@@ -61,9 +59,8 @@ const ProfileSettings = (props) => {
 
         apiClient({
             method: "post",
-            url: "/api/update-user",
+            url: "/api/user",
             headers: {
-                Authorization: 'Bearer ' + usertoken,
                 'Content-Type': 'multipart/form-data'
             },
             data: {
@@ -78,14 +75,12 @@ const ProfileSettings = (props) => {
                 sex: user.sex,
                 birthdate: user.birthdate,
                 phone: user.phone,
-                address: user.address,
-                email: user.email,
-                username: user.username,
+                address: user.address
             }
         }).then(response => {
-            console.log(response)
+            Toastify("Succesfully saved user information")
         }).catch(error => {
-            console.log(error)
+            Toastify(Object.values(error.response.data.errors)[0][0])
         })
     }
 
@@ -228,11 +223,6 @@ const ProfileSettings = (props) => {
                                     className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
                             </div>
                             <div className='grid grid-cols-2 gap-5'>
-                                {/* Email Address */}
-                                <div className="form-group mb-8">
-                                    <label>User Email</label>
-                                    <p className='input py-1 px-3 text-gray-700 leading-tight'>{ user.email }</p>
-                                </div>
                                 {/* Phone */}
                                 <div className="form-group mb-8">
                                     <label>Contact No</label>
@@ -267,6 +257,7 @@ const ProfileSettings = (props) => {
                     { view_element }
                 </div>
             </div>
+            <ToastContainer />
         </>
     )
 }

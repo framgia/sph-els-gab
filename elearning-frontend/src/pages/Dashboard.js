@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import apiClient from '../services/api'
 import { Link, useNavigate } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import Toastify from '../core/Toastify'
 
 const Dashboard = (props) => {
     const navigate = useNavigate()
@@ -15,7 +17,6 @@ const Dashboard = (props) => {
     })
 
     const [loading, setLoading] = useState(true)
-    const usertoken = localStorage.getItem('user')
 
     useEffect(() => {
         if (!props.session) {
@@ -24,21 +25,16 @@ const Dashboard = (props) => {
         else {
             apiClient({
                 method: "get",
-                url: "/api/user",
-                headers: {
-                    Authorization: 'Bearer ' + usertoken
-                }
+                url: "/api/user"
             }).then(response => {
                 setUser({
-                    profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : defaultUserPic,
-                    firstname: response.data.user.profile.firstname,
-                    middlename: response.data.user.profile.middlename,
-                    lastname: response.data.user.profile.lastname
+                    ...user,
+                    ...response.data,
+                    profilepic: (response.data.avatar !== null && response.data.avatar !== "") ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.avatar : defaultUserPic,
                 })
-
                 setLoading(false)
             }).catch(error => {
-                console.log(error)
+                Toastify(Object.values(error.response.data.errors)[0][0])
             })
         }
     }, [])
@@ -56,7 +52,7 @@ const Dashboard = (props) => {
                         src={ user.profilepic }
                         alt="dp"
                         className='mb-5 avatar' />
-                    <small className='mb-2'>{ user.firstname + " " + (user.middlename == "" ? "" : user.middlename + " ") + user.lastname }</small>
+                    <small className='mb-2'>{ user.firstname + " " + (user.middlename === "" ? "" : user.middlename + " ") + user.lastname }</small>
                     <Link to='/settings' className='text-white bg-blue-600 px-2 py-1 rounded'>Settings</Link>
                 </div>
                 <div className='col-span-2 px-5'>
@@ -78,6 +74,8 @@ const Dashboard = (props) => {
                     { view_element }
                 </div>
             </div>
+            
+            <ToastContainer />
         </>
     )
 
