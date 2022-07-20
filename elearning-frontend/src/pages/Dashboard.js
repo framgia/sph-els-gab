@@ -23,13 +23,10 @@ const Dashboard = (props) => {
         }
         else {
             apiClient({
-                method: "post",
+                method: "get",
                 url: "/api/user",
                 headers: {
                     Authorization: 'Bearer ' + usertoken
-                },
-                data: {
-                    token: usertoken
                 }
             }).then(response => {
                 setUser({
