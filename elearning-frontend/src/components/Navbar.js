@@ -1,6 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import apiClient from '../services/api'
 
 const Navbar = (props) => {
+
+  const [dropDown, setDropdown] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    if (props.session) {
+      
+      const usertoken = localStorage.getItem('user')
+
+      apiClient({
+          method: "post",
+          url: "/api/user",
+          headers: {
+              Authorization: 'Bearer ' + usertoken
+          },
+          data: {
+              token: usertoken
+          }
+      }).then(response => {
+        setIsAdmin(!!response.data.user.profile.is_admin)
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+  }, [props.session])
 
   if (props.session)
   {
@@ -20,12 +47,53 @@ const Navbar = (props) => {
               <li>
                 <a href="/" className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page">Home</a>
               </li>
+              { isAdmin ?
+                  <>
+                    <li className='dropdown'>
+                        <button
+                            id="dropdownmenu"
+                            data-dropdown-toggle="dropdown"
+                            className="text-center inline-flex items-center"
+                            type="button"
+                            onClick={() => {
+                              setDropdown(!dropDown)
+                            }}>Dropdown button
+                            <svg
+                                className="w-4 h-4 ml-2"
+                                aria-hidden="true"
+                                fillRule="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                  <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div
+                            className={`z-10 ${dropDown ? 'block' : 'hidden'} bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dropdownitems`}>
+                            <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefault">
+                              <li>
+                                <Link
+                                    to="/admin/users"
+                                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    onClick={() => {
+                                      setDropdown(!dropDown);
+                                    }}>User Management</Link>
+                              </li>
+                            </ul>
+                        </div>
+                      </li>
+                    </>
+                : <></>
+              }
               { props.links }
             </ul>
           </div>
         </div>
       </nav>
-    );
+    )
   }
 
   return (
@@ -44,7 +112,7 @@ const Navbar = (props) => {
           </div>
         </div>
       </nav>
-  );
+  )
 }
 
-export default Navbar;
+export default Navbar
