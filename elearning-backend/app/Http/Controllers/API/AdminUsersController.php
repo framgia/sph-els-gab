@@ -34,9 +34,9 @@ class AdminUsersController extends Controller
     }
 
     // Update selected user's profile
-    public function update(AdminUsersPostRequest $request)
+    public function update($id, AdminUsersPostRequest $request)
     {
-        $user = User::where("id", $request->id)->with('profile')->get()->first();
+        $user = User::where("id", $id)->with('profile')->get()->first();
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
