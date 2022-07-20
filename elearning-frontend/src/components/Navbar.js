@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 import apiClient from '../services/api'
+import Toastify from '../core/Toastify'
 
 const Navbar = (props) => {
 
@@ -9,19 +11,13 @@ const Navbar = (props) => {
 
   useEffect(() => {
     if (props.session) {
-      
-      const usertoken = localStorage.getItem('user')
-
       apiClient({
           method: "get",
           url: "/api/user",
-          headers: {
-              Authorization: 'Bearer ' + usertoken
-          }
       }).then(response => {
-        setIsAdmin(!!response.data.user.profile.is_admin)
+        setIsAdmin(!!response.data.is_admin)
       }).catch(error => {
-        console.log(error)
+        Toastify(Object.values(error.response.data.errors)[0][0])
       })
     }
   }, [props.session])
@@ -78,6 +74,12 @@ const Navbar = (props) => {
                                     onClick={() => {
                                       setDropdown(!dropDown);
                                     }}>User Management</Link>
+                                  <Link
+                                    to="/admin/categories"
+                                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    onClick={() => {
+                                      setDropdown(!dropDown);
+                                    }}>Category Management</Link>
                               </li>
                             </ul>
                         </div>
@@ -94,6 +96,7 @@ const Navbar = (props) => {
   }
 
   return (
+    <>
     <nav className="bg-white border-gray-200 px-10 sm:px-4 py-2.5 rounded dark:bg-gray-800">
         <div className="container flex flex-wrap justify-between items-center mx-auto">
           <a href="https://flowbite.com/" className="flex items-center"></a>
@@ -109,6 +112,8 @@ const Navbar = (props) => {
           </div>
         </div>
       </nav>
+      <ToastContainer />
+    </>
   )
 }
 

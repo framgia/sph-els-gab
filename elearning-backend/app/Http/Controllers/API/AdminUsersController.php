@@ -8,12 +8,11 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Laravel\Sanctum\PersonalAccessToken;
 
 class AdminUsersController extends Controller
 {
     // Retrieve all users
-    public function index(Request $request)
+    public function index()
     {
         // Exculde current user
         $currentUser = auth()->user()->id;
@@ -25,9 +24,9 @@ class AdminUsersController extends Controller
     }
 
     // Get selected user and its profile
-    public function getUser(Request $request)
+    public function getUser($id)
     {
-        $user = User::where("id", $request->id)->with('profile')->get()->first();
+        $user = User::where("id", $id)->with('profile')->get()->first();
 
         return response()->json([
             'user'=> $user,
@@ -35,9 +34,9 @@ class AdminUsersController extends Controller
     }
 
     // Update selected user's profile
-    public function update(AdminUsersPostRequest $request)
+    public function update($id, AdminUsersPostRequest $request)
     {
-        $user = User::where("id", $request->input("user"))->with('profile')->get()->first();
+        $user = User::where("id", $id)->with('profile')->get()->first();
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');

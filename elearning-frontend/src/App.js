@@ -10,6 +10,8 @@ import ProfileSettings from './components/ProfileSettings'
 import RenderReducer from './components/actions/RenderReducer'
 import SessionReducer from './components/actions/SessionReducer'
 import Users from './components/admin/Users';
+import Categories from './components/admin/Categories'
+import { ToastContainer } from 'react-toastify'
 
 const App = () => {
 
@@ -46,11 +48,16 @@ const App = () => {
           <Route path='/' element={ <Login login={ login } session={ loggedIn } /> } />
           <Route path="/register" element={<Register login={ login } session={ loggedIn } />} />
 
+          {/* Authenticated Modules */}
           <Route path='/dashboard' element={<Dashboard session={loggedIn} />} />
           <Route path='/settings' element={<ProfileSettings session={loggedIn} />} />
+
+          {/* Admin Modules */}
           <Route path='/admin/users' element={<Users session={loggedIn} />} /> 
+          <Route path='/admin/categories' element={<Categories session={loggedIn} />} /> 
           
         </Routes>
+        <ToastContainer />
       </Router>
     </>
   )

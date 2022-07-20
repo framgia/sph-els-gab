@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AdminUsersController;
+use App\Http\Controllers\API\AdminCategoriesController;
 use App\Http\Controllers\API\SessionsController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserProfileController;
@@ -23,12 +24,19 @@ Route::post('/register', [UserController::class, 'store']);
 Route::middleware('auth:sanctum')->group(function () {
     // Authenticated Routes
     Route::get('/user', [UserProfileController::class, 'index']);
-    Route::patch('/update-user', [UserController::class, 'update']);
+    Route::post('/user', [UserProfileController::class, 'index']);
+    Route::patch('/user', [UserController::class, 'update']);
     Route::post('/logout', [SessionsController::class, 'logout']);
 
     // Admin Routes
-    Route::get('/admin/get-users', [AdminUsersController::class, 'index']);
-    Route::get('/admin/get-user/{id}', [AdminUsersController::class, 'getUser']);
-    Route::patch('/admin/update-user', [AdminUsersController::class, 'update']);
-    Route::delete('/admin/delete-user/{id}', [AdminUsersController::class, 'delete']);
+    Route::get('/admin/users', [AdminUsersController::class, 'index']);
+    Route::get('/admin/user/{id}', [AdminUsersController::class, 'getUser']);
+    Route::patch('/admin/user/{id}', [AdminUsersController::class, 'update']);
+    Route::delete('/admin/user/{id}', [AdminUsersController::class, 'delete']);
+    
+    Route::get('/admin/categories', [AdminCategoriesController::class, 'index']);
+    Route::get('/admin/category/{id}', [AdminCategoriesController::class, 'getCategory']);
+    Route::post('/admin/category', [AdminCategoriesController::class, 'store']);
+    Route::put('/admin/category/{id}', [AdminCategoriesController::class, 'update']);
+    Route::delete('/admin/category/{id}', [AdminCategoriesController::class, 'delete']);
 });

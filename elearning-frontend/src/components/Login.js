@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import apiClient from '../services/api'
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import Toastify from '../core/Toastify'
 
 const Login = (props) => {
     const [email, setEmail] = useState('')
@@ -29,52 +31,55 @@ const Login = (props) => {
             props.login()
             navigate('/dashboard')
         }).catch(error => {
-            console.log(error)
+            Toastify(Object.values(error.response.data.errors)[0][0])
         })
     }
     
     return (
-        <div className="login-card w-1/3 mx-auto">
-            <div className="mb-5">
-                <h4 className='title text-center'>ELEARNING PORTAL</h4>
-            </div>
-            <hr className='mb-5'/>
-            <div>
-                <form onSubmit={handleSubmit}>
-                    {/* Email */}
-                    <div className="form-group mb-8">
-                        <label>User Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" 
-                            required
-                        />
-                    </div>
+        <>
+            <div className="login-card w-1/3 mx-auto">
+                <div className="mb-5">
+                    <h4 className='title text-center'>ELEARNING PORTAL</h4>
+                </div>
+                <hr className='mb-5'/>
+                <div>
+                    <form onSubmit={handleSubmit}>
+                        {/* Email */}
+                        <div className="form-group mb-8">
+                            <label>User Email</label>
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" 
+                                required
+                            />
+                        </div>
 
-                    {/* Password */}
-                    <div className="form-group mb-8">
-                        <label>Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" 
-                            required
-                        />
-                    </div>
+                        {/* Password */}
+                        <div className="form-group mb-8">
+                            <label>Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" 
+                                required
+                            />
+                        </div>
 
-                    <div className="form-group mt-4 text-center">
-                        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{minWidth:'200px'}}>LOG IN </button>
-                    </div>
-                </form>
+                        <div className="form-group mt-4 text-center">
+                            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{minWidth:'200px'}}>LOG IN </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+            <ToastContainer />
+        </>
     )
 }
 export default Login

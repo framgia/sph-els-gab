@@ -7,18 +7,15 @@ use App\Http\Requests\UserProfileInformationPostRequest;
 use App\Http\Requests\UserRegisterPostRequest;
 use App\Models\User;
 use App\Models\UserProfile;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $user = User::where("id", auth()->user()->id)->with('profile')->get()->first();
+        $user = auth()->user()->profile();
 
-        return response()->json([
-            'user'=> $user,
-        ]);
+        return response()->json($user);
     }
 
     public function store(UserRegisterPostRequest $request)
@@ -63,7 +60,7 @@ class UserController extends Controller
     public function update(UserProfileInformationPostRequest $request)
     {
         $currentUser = auth()->user()->id;
-        $user = User::where("id", $currentUser)->with('profile')->get()->first();
+        $user = auth()->user()->profile();
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
