@@ -4,7 +4,7 @@ import apiClient from '../../services/api'
 import Toastify from '../../core/Toastify'
 import { ToastContainer } from 'react-toastify'
 
-const Categories = (props) => {
+const Categories = () => {
     const navigate = useNavigate()
 
     // Cateogry List
@@ -37,19 +37,9 @@ const Categories = (props) => {
 
     // Component Mount
     useEffect(() => {
-        if (!props.session) {
-            navigate('/')
-        }
-        else {
-            if (props.admin) {
-                FetchCategories()
-                setIsLoading(false)
-            }
-            else {
-                navigate('/dashboard')
-            }
-        }
-    }, [props.session, FetchCategories, changeData])
+        FetchCategories()
+        setIsLoading(false)
+    }, [FetchCategories, changeData])
 
     // Save selected category
     const SaveCategory = (e) => {

@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useRef} from 'react'
 import apiClient from '../services/api'
-import { useNavigate } from 'react-router-dom'
 import Toastify from '../core/Toastify'
 import { ToastContainer } from 'react-toastify'
+import { Navigate } from 'react-router-dom'
 
 const Register = (props) => {
-    const navigate = useNavigate()
+    const navigate = Navigate()
 
     const avatarRef = useRef(null)
     const [user, setUser] = useState({
@@ -22,12 +22,6 @@ const Register = (props) => {
         username: '',
         password: ''
     })
-
-    useEffect(() => {
-        if (props.session) {
-            navigate('/dashboard')
-        }
-    }, [navigate, props.session])
     
     const saveUser = async (e) => {
         e.preventDefault()

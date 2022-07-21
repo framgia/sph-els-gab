@@ -1,13 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import apiClient from '../../services/api'
 import Toastify from '../../core/Toastify'
 import { ToastContainer } from 'react-toastify'
 
-const Users = (props) => {
-    
-    const navigate = useNavigate()
-
+const Users = () => {
     const [changeData, setChangeData] = useState(true)
     const [isLoading, setIsLoading] = useState(true)
 
@@ -49,19 +45,9 @@ const Users = (props) => {
     }, [changeData])
     
     useEffect(() => {
-        if (!props.session) {
-            navigate('/')
-        }
-        else {
-            if (props.admin) {
-                GetUsers()
-                setIsLoading(false)
-            }
-            else {
-                navigate('/dashboard')
-            }
-        }
-    }, [props.session, GetUsers, changeData])
+        GetUsers()
+        setIsLoading(false)
+    }, [GetUsers, changeData])
 
     // Save User
     const SaveUser = async (e) => {

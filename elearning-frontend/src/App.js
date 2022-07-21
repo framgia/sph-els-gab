@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, NavLink, Navigate } from 'react-router-dom'
 import Login from './components/Login'
 import Dashboard from './pages/Dashboard'
 import Navbar from './components/Navbar'
@@ -47,17 +47,17 @@ const App = () => {
       <Router>
         <Navbar session={ loggedIn } links={ authLink } admin={ isAdmin } />
         <Routes>
-          <Route path='/' element={ <Login login={ login } session={ loggedIn } setAdmin={ setIsAdmin } /> } />
-          <Route path="/register" element={<Register login={ login } session={ loggedIn } />} />
+          <Route path='/' element={!loggedIn ? <Login login={ login } setAdmin={ setIsAdmin } /> : <Navigate to='/dashboard' /> } />
+          <Route path="/register" element={!loggedIn ? <Register login={ login } /> : <Navigate to='/dashboard' />} />
 
           {/* Authenticated Modules */}
-          <Route path='/dashboard' element={<Dashboard session={loggedIn} />} />
-          <Route path='/settings' element={<ProfileSettings session={loggedIn} />} />
+          <Route path='/dashboard' element={loggedIn ? <Dashboard /> : <Navigate to='/' />} />
+          <Route path='/settings' element={loggedIn ? <ProfileSettings /> : <Navigate to='/' />} />
 
           {/* Admin Modules */}
-          <Route path='/admin/users' element={<Users session={loggedIn} admin={ isAdmin } />} /> 
-          <Route path='/admin/categories' element={<Categories session={loggedIn} admin={ isAdmin } />} /> 
-          <Route path='/admin/words' element={<CreateWords session={loggedIn} admin={ isAdmin } />} /> 
+          <Route path='/admin/users' element={loggedIn && isAdmin ? <Users /> : <Navigate to='/' />} /> 
+          <Route path='/admin/categories' element={loggedIn && isAdmin ? <Categories /> : <Navigate to='/' />} /> 
+          <Route path='/admin/words' element={loggedIn && isAdmin ? <CreateWords /> : <Navigate to='/' />} /> 
         </Routes>
       </Router>
     </>

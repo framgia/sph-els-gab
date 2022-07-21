@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import apiClient from '../services/api'
-import { useNavigate } from 'react-router-dom'
 import Toastify from '../core/Toastify'
 import { ToastContainer } from 'react-toastify'
 
-const ProfileSettings = (props) => {
-    const navigate = useNavigate()
-
+const ProfileSettings = () => {
     // User Details
     const [hasAvatar, setHasAvatar] = useState(false)
     const defaultPicture = 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
@@ -27,31 +24,26 @@ const ProfileSettings = (props) => {
     const usertoken = localStorage.getItem('user')
 
     useEffect(() => {
-        if (!props.session) {
-            navigate('/')
-        }
-        else {
-            apiClient({
-                method: "get",
-                url: "/api/user",
-            }).then(response => {
-                setUser({
-                    ...user,
-                    ...response.data,
-                    email: response.data.email,
-                    profilepic: (response.data.avatar !== null && response.data.avatar !== "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.avatar : defaultPicture),
-                    avatar: (response.data.avatar !== null && response.data.avatar !== "" ? response.data.avatar : null),
-                })
+        apiClient({
+            method: "get",
+            url: "/api/user",
+        }).then(response => {
+            setUser({
+                ...user,
+                ...response.data,
+                email: response.data.email,
+                profilepic: (response.data.avatar !== null && response.data.avatar !== "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.avatar : defaultPicture),
+                avatar: (response.data.avatar !== null && response.data.avatar !== "" ? response.data.avatar : null),
+            })
 
-                if (response.data.avatar !== null && response.data.avatar !== "") {
-                    setHasAvatar(true)
-                }
+            if (response.data.avatar !== null && response.data.avatar !== "") {
+                setHasAvatar(true)
+            }
 
-                setLoading(false)
-            }).catch( error => {
-                Toastify("error", error)
-             })
-        }
+            setLoading(false)
+        }).catch( error => {
+            Toastify("error", error)
+            })
     }, [])
 
     const saveUser = (e) => {

@@ -7,7 +7,7 @@ import InputField from '../../core/InputField'
 import Divider from '../../core/Divider'
 import { ToastContainer } from 'react-toastify'
 
-const CreateWords = (props) => {
+const CreateWords = () => {
     const navigate = useNavigate()
 
     // Cateogry List
@@ -56,18 +56,8 @@ const CreateWords = (props) => {
     }, [])
 
     useEffect(() => {
-        if (!props.session) {
-            navigate('/')
-        }
-        else {
-            if(props.admin) {
-                GetCategoryList()
-            }
-            else {
-                navigate('/dashboard')
-            }
-        }
-    }, [props.session])
+        GetCategoryList()
+    }, [])
 
     // Save word
     const SaveWord = (e) => {

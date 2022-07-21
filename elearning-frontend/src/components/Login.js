@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import apiClient from '../services/api'
 import { useNavigate } from 'react-router-dom'
 import Toastify from '../core/Toastify'
@@ -8,12 +8,6 @@ const Login = (props) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
-
-    useEffect(() => {
-        if (props.session) {
-            navigate('/dashboard')
-        }
-    }, [props.session])
 
     const handleSubmit = (e) => {
         e.preventDefault();
