@@ -1,5 +1,5 @@
-import React from 'react'
-import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
+import { BrowserRouter as Router, Route, Routes, NavLink, Navigate } from 'react-router-dom'
 import Login from './components/Login'
 import Dashboard from './pages/Dashboard'
 import Navbar from './components/Navbar'
@@ -11,12 +11,14 @@ import RenderReducer from './components/actions/RenderReducer'
 import SessionReducer from './components/actions/SessionReducer'
 import Users from './components/admin/Users';
 import Categories from './components/admin/Categories'
-import { ToastContainer } from 'react-toastify'
+import CreateWords from './components/admin/CreateWords'
 
 const App = () => {
 
   const [loggedIn, setLoggedIn] = RenderReducer(SessionReducer, sessionStorage.getItem('loggedIn') === 'true' || false)
-
+  const [isAdmin, setIsAdmin] = useState(sessionStorage.getItem('adminstate') === 'true' || false)
+  // const [isAdmin, setIsAdmin] = useState("false")
+  
   const login = () => {
     setLoggedIn({
       type: "login"
@@ -43,21 +45,20 @@ const App = () => {
   return (
     <>
       <Router>
-        <Navbar session={ loggedIn } links={ authLink } />
+        <Navbar session={ loggedIn } links={ authLink } admin={ isAdmin } />
         <Routes>
-          <Route path='/' element={ <Login login={ login } session={ loggedIn } /> } />
-          <Route path="/register" element={<Register login={ login } session={ loggedIn } />} />
+          <Route path='/' element={!loggedIn ? <Login login={ login } setAdmin={ setIsAdmin } /> : <Navigate to='/dashboard' /> } />
+          <Route path="/register" element={!loggedIn ? <Register login={ login } /> : <Navigate to='/dashboard' />} />
 
           {/* Authenticated Modules */}
-          <Route path='/dashboard' element={<Dashboard session={loggedIn} />} />
-          <Route path='/settings' element={<ProfileSettings session={loggedIn} />} />
+          <Route path='/dashboard' element={loggedIn ? <Dashboard /> : <Navigate to='/' />} />
+          <Route path='/settings' element={loggedIn ? <ProfileSettings /> : <Navigate to='/' />} />
 
           {/* Admin Modules */}
-          <Route path='/admin/users' element={<Users session={loggedIn} />} /> 
-          <Route path='/admin/categories' element={<Categories session={loggedIn} />} /> 
-          
+          <Route path='/admin/users' element={loggedIn && isAdmin ? <Users /> : <Navigate to='/' />} /> 
+          <Route path='/admin/categories' element={loggedIn && isAdmin ? <Categories /> : <Navigate to='/' />} /> 
+          <Route path='/admin/words' element={loggedIn && isAdmin ? <CreateWords /> : <Navigate to='/' />} /> 
         </Routes>
-        <ToastContainer />
       </Router>
     </>
   )

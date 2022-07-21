@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AdminWordsController;
 use App\Http\Controllers\API\AdminUsersController;
 use App\Http\Controllers\API\AdminCategoriesController;
 use App\Http\Controllers\API\SessionsController;
@@ -39,4 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/category', [AdminCategoriesController::class, 'store']);
     Route::put('/admin/category/{id}', [AdminCategoriesController::class, 'update']);
     Route::delete('/admin/category/{id}', [AdminCategoriesController::class, 'delete']);
+
+    Route::get('/admin/words', [AdminWordsController::class, 'index']);
+    Route::get('/admin/category/{id}/words', [AdminWordsController::class, 'index']);
+    Route::post('/admin/word', [AdminWordsController::class, 'store']);
 });

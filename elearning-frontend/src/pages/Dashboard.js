@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import apiClient from '../services/api'
-import { Link, useNavigate } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
+import { Link } from 'react-router-dom'
 import Toastify from '../core/Toastify'
+import { ToastContainer } from 'react-toastify'
 
-const Dashboard = (props) => {
-    const navigate = useNavigate()
-
+const Dashboard = () => {
     // User Details
     const defaultUserPic = 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
     const [user, setUser] = useState({
@@ -19,24 +17,19 @@ const Dashboard = (props) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        if (!props.session) {
-            navigate('/')
-        }
-        else {
-            apiClient({
-                method: "get",
-                url: "/api/user"
-            }).then(response => {
-                setUser({
-                    ...user,
-                    ...response.data,
-                    profilepic: (response.data.avatar !== null && response.data.avatar !== "") ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.avatar : defaultUserPic,
-                })
-                setLoading(false)
-            }).catch(error => {
-                Toastify(Object.values(error.response.data.errors)[0][0])
+        apiClient({
+            method: "get",
+            url: "/api/user"
+        }).then(response => {
+            setUser({
+                ...user,
+                ...response.data,
+                profilepic: (response.data.avatar !== null && response.data.avatar !== "") ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.avatar : defaultUserPic,
             })
-        }
+            setLoading(false)
+        }).catch(error => {
+            Toastify("error", error)
+        })
     }, [])
 
     var view_element = "";
@@ -74,11 +67,9 @@ const Dashboard = (props) => {
                     { view_element }
                 </div>
             </div>
-            
             <ToastContainer />
         </>
     )
-
 }
 
 export default Dashboard

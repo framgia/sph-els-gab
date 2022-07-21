@@ -1,23 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import apiClient from '../services/api'
 import { useNavigate } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import Toastify from '../core/Toastify'
+import { ToastContainer } from 'react-toastify'
 
 const Login = (props) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
-    useEffect(() => {
-        if (props.session) {
-            navigate('/dashboard')
-        }
-    }, [props.session])
-
     const handleSubmit = (e) => {
         e.preventDefault();
         localStorage.removeItem('user')
+        sessionStorage.removeItem('adminstate')
 
         apiClient({
             method: "post",
@@ -28,10 +23,11 @@ const Login = (props) => {
             }
         }).then((response) => {
             localStorage.setItem('user', response.data.token)
+            sessionStorage.setItem('adminstate', String(!!response.data.user.profile.is_admin))
             props.login()
             navigate('/dashboard')
         }).catch(error => {
-            Toastify(Object.values(error.response.data.errors)[0][0])
+            Toastify("error", error)
         })
     }
     
