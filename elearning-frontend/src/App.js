@@ -12,6 +12,7 @@ import SessionReducer from './components/actions/SessionReducer'
 import Users from './components/admin/Users';
 import Categories from './components/admin/Categories'
 import { ToastContainer } from 'react-toastify'
+import CreateWords from './components/admin/CreateWords'
 
 const App = () => {
 
@@ -55,6 +56,7 @@ const App = () => {
           {/* Admin Modules */}
           <Route path='/admin/users' element={<Users session={loggedIn} />} /> 
           <Route path='/admin/categories' element={<Categories session={loggedIn} />} /> 
+          <Route path='/admin/words' element={<CreateWords session={loggedIn} />} /> 
           
         </Routes>
         <ToastContainer />

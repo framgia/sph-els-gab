@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import apiClient from '../services/api'
 import { Link, useNavigate } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import Toastify from '../core/Toastify'
 
 const Dashboard = (props) => {
@@ -34,7 +33,7 @@ const Dashboard = (props) => {
                 })
                 setLoading(false)
             }).catch(error => {
-                Toastify(Object.values(error.response.data.errors)[0][0])
+                Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
             })
         }
     }, [])
@@ -74,8 +73,6 @@ const Dashboard = (props) => {
                     { view_element }
                 </div>
             </div>
-            
-            <ToastContainer />
         </>
     )
 

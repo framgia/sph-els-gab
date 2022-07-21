@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react'
 import apiClient from '../services/api'
 import { useNavigate } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import Toastify from '../core/Toastify'
 
 const Register = (props) => {
@@ -76,7 +75,7 @@ const Register = (props) => {
             props.login();
             navigate('/dashboard');
         }).catch((error) => {
-            Toastify(Object.values(error.response.data.errors)[0][0])
+            Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
         })
     }
 
@@ -279,7 +278,6 @@ const Register = (props) => {
                     </form>
                 </div>
             </div>
-            <ToastContainer />
         </>
     )
 }

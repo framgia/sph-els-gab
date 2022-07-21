@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import apiClient from '../services/api'
 import Toastify from '../core/Toastify'
 
@@ -17,7 +16,7 @@ const Navbar = (props) => {
       }).then(response => {
         setIsAdmin(!!response.data.is_admin)
       }).catch(error => {
-        Toastify(Object.values(error.response.data.errors)[0][0])
+        Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
       })
     }
   }, [props.session])
@@ -80,6 +79,12 @@ const Navbar = (props) => {
                                     onClick={() => {
                                       setDropdown(!dropDown);
                                     }}>Category Management</Link>
+                                  <Link
+                                    to="/admin/words"
+                                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    onClick={() => {
+                                      setDropdown(!dropDown);
+                                    }}>Words Management</Link>
                               </li>
                             </ul>
                         </div>
@@ -112,7 +117,6 @@ const Navbar = (props) => {
           </div>
         </div>
       </nav>
-      <ToastContainer />
     </>
   )
 }

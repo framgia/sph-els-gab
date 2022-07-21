@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import apiClient from '../services/api'
 import { useNavigate } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import Toastify from '../core/Toastify'
 
 const ProfileSettings = (props) => {
@@ -49,7 +48,7 @@ const ProfileSettings = (props) => {
 
                 setLoading(false)
             }).catch( error => {
-                Toastify(Object.values(error.response.data.errors)[0][0])
+                Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
              })
         }
     }, [])
@@ -80,7 +79,7 @@ const ProfileSettings = (props) => {
         }).then(response => {
             Toastify("Succesfully saved user information")
         }).catch(error => {
-            Toastify(Object.values(error.response.data.errors)[0][0])
+            Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
         })
     }
 
@@ -257,7 +256,6 @@ const ProfileSettings = (props) => {
                     { view_element }
                 </div>
             </div>
-            <ToastContainer />
         </>
     )
 }

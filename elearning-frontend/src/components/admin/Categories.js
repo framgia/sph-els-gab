@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import apiClient from '../../services/api'
 import Toastify from '../../core/Toastify'
+import checkAdmin from '../actions/checkAdmin'
 
 const Categories = (props) => {
     
@@ -32,7 +32,7 @@ const Categories = (props) => {
             setCategoryList(response.data.categories)
             setChangeData(false)
         }).catch(error => {
-            Toastify(Object.values(error.response.data.errors)[0][0])
+            Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
         })
     }, [changeData])
 
@@ -42,21 +42,13 @@ const Categories = (props) => {
             navigate('/')
         }
         else {
-            apiClient({
-                method: "get",
-                url: "/api/user"
-            }).then(response => {
-                if (!!response.data.is_admin) {
-                    FetchCategories()
-                }
-                else {
-                    navigate('/dashboard')
-                }
-
+            if (checkAdmin()) {
+                FetchCategories()
                 setIsLoading(false)
-            }).catch(error => {
-                Toastify(Object.values(error.response.data.errors)[0][0])
-            })
+            }
+            else {
+                navigate('/dashboard')
+            }
         }
     }, [props.session, FetchCategories, changeData])
 
@@ -81,7 +73,7 @@ const Categories = (props) => {
             ClearFields()
             Toastify("Succesfully saved the category")
         }).catch(error => {
-            Toastify(Object.values(error.response.data.errors)[0][0])
+            Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
         })
     }
 
@@ -127,7 +119,7 @@ const Categories = (props) => {
                                                 })
                                                 setHasSelectedCategory(true)
                                             }).catch(error => {
-                                                Toastify(Object.values(error.response.data.errors)[0][0])
+                                                Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
                                             })
                                         }}>EDIT</button>
                                         <button onClick={(e) => {
@@ -141,7 +133,7 @@ const Categories = (props) => {
                                                     ClearFields()
                                                     Toastify("Succesfully deleted the category")
                                                 }).catch(error => {
-                                                    Toastify(Object.values(error.response.data.errors)[0][0])
+                                                    Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
                                                 })
                                             }
                                         }}>DELETE</button>
@@ -249,7 +241,6 @@ const Categories = (props) => {
                     </div>
                 </div>
             </div>
-            <ToastContainer />
         </>
     )
 }
