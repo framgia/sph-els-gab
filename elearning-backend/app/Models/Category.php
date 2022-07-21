@@ -11,8 +11,8 @@ class Category extends Model
 
     protected $guarded = [];
 
-    public function quizzes()
+    public function words()
     {
-        return $this->hasMany(Word::class, 'categpry_id', 'id');
+        return $this->hasMany(Word::class, 'category_id', 'id');
     }
 }

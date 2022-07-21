@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import apiClient from '../services/api'
-import Toastify from '../core/Toastify'
 
 const Navbar = (props) => {
 
@@ -10,14 +8,7 @@ const Navbar = (props) => {
 
   useEffect(() => {
     if (props.session) {
-      apiClient({
-          method: "get",
-          url: "/api/user",
-      }).then(response => {
-        setIsAdmin(!!response.data.is_admin)
-      }).catch(error => {
-        Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
-      })
+      setIsAdmin(props.admin)
     }
   }, [props.session])
 

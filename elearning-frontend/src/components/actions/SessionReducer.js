@@ -32,7 +32,7 @@ export default function SessionReducer(state, action) {
                 }
                 else { return state }
             }).catch(error => {
-                Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+                Toastify("error", error)
             })
             
         default:

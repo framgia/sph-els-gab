@@ -41,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/admin/category/{id}', [AdminCategoriesController::class, 'update']);
     Route::delete('/admin/category/{id}', [AdminCategoriesController::class, 'delete']);
 
-    Route::get('/admin/category/{id}/quizzes', [AdminWordsController::class, 'index']);
-    Route::post('/admin/quizzes', [AdminWordsController::class, 'store']);
+    Route::get('/admin/words', [AdminWordsController::class, 'index']);
+    Route::get('/admin/category/{id}/words', [AdminWordsController::class, 'index']);
+    Route::post('/admin/word', [AdminWordsController::class, 'store']);
 });

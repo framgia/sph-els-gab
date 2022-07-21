@@ -5,7 +5,7 @@ import Toastify from '../../core/Toastify'
 import saveWord from '../actions/saveWord'
 import InputField from '../../core/InputField'
 import Divider from '../../core/Divider'
-import checkAdmin from '../actions/checkAdmin'
+import { ToastContainer } from 'react-toastify'
 
 const CreateWords = (props) => {
     const navigate = useNavigate()
@@ -13,7 +13,7 @@ const CreateWords = (props) => {
     // Cateogry List
     const [categoryList, setCategoryList] = useState([])
     const [isCategoryLoading, setIsCategoryLoading] = useState(true)
-    
+
     // Word
     const [word, setWord] = useState({
         category_id: '',
@@ -21,22 +21,25 @@ const CreateWords = (props) => {
         choices: {
             firstChoice: {
                 choice: '',
-                is_correct: false
+                is_correct: false,
+                label: 'firstChoice'
             },
             secondChoice: {
                 choice: '',
-                is_correct: false
+                is_correct: false,
+                label: 'secondChoice'
             },
             thirdChoice: {
                 choice: '',
-                is_correct: false
+                is_correct: false,
+                label: 'thirdChoice'
             },
             fourthChoice: {
                 choice: '',
-                is_correct: false
+                is_correct: false,
+                label: 'fourthChoice'
             },
-        },
-        // correct_answer: ''
+        }
     })
 
     // Fetch all categories
@@ -48,7 +51,7 @@ const CreateWords = (props) => {
             setCategoryList(response.data.categories)
             setIsCategoryLoading(false)
         }).catch(error => {
-            Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+            Toastify("error", error)
         })
     }, [])
 
@@ -57,7 +60,7 @@ const CreateWords = (props) => {
             navigate('/')
         }
         else {
-            if(checkAdmin()) {
+            if(props.admin) {
                 GetCategoryList()
             }
             else {
@@ -99,55 +102,42 @@ const CreateWords = (props) => {
         })
     }
 
+    const labelArray = (acc, cv) => {
+        return {
+            ...acc,
+            [cv.label]: cv
+        }
+    }
+
     // Set checkbox states
-    const setCorrectAnswer = (index) => {
+    const setChoiceValue = (selectedIndex, input) => {
         setWord({
             ...word,
-            choices: {
-                ...word.choices,
-                firstChoice: {
-                    ...word.choices.firstChoice,
-                    is_correct: index === 1 ? true : false
-                },
-                secondChoice: {
-                    ...word.choices.secondChoice,
-                    is_correct: index === 2 ? true : false
-                },
-                thirdChoice: {
-                    ...word.choices.thirdChoice,
-                    is_correct: index === 3 ? true : false
-                },
-                fourthChoice: {
-                    ...word.choices.fourthChoice,
-                    is_correct: index === 4 ? true : false
-                }
-            }
+            choices:
+                Object.entries(word.choices).map(([key, value], index) => {
+                    var currentIndex = index + 1
+                    return {
+                        choice: (currentIndex === selectedIndex) ? input : value.choice,
+                        is_correct: value.is_correct,
+                        label: value.label
+                    }
+                }).reduce(labelArray, {})
         })
     }
 
-    // Set choice field states
-    const setFieldChoiceValue = (index, value) => {
+    // Set checkbox states
+    const setCorrectAnswer = (selectedIndex, type, input) => {
         setWord({
             ...word,
-            choices: {
-                ...word.choices,
-                firstChoice: {
-                    ...word.choices.firstChoice,
-                    choice: index === 1 ? value : word.choices.firstChoice.choice
-                },
-                secondChoice: {
-                    ...word.choices.secondChoice,
-                    choice: index === 2 ? value : word.choices.secondChoice.choice
-                },
-                thirdChoice: {
-                    ...word.choices.thirdChoice,
-                    choice: index === 3 ? value : word.choices.thirdChoice.choice
-                },
-                fourthChoice: {
-                    ...word.choices.fourthChoice,
-                    choice: index === 4 ? value : word.choices.fourthChoice.choice
-                }
-            }
+            choices:
+                Object.entries(word.choices).map(([key, value], index) => {
+                    var currentIndex = index + 1
+                    return {
+                        choice: value.choice,
+                        is_correct: (currentIndex === selectedIndex) ? !value.is_correct : false,
+                        label: value.label
+                    }
+                }).reduce(labelArray, {})
         })
     }
 
@@ -239,7 +229,7 @@ const CreateWords = (props) => {
                                             name="choice1"
                                             classes={`border-2`}
                                             onChange={(e) => {
-                                                setFieldChoiceValue(1, e.target.value)
+                                                setChoiceValue(1, e.target.value)
                                             }}
                                             value={ word.choices.firstChoice.choice } />
                                 </td>
@@ -247,7 +237,7 @@ const CreateWords = (props) => {
                                     <input
                                         type='checkbox'
                                         name='choice1c'
-                                        onChange={(e) => {
+                                        onChange={() => {
                                             setCorrectAnswer(1)
                                         }}
                                         checked={ word.choices.firstChoice.is_correct } />
@@ -261,7 +251,7 @@ const CreateWords = (props) => {
                                         name="choice2"
                                         classes={`border-2`}
                                         onChange={(e) => {
-                                            setFieldChoiceValue(2, e.target.value)
+                                            setChoiceValue(2, e.target.value)
                                         }}
                                         value={ word.choices.secondChoice.choice } />
                                 </td>
@@ -269,7 +259,7 @@ const CreateWords = (props) => {
                                     <input
                                         type='checkbox'
                                         name='choice2c'
-                                        onChange={(e) => {
+                                        onChange={() => {
                                             setCorrectAnswer(2)
                                         }}
                                         checked={ word.choices.secondChoice.is_correct } />
@@ -283,7 +273,7 @@ const CreateWords = (props) => {
                                         name="choice3"
                                         classes={`border-2`}
                                         onChange={(e) => {
-                                            setFieldChoiceValue(3, e.target.value)
+                                            setChoiceValue(3, e.target.value)
                                         }}
                                         value={ word.choices.thirdChoice.choice } />
                                 </td>
@@ -291,7 +281,7 @@ const CreateWords = (props) => {
                                     <input
                                         type='checkbox'
                                         name='choice3c'
-                                        onChange={(e) => {
+                                        onChange={() => {
                                             setCorrectAnswer(3)
                                         }}
                                         checked={ word.choices.thirdChoice.is_correct } />
@@ -305,7 +295,7 @@ const CreateWords = (props) => {
                                         name="choice4"
                                         classes={`border-2`}
                                         onChange={(e) => {
-                                            setFieldChoiceValue(4, e.target.value)
+                                            setChoiceValue(4, e.target.value)
                                         }}
                                         value={ word.choices.fourthChoice.choice } />
                                 </td>
@@ -313,9 +303,9 @@ const CreateWords = (props) => {
                                     <input
                                         type='checkbox'
                                         name='choice4c'
-                                        onChange={(e) => {
+                                        onChange={() => {
                                             setCorrectAnswer(4)
-                                        }} 
+                                        }}
                                         checked={ word.choices.fourthChoice.is_correct } />
                                 </td>
                             </tr>
@@ -337,6 +327,7 @@ const CreateWords = (props) => {
                 </form>
             </div>
         </div>
+        <ToastContainer />
     </>
   )
 }

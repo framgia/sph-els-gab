@@ -2,10 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../services/api'
 import Toastify from '../../core/Toastify'
-import checkAdmin from '../actions/checkAdmin'
+import { ToastContainer } from 'react-toastify'
 
 const Categories = (props) => {
-    
     const navigate = useNavigate()
 
     // Cateogry List
@@ -32,7 +31,7 @@ const Categories = (props) => {
             setCategoryList(response.data.categories)
             setChangeData(false)
         }).catch(error => {
-            Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+            Toastify("error", error)
         })
     }, [changeData])
 
@@ -42,7 +41,7 @@ const Categories = (props) => {
             navigate('/')
         }
         else {
-            if (checkAdmin()) {
+            if (props.admin) {
                 FetchCategories()
                 setIsLoading(false)
             }
@@ -73,7 +72,7 @@ const Categories = (props) => {
             ClearFields()
             Toastify("Succesfully saved the category")
         }).catch(error => {
-            Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+            Toastify("error", error)
         })
     }
 
@@ -119,7 +118,7 @@ const Categories = (props) => {
                                                 })
                                                 setHasSelectedCategory(true)
                                             }).catch(error => {
-                                                Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+                                                Toastify("error", error)
                                             })
                                         }}>EDIT</button>
                                         <button onClick={(e) => {
@@ -133,7 +132,7 @@ const Categories = (props) => {
                                                     ClearFields()
                                                     Toastify("Succesfully deleted the category")
                                                 }).catch(error => {
-                                                    Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+                                                    Toastify("error", error)
                                                 })
                                             }
                                         }}>DELETE</button>
@@ -241,6 +240,7 @@ const Categories = (props) => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </>
     )
 }

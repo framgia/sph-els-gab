@@ -6,26 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateWordsPostRequest;
 use App\Models\Category;
 use App\Models\Word;
-use Exception;
 
 class AdminWordsController extends Controller
 {
-    // Fetch quizzes from selected category
+    // Fetch words from selected category
     public function index($id)
     {
-        $quizzes = Category::where('id', $id)->quizzes()->get();
+        $words = Category::where('id', $id)->quizzes()->get();
 
         return response()->json([
-            'quizzes'=> $quizzes,
+            'words'=> $words,
         ]);
     }
 
     // Created category
     public function store(CreateWordsPostRequest $request)
     {
+        // Convert to JSON string for storing
         $choices = json_encode($request->choices);
         $correctAnswer = "";
 
+        // Get correct answer
         foreach($request->choices as $key) {
             if ($key['choice'] === null ) {
                 throw new \ErrorException('Please set all choices!');

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../services/api'
 import Toastify from '../../core/Toastify'
-import checkAdmin from '../actions/checkAdmin'
+import { ToastContainer } from 'react-toastify'
 
 const Users = (props) => {
     
@@ -44,7 +44,7 @@ const Users = (props) => {
             setUserList(response.data.users)
             setChangeData(false)
         }).catch(error => {
-            Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+            Toastify("error", error)
         })
     }, [changeData])
     
@@ -53,7 +53,7 @@ const Users = (props) => {
             navigate('/')
         }
         else {
-            if (checkAdmin()) {
+            if (props.admin) {
                 GetUsers()
                 setIsLoading(false)
             }
@@ -95,7 +95,7 @@ const Users = (props) => {
             ClearFields()
             Toastify("Succesfully saved user information")
         }).catch(error => {
-            Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+            Toastify("error", error)
         })
     }
 
@@ -168,7 +168,7 @@ const Users = (props) => {
                                                     setHasAvatar(true)
                                                 }
                                             }).catch(error => {
-                                                Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+                                                Toastify("error", error)
                                             })
                                         }}>EDIT</button>
                                         <button onClick={(e) => {
@@ -184,7 +184,7 @@ const Users = (props) => {
                                                 }).then(response => {
                                                     Toastify("Succesfully deleted user")
                                                 }).catch(error => {
-                                                    Toastify(!((typeof error.response.data.errors) === 'undefined') ? Object.values(error.response.data.errors)[0][0]  : error.message)
+                                                    Toastify("error", error)
                                                 })
                                             }
                                         }}>DELETE</button>
@@ -365,6 +365,7 @@ const Users = (props) => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </>
     )
 }
