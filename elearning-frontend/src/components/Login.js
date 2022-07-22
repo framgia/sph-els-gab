@@ -1,18 +1,30 @@
-import React, { useState } from 'react'
-import apiClient from '../services/api'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Toastify from '../core/Toastify'
-import { ToastContainer } from 'react-toastify'
+import { useAuth } from '../services/AuthProvider'
+import apiClient from '../services/api'
 
-const Login = (props) => {
+import Toastify from '../core/Toastify'
+import InputField from '../core/InputField'
+import Button from '../core/Button'
+import Divider from '../core/Divider'
+
+const Login = () => {
+    const { login, setIsAdmin, loggedIn } = useAuth()
+    // const Auth = useAuth()
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
+    useEffect(() => {
+        if (loggedIn) {
+            navigate('/dashboard')
+        }
+    }, [loggedIn])
+
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         localStorage.removeItem('user')
-        sessionStorage.removeItem('adminstate')
 
         apiClient({
             method: "post",
@@ -23,8 +35,8 @@ const Login = (props) => {
             }
         }).then((response) => {
             localStorage.setItem('user', response.data.token)
-            sessionStorage.setItem('adminstate', String(!!response.data.user.profile.is_admin))
-            props.login()
+            setIsAdmin(response.data.user.profile.is_admin)
+            login()
             navigate('/dashboard')
         }).catch(error => {
             Toastify("error", error)
@@ -43,39 +55,40 @@ const Login = (props) => {
                         {/* Email */}
                         <div className="form-group mb-8">
                             <label>User Email</label>
-                            <input
+                            <InputField
                                 type="email"
                                 name="email"
                                 placeholder="Email"
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
-                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" 
-                                required
+                                require={ true }
                             />
                         </div>
 
                         {/* Password */}
                         <div className="form-group mb-8">
                             <label>Password</label>
-                            <input
+                            <InputField
                                 type="password"
                                 name="password"
                                 placeholder="Password"
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
-                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" 
-                                required
+                                require={ true }
                             />
                         </div>
 
                         <div className="form-group mt-4 text-center">
-                            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{minWidth:'200px'}}>LOG IN </button>
+                            <Button
+                                text='LOG IN'
+                                color='blue'
+                                style={{width:'200px', minWidth:'200px'}} />
                         </div>
                     </form>
                 </div>
             </div>
-            <ToastContainer />
         </>
     )
 }
+
 export default Login

@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import apiClient from '../../services/api'
+
 import Toastify from '../../core/Toastify'
-import saveWord from '../actions/saveWord'
 import InputField from '../../core/InputField'
+import Button from '../../core/Button'
 import Divider from '../../core/Divider'
-import { ToastContainer } from 'react-toastify'
+
+import saveWord from '../../services/actions/saveWord'
+import labelArray from '../../constants/labelArray'
 
 const CreateWords = () => {
-    const navigate = useNavigate()
-
     // Cateogry List
     const [categoryList, setCategoryList] = useState([])
     const [isCategoryLoading, setIsCategoryLoading] = useState(true)
@@ -90,13 +90,6 @@ const CreateWords = () => {
             },
             correct_answer: ''
         })
-    }
-
-    const labelArray = (acc, cv) => {
-        return {
-            ...acc,
-            [cv.label]: cv
-        }
     }
 
     // Set checkbox states
@@ -203,7 +196,8 @@ const CreateWords = () => {
                                     word: e.target.value,
                                 })
                             }}
-                            value={ word.word } />
+                            value={ word.word }
+                            require={ true } />
                     </div>
                     <table className='w-full'>
                         <tbody>
@@ -221,7 +215,8 @@ const CreateWords = () => {
                                             onChange={(e) => {
                                                 setChoiceValue(1, e.target.value)
                                             }}
-                                            value={ word.choices.firstChoice.choice } />
+                                            value={ word.choices.firstChoice.choice }
+                                            require={ true } />
                                 </td>
                                 <td className='text-center'>
                                     <input
@@ -243,7 +238,8 @@ const CreateWords = () => {
                                         onChange={(e) => {
                                             setChoiceValue(2, e.target.value)
                                         }}
-                                        value={ word.choices.secondChoice.choice } />
+                                        value={ word.choices.secondChoice.choice }
+                                        require={ true } />
                                 </td>
                                 <td className='text-center'>
                                     <input
@@ -265,7 +261,8 @@ const CreateWords = () => {
                                         onChange={(e) => {
                                             setChoiceValue(3, e.target.value)
                                         }}
-                                        value={ word.choices.thirdChoice.choice } />
+                                        value={ word.choices.thirdChoice.choice }
+                                        require={ true } />
                                 </td>
                                 <td className='text-center'>
                                     <input
@@ -287,7 +284,8 @@ const CreateWords = () => {
                                         onChange={(e) => {
                                             setChoiceValue(4, e.target.value)
                                         }}
-                                        value={ word.choices.fourthChoice.choice } />
+                                        value={ word.choices.fourthChoice.choice }
+                                        require={ true } />
                                 </td>
                                 <td className='text-center'>
                                     <input
@@ -303,21 +301,23 @@ const CreateWords = () => {
                     </table>
                     <Divider />
                     <div className="mt-4 flex justify-end gap-5">
-                        <a
-                            role='button'
-                            className="bg-red-500 hover:bg-red-700 text-white text-center font-bold py-2 px-4 rounded"
+                        <Button
+                            text='Clear'
+                            type='button'
+                            color='red'
                             style={{width:'200px', minWidth:'200px'}}
                             onClick={(e) => {
                                 e.preventDefault()
                                 ClearFields()
-                            }}
-                            >Clear</a>
-                        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{minWidth:'200px'}}>Save Information</button>
+                            }} />
+                        <Button
+                            text='Save Information'
+                            color='blue'
+                            style={{width:'200px', minWidth:'200px'}} />
                     </div>
                 </form>
             </div>
         </div>
-        <ToastContainer />
     </>
   )
 }
