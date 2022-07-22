@@ -43,5 +43,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/admin/words', [AdminWordsController::class, 'index']);
     Route::get('/admin/category/{id}/words', [AdminWordsController::class, 'index']);
+    Route::get('/admin/word/{id}', [AdminWordsController::class, 'getSingleWord']);
     Route::post('/admin/word', [AdminWordsController::class, 'store']);
 });

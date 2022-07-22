@@ -14,6 +14,7 @@ import ProfileSettings from './components/ProfileSettings'
 import Users from './components/admin/Users';
 import Categories from './components/admin/Categories'
 import CreateWords from './components/admin/CreateWords'
+import EditWords from './components/admin/EditWords'
 
 const App = () => {
   return (
@@ -49,6 +50,11 @@ const App = () => {
             <Route path='/admin/words' element={
                 <AdminRoute>
                     <CreateWords />
+                </AdminRoute>
+            } /> 
+            <Route path='/admin/words/edit' element={
+                <AdminRoute>
+                    <EditWords />
                 </AdminRoute>
             } /> 
         </Routes>

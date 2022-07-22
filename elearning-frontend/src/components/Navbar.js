@@ -73,12 +73,18 @@ const Navbar = () => {
                                             onClick={() => {
                                               setDropdown(!dropDown)
                                             }}>Category Management</Link>
-                                        <Link
-                                            to="/admin/words"
-                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            onClick={() => {
-                                              setDropdown(!dropDown)
-                                            }}>Words Management</Link>
+                                            <Link
+                                                to="/admin/words/"
+                                                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                onClick={() => {
+                                                  setDropdown(!dropDown)
+                                                }}>Add Words</Link>
+                                            <Link
+                                                to="/admin/words/edit"
+                                                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                onClick={() => {
+                                                  setDropdown(!dropDown)
+                                                }}>Edit Words</Link>
                                     </li>
                                 </ul>
                             </div>

@@ -8,11 +8,17 @@ import Divider from '../../core/Divider'
 
 import saveWord from '../../services/actions/saveWord'
 import labelArray from '../../constants/labelArray'
+import getWords from '../../services/actions/getWords'
+import getCategories from '../../services/actions/getCategories'
 
 const CreateWords = () => {
     // Cateogry List
     const [categoryList, setCategoryList] = useState([])
     const [isCategoryLoading, setIsCategoryLoading] = useState(true)
+
+    // Word List
+    const [changeWordData, setChangeWordData] = useState(true)
+    const [wordList, setWordList] = useState([])
 
     // Word
     const [word, setWord] = useState({
@@ -44,18 +50,18 @@ const CreateWords = () => {
 
     // Fetch all categories
     const GetCategoryList = useCallback(async () => {
-        apiClient({
-            method: "get",
-            url: "/api/admin/categories"
-        }).then(response => {
-            setCategoryList(response.data.categories)
-            setIsCategoryLoading(false)
-        }).catch(error => {
-            Toastify("error", error)
-        })
+        getCategories(setCategoryList)
+        setIsCategoryLoading(false)
     }, [])
 
+    // Fetch all words
+    const GetWordList = useCallback(async () => {
+        getWords(setWordList)
+        setChangeWordData(false)
+    }, [changeWordData])
+
     useEffect(() => {
+        GetWordList()
         GetCategoryList()
     }, [])
 
@@ -127,6 +133,30 @@ const CreateWords = () => {
     var view_element = ""
     var dropdown_options = ""
 
+    if (changeWordData) {
+        view_element = <tr><td colSpan={4} className='text-center'> LOADING DATA</td></tr>
+    }
+    else {
+        view_element =
+        wordList.map((word) => {
+            return <tr key={ word.id }>
+                <td className='text-center'>{ word.category.title }</td>
+                <td className='text-center'>{ word.word }</td>
+                <td className='text-center'>
+                    {
+                        Object.entries(word.choices).map(([key, value], index) => {
+                            return <p key={ key }
+                                        className={`text-center ${index % 2 == 0 ? 'bg-slate-200' : ''}`}>
+                                        { value.choice }
+                                    </p>
+                        })
+                    }
+                </td>
+                <td className='text-center'>{ word.correct_answer }</td>
+            </tr>
+        })
+    }
+
     if (isCategoryLoading) {
         dropdown_options = ""
     }
@@ -147,23 +177,26 @@ const CreateWords = () => {
             <div className="mb-5">
                 <h4 className='title text-left'>QUIZZES MANAGEMENT</h4>
             </div>
-            <div>
+            <div style={{ height: '250px', maxHeight: '250px', overflowY: 'scroll' }} className='border-2 border-slate-500'>
                 {/* Placeholder for retrieving words */}
-                <table className='border-separate [border-spacing:1rem] w-full'>
-                    <tbody>
+                <table className='w-full border-collapse'>
+                    <thead className='bg-black border-b sticky top-0'>
                         <tr>
-                            <td>Category</td>
-                            <td>Word</td>
-                            <td>Choices</td>
-                            <td>Correct Answer</td>
+                            <td className='text-center text-white py-4'>Category</td>
+                            <td className='text-center text-white py-4'>Word</td>
+                            <td className='text-center text-white py-4'>Choices</td>
+                            <td className='text-center text-white py-4'>Correct Answer</td>
                         </tr>
+                    </thead>
+                    <tbody>
+                        { view_element }
                     </tbody>
                 </table>
             </div>
             <Divider />
             <div>
                 <div className='mb-5'>
-                    <p>Add a new category by using the form below or select any cateogry to edit.</p>
+                    <p>Add a new category by using the form below.</p>
                 </div>
                 <form onSubmit={ SaveWord } encType='application/json' className='border border-black py-5 px-10'>
                     {/* Category */}
