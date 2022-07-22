@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import apiClient from '../../services/api'
+
 import Toastify from '../../core/Toastify'
-import { ToastContainer } from 'react-toastify'
+import InputField from '../../core/InputField'
+import Button from '../../core/Button'
+import Divider from '../../core/Divider'
+
 
 const Users = () => {
     const [changeData, setChangeData] = useState(true)
@@ -28,8 +32,6 @@ const Users = () => {
         phone: null,
         address: '',
     })
-
-    const usertoken = localStorage.getItem('user')
 
     // Fetch User
     const GetUsers = useCallback(async () => {
@@ -79,7 +81,7 @@ const Users = () => {
             }
         }).then(response => {
             ClearFields()
-            Toastify("Succesfully saved user information")
+            Toastify("success", "Succesfully saved user information")
         }).catch(error => {
             Toastify("error", error)
         })
@@ -168,7 +170,7 @@ const Users = () => {
                                                         'Content-Type': 'multipart/form-data'
                                                     }
                                                 }).then(response => {
-                                                    Toastify("Succesfully deleted user")
+                                                    Toastify("success", "Succesfully deleted user")
                                                 }).catch(error => {
                                                     Toastify("error", error)
                                                 })
@@ -184,175 +186,174 @@ const Users = () => {
     }
 
     return (
-        <>
-            <div className='dashboard py-20 px-10'>
-                <div className="mb-5">
-                    <h4 className='title text-left'>USER MANAGEMENT</h4>
+        <div className='dashboard py-20 px-10'>
+            <div className="mb-5">
+                <h4 className='title text-left'>USER MANAGEMENT</h4>
+            </div>
+            <div className='grid grid-cols-5 gap-5'>
+                <div className='col-span-1'>
+                    <table className='border-separate [border-spacing:1rem]'>
+                        <tbody>
+                            <tr>
+                                <td>Name</td>
+                                <td>Actions</td>
+                            </tr>
+                            { view_element }
+                        </tbody>
+                    </table>
                 </div>
-                <div className='grid grid-cols-5 gap-5'>
-                    <div className='col-span-1'>
-                        <table className='border-separate [border-spacing:1rem]'>
-                            <tbody>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>Actions</td>
-                                </tr>
-                                { view_element }
-                            </tbody>
-                        </table>
-                    </div>
-                    <div className='col-span-4'>
-                        <form onSubmit={ SaveUser } encType='multipart/form-data'>
-                            <div className='grid grid-cols-4 gap-5'>
-                                <div className="col-span-1">
-                                    {/* Avatar */}
-                                    <div className="form-group mb-8 avatar-section">
-                                        <img
-                                            src={ user.profilepic }
-                                            alt="dp"
-                                            className='mb-5' />
-                                        <label>Avatar</label>
-                                        <div className='grid grid-cols-5 items-center gap-2'>
-                                            <div className='col-span-4'>
-                                                <input
-                                                    type="file"
-                                                    name="avatar"
-                                                    ref={ avatarRef }
-                                                    onInput={e => {
-                                                        setHasAvatar(true)
-                                                        setUser({
-                                                            ...user,
-                                                            avatar: e.target.files[0],
-                                                            profilepic: URL.createObjectURL(e.target.files[0])
-                                                        })
-                                                    }}
-                                                    className="appearance-none w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none avatar"
-                                                    accept="image/*"
-                                                    multiple={ false } />
-                                            </div>
-                                            <div>
-                                                <a
-                                                    role="button"
-                                                    onClick = { DeleteAvatar }
-                                                    className="bg-red-600 hover:bg-red-500 py-1 px-2 text-white">X</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-span-3">
-                                    <div className='grid grid-cols-3 gap-5'>
-                                        {/* First Name */}
-                                        <div className="form-group mb-8">
-                                            <label>First Name</label>
+                <div className='col-span-4'>
+                    <form onSubmit={ SaveUser } encType='multipart/form-data'>
+                        <div className='grid grid-cols-4 gap-5'>
+                            <div className="col-span-1">
+                                {/* Avatar */}
+                                <div className="form-group mb-8 avatar-section">
+                                    <img
+                                        src={ user.profilepic }
+                                        alt="dp"
+                                        className='mb-5' />
+                                    <label>Avatar</label>
+                                    <div className='grid grid-cols-5 items-center gap-2'>
+                                        <div className='col-span-4'>
                                             <input
-                                                type="text"
-                                                name="firstname"
-                                                onChange={e => {
+                                                type="file"
+                                                name="avatar"
+                                                ref={ avatarRef }
+                                                onInput={e => {
+                                                    setHasAvatar(true)
                                                     setUser({
                                                         ...user,
-                                                        firstname: e.target.value
+                                                        avatar: e.target.files[0],
+                                                        profilepic: URL.createObjectURL(e.target.files[0])
                                                     })
                                                 }}
-                                                value={ user.firstname }
-                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                                className="appearance-none w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none avatar"
+                                                accept="image/*"
+                                                multiple={ false } />
                                         </div>
-                                        {/* Middle Name */}
-                                        <div className="form-group mb-8">
-                                            <label>Middle Name</label>
-                                            <input
-                                                type="text"
-                                                name="middlename"
-                                                onChange={e => setUser({
-                                                    ...user,
-                                                    middlename: e.target.value
-                                                })}
-                                                value={ user.middlename === null ? '' : user.middlename }
-                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                        <div>
+                                            <a
+                                                role="button"
+                                                onClick = { DeleteAvatar }
+                                                className="bg-red-600 hover:bg-red-500 py-1 px-2 text-white">X</a>
                                         </div>
-                                        {/* Last Name */}
-                                        <div className="form-group mb-8">
-                                            <label>Last Name</label>
-                                            <input
-                                                type="text"
-                                                name="lastname"
-                                                onChange={e => setUser({
-                                                    ...user,
-                                                    lastname: e.target.value
-                                                })}
-                                                value={ user.lastname }
-                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
-                                        </div>
-                                    </div>
-                                    <div className='grid grid-cols-3 gap-5'>
-                                        {/* Sex */}
-                                        <div className="form-group mb-8">
-                                            <label>Sex</label>
-                                            <select
-                                                name='sex'
-                                                onChange={e => setUser({
-                                                    ...user,
-                                                    sex: e.target.value
-                                                })}
-                                                value={ user.sex }
-                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
-                                                <option value='-'>-</option>
-                                                <option value='M'>Male</option>
-                                                <option value='F'>Female</option>
-                                            </select>
-                                        </div>
-                                        {/* Birthdate */}
-                                        <div className="form-group mb-8">
-                                            <label>Birth Date</label>
-                                            <input
-                                                type="date"
-                                                name="birthdate"
-                                                onChange={e => setUser({
-                                                    ...user,
-                                                    birthdate: e.target.value
-                                                })}
-                                                value={ user.birthdate }
-                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
-                                        </div>
-                                    </div>
-                                    {/* Address */}
-                                    <div className="form-group mb-8">
-                                        <label>Address</label>
-                                        <input
-                                            type="text"
-                                            name="address"
-                                            onChange={e => setUser({
-                                                ...user,
-                                                address: e.target.value
-                                            })}
-                                            value={ user.address }
-                                            className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
-                                    </div>
-                                    <div className='grid grid-cols-2 gap-5'>
-                                        {/* Phone */}
-                                        <div className="form-group mb-8">
-                                            <label>Contact No</label>
-                                            <input
-                                                type="text"
-                                                name="phone"
-                                                onChange={e => setUser({
-                                                    ...user,
-                                                    phone: e.target.value
-                                                })}
-                                                value={ user.phone === null ? '' : user.phone }
-                                                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
-                                        </div>
-                                    </div>
-                                    <div className="form-group text-right mt-4">
-                                        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{minWidth:'200px'}}>Save Information</button>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                            <div className="col-span-3">
+                                <div className='grid grid-cols-3 gap-5'>
+                                    {/* First Name */}
+                                    <div className="form-group mb-8">
+                                        <label>First Name</label>
+                                        <InputField
+                                            type="text"
+                                            name="firstname"
+                                            onChange={e => {
+                                                setUser({
+                                                    ...user,
+                                                    firstname: e.target.value
+                                                })
+                                            }}
+                                            value={ user.firstname }
+                                            require={ true } />
+                                    </div>
+                                    {/* Middle Name */}
+                                    <div className="form-group mb-8">
+                                        <label>Middle Name</label>
+                                        <InputField
+                                            type="text"
+                                            name="middlename"
+                                            onChange={e => setUser({
+                                                ...user,
+                                                middlename: e.target.value
+                                            })}
+                                            value={ user.middlename === null ? '' : user.middlename }
+                                            require={ true } />
+                                    </div>
+                                    {/* Last Name */}
+                                    <div className="form-group mb-8">
+                                        <label>Last Name</label>
+                                        <InputField
+                                            type="text"
+                                            name="lastname"
+                                            onChange={e => setUser({
+                                                ...user,
+                                                lastname: e.target.value
+                                            })}
+                                            value={ user.lastname }
+                                            require={ true } />
+                                    </div>
+                                </div>
+                                <div className='grid grid-cols-3 gap-5'>
+                                    {/* Sex */}
+                                    <div className="form-group mb-8">
+                                        <label>Sex</label>
+                                        <select
+                                            name='sex'
+                                            onChange={e => setUser({
+                                                ...user,
+                                                sex: e.target.value
+                                            })}
+                                            value={ user.sex }
+                                            className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
+                                            <option value='-'>-</option>
+                                            <option value='M'>Male</option>
+                                            <option value='F'>Female</option>
+                                        </select>
+                                    </div>
+                                    {/* Birthdate */}
+                                    <div className="form-group mb-8">
+                                        <label>Birth Date</label>
+                                        <InputField
+                                            type="date"
+                                            name="birthdate"
+                                            onChange={e => setUser({
+                                                ...user,
+                                                birthdate: e.target.value
+                                            })}
+                                            value={ user.birthdate }
+                                            require={ true } />
+                                    </div>
+                                </div>
+                                {/* Address */}
+                                <div className="form-group mb-8">
+                                    <label>Address</label>
+                                    <InputField
+                                        type="text"
+                                        name="address"
+                                        onChange={e => setUser({
+                                            ...user,
+                                            address: e.target.value
+                                        })}
+                                        value={ user.address }
+                                        require={ true } />
+                                </div>
+                                <div className='grid grid-cols-2 gap-5'>
+                                    {/* Phone */}
+                                    <div className="form-group mb-8">
+                                        <label>Contact No</label>
+                                        <InputField
+                                            type="text"
+                                            name="phone"
+                                            onChange={e => setUser({
+                                                ...user,
+                                                phone: e.target.value
+                                            })}
+                                            value={ user.phone === null ? '' : user.phone } />
+                                    </div>
+                                </div>
+                                <div className="form-group text-right mt-4">
+                                    <Button
+                                        text='Save Information'
+                                        color='blue'
+                                        style={{width:'200px', minWidth:'200px'}} />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <ToastContainer />
-        </>
+        </div>
     )
 }
 

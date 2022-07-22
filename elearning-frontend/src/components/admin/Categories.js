@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import apiClient from '../../services/api'
+
 import Toastify from '../../core/Toastify'
-import { ToastContainer } from 'react-toastify'
+import InputField from '../../core/InputField'
+import Button from '../../core/Button'
+import Divider from '../../core/Divider'
+
 
 const Categories = () => {
-    const navigate = useNavigate()
-
     // Cateogry List
     const [categoryList, setCategoryList] = useState([])
 
@@ -60,7 +61,7 @@ const Categories = () => {
             }
         }).then(response => {
             ClearFields()
-            Toastify("Succesfully saved the category")
+            Toastify("success", "Succesfully saved the category")
         }).catch(error => {
             Toastify("error", error)
         })
@@ -120,7 +121,7 @@ const Categories = () => {
                                                     url: "/api/admin/category/" + category.id
                                                 }).then(response => {
                                                     ClearFields()
-                                                    Toastify("Succesfully deleted the category")
+                                                    Toastify("success", "Succesfully deleted the category")
                                                 }).catch(error => {
                                                     Toastify("error", error)
                                                 })
@@ -163,7 +164,7 @@ const Categories = () => {
                                     {/* Title */}
                                     <div className="form-group mb-8">
                                         <label>Title</label>
-                                        <input
+                                        <InputField
                                             type="text"
                                             name="title"
                                             onChange={(e) => {
@@ -182,12 +183,12 @@ const Categories = () => {
                                                 }
                                             }}
                                             value={ category.title }
-                                            className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                            require={ true } />
                                     </div>
                                     {/* Description */}
                                     <div className="form-group mb-8">
                                         <label>Description</label>
-                                        <input
+                                        <InputField
                                             type="text"
                                             name="descripion"
                                             onChange={e => {
@@ -196,13 +197,12 @@ const Categories = () => {
                                                     description: e.target.value,
                                                 })
                                             }}
-                                            value={ category.description }
-                                            className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                            value={ category.description } />
                                     </div>
                                     {/* Slug */}
                                     <div className="form-group mb-8">
                                         <label>Slug</label>
-                                        <input
+                                        <InputField
                                             type="text"
                                             name="slug"
                                             onChange={e => setCategory({
@@ -210,19 +210,22 @@ const Categories = () => {
                                                 slug: e.target.value
                                             })}
                                             value={ category.slug }
-                                            className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                            require={ true } />
                                     </div>
                                     <div className="mt-4 flex justify-end gap-5">
-                                        <a
-                                            role='button'
-                                            className="bg-red-500 hover:bg-red-700 text-white text-center font-bold py-2 px-4 rounded"
+                                        <Button
+                                            text='Clear'
+                                            type='button'
+                                            color='red'
                                             style={{width:'200px', minWidth:'200px'}}
                                             onClick={(e) => {
                                                 e.preventDefault()
                                                 ClearFields()
-                                            }}
-                                            >Clear</a>
-                                        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{width:'200px', minWidth:'200px'}}>{ hasSelectedCategory ? "Save Category" : "Add Category" }</button>
+                                            }} />
+                                        <Button
+                                            text={ hasSelectedCategory ? "Save Category" : "Add Category" }
+                                            color='blue'
+                                            style={{width:'200px', minWidth:'200px'}} />
                                     </div>
                                 </div>
                             </div>
@@ -230,7 +233,6 @@ const Categories = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer />
         </>
     )
 }

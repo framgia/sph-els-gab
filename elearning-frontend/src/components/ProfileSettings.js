@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import apiClient from '../services/api'
+
 import Toastify from '../core/Toastify'
-import { ToastContainer } from 'react-toastify'
+import InputField from '../core/InputField'
+import Button from '../core/Button'
+import Divider from '../core/Divider'
 
 const ProfileSettings = () => {
     // User Details
@@ -70,7 +73,7 @@ const ProfileSettings = () => {
                 address: user.address
             }
         }).then(response => {
-            Toastify("Succesfully saved user information")
+            Toastify("success", "Succesfully saved user information")
         }).catch(error => {
             Toastify("error", error)
         })
@@ -133,7 +136,7 @@ const ProfileSettings = () => {
                                 {/* First Name */}
                                 <div className="form-group mb-8">
                                     <label>First Name</label>
-                                    <input
+                                    <InputField
                                         type="text"
                                         name="firstname"
                                         onChange={e => setUser({
@@ -141,25 +144,24 @@ const ProfileSettings = () => {
                                             firstname: e.target.value
                                         })}
                                         value={ user.firstname }
-                                        className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                        require={ true } />
                                 </div>
                                 {/* Middle Name */}
                                 <div className="form-group mb-8">
                                     <label>Middle Name</label>
-                                    <input
+                                    <InputField
                                         type="text"
                                         name="middlename"
                                         onChange={e => setUser({
                                             ...user,
                                             middlename: e.target.value
                                         })}
-                                        value={ user.middlename === null ? '' : user.middlename }
-                                        className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                        value={ user.middlename === null ? '' : user.middlename } />
                                 </div>
                                 {/* Last Name */}
                                 <div className="form-group mb-8">
                                     <label>Last Name</label>
-                                    <input
+                                    <InputField
                                         type="text"
                                         name="lastname"
                                         onChange={e => setUser({
@@ -167,7 +169,7 @@ const ProfileSettings = () => {
                                             lastname: e.target.value
                                         })}
                                         value={ user.lastname }
-                                        className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                        require={ true } />
                                 </div>
                             </div>
                             <div className='grid grid-cols-3 gap-5'>
@@ -190,7 +192,7 @@ const ProfileSettings = () => {
                                 {/* Birthdate */}
                                 <div className="form-group mb-8">
                                     <label>Birth Date</label>
-                                    <input
+                                    <InputField
                                         type="date"
                                         name="birthdate"
                                         onChange={e => setUser({
@@ -198,13 +200,13 @@ const ProfileSettings = () => {
                                             birthdate: e.target.value
                                         })}
                                         value={ user.birthdate }
-                                        className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                        require={ true }  />
                                 </div>
                             </div>
                             {/* Address */}
                             <div className="form-group mb-8">
                                 <label>Address</label>
-                                <input
+                                <InputField
                                     type="text"
                                     name="address"
                                     onChange={e => setUser({
@@ -212,25 +214,27 @@ const ProfileSettings = () => {
                                         address: e.target.value
                                     })}
                                     value={ user.address }
-                                    className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                    require={ true } />
                             </div>
                             <div className='grid grid-cols-2 gap-5'>
                                 {/* Phone */}
                                 <div className="form-group mb-8">
                                     <label>Contact No</label>
-                                    <input
+                                    <InputField
                                         type="text"
                                         name="phone"
                                         onChange={e => setUser({
                                             ...user,
                                             phone: e.target.value
                                         })}
-                                        value={ user.phone === null ? '' : user.phone }
-                                        className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none" />
+                                        value={ user.phone === null ? '' : user.phone } />
                                 </div>
                             </div>
                             <div className="form-group text-right mt-4">
-                                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style={{minWidth:'200px'}}>Save Information</button>
+                                <Button
+                                    text='Save Information'
+                                    color='blue'
+                                    style={{width:'200px', minWidth:'200px'}} />
                             </div>
                         </div>
                     </div>
@@ -249,7 +253,6 @@ const ProfileSettings = () => {
                     { view_element }
                 </div>
             </div>
-            <ToastContainer />
         </>
     )
 }
