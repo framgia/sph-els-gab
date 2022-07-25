@@ -9,17 +9,10 @@ use App\Models\Word;
 
 class AdminWordsController extends Controller
 {
-    // Parse choices
-    private function getChoices($choices)
-    {
-        return json_decode($choices);
-    }
-
     // Fetch words from selected category
     public function index($id = null)
     {
         $words = "";
-        // $data = [];
 
         if ($id === null)
         {
@@ -36,7 +29,7 @@ class AdminWordsController extends Controller
                 "category_id" => $word->category_id,
                 "word" => $word->word,
                 "correct_answer" => $word->correct_answer,
-                "choices" => $this->getChoices($word->choices)
+                "choices" => json_decode($word->choices)
             ];
         });
 
@@ -47,7 +40,7 @@ class AdminWordsController extends Controller
     public function getSingleWord($id)
     {
         $word = Word::where('id', $id)->get()->first();
-        $choices = $this->getChoices($word->choices);
+        $choices = json_decode($word->choices);
         $data = [
             "category_id" => $word->category_id,
             "word" => $word->word,

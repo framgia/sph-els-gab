@@ -9,7 +9,6 @@ const getWords = (setWordList, categoryId = null) => {
       setWordList(response.data)
     }).catch(error => {
       Toastify("error", error)
-      console.log(error)
     })
 }
 

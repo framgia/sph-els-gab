@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import apiClient from '../../services/api'
 
 import Toastify from '../../core/Toastify'
@@ -10,6 +10,7 @@ import saveWord from '../../services/actions/saveWord'
 import labelArray from '../../constants/labelArray'
 import getWords from '../../services/actions/getWords'
 import getCategories from '../../services/actions/getCategories'
+import CategoriesDropdown from './CategoriesDropdown'
 
 const EditWords = () => {
     // Cateogry List
@@ -63,6 +64,21 @@ const EditWords = () => {
         getWords(setWordList, selectedCategory)
         setChangeWordData(false)
     }, [changeWordData])
+
+    // Get words into form
+    const fillWord = (wordId) => {
+        apiClient({
+            method: 'get',
+            url: '/api/admin/word/' + wordId
+        }).then(response => {
+            setWord({
+                ...word,
+                ...response.data
+            })
+        }).catch((error) => {
+            Toastify("error", error)
+        })
+    }
 
     useEffect(() => {
         getWordList()
@@ -136,7 +152,6 @@ const EditWords = () => {
     }
 
     var view_element = ""
-    var dropdown_options = ""
 
     if (changeWordData) {
         view_element = <tr><td colSpan={5} className='text-center'> LOADING DATA</td></tr>
@@ -161,37 +176,14 @@ const EditWords = () => {
                 <td className='flex'>
                     <button onClick={(e) => {
                         e.preventDefault()
-                        
-                        apiClient({
-                            method: 'get',
-                            url: '/api/admin/word/' + word.id
-                        }).then(response => {
-                            setWord({
-                                ...word,
-                                ...response.data
-                            })
-                        }).catch((error) => {
-                            Toastify("error", error)
-                        })
+                        fillWord(word.id)
                     }}>Edit</button>
                 </td>
             </tr>
         })
     }
 
-    if (isCategoryLoading) {
-        dropdown_options = ""
-    }
-    else {
-        dropdown_options = 
-        <>
-            {
-                categoryList.map((category) => {
-                    return <option key={ category.id } value={ category.id }>{ category.title }</option>
-                })
-            }
-        </>
-    }
+    const getSelection = CategoriesDropdown(categoryList)
 
   return (
     <div className='dashboard py-5 px-10'>
@@ -210,7 +202,7 @@ const EditWords = () => {
                 value={ selectedCategory === null ? '-' : selectedCategory }
                 className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
                     <option value='-'>ALL</option>
-                    { dropdown_options }
+                    { getSelection }
             </select>
         </div>
         <div style={{ height: '250px', maxHeight: '250px', overflowY: 'scroll' }} className='border-2 border-slate-500'>
@@ -250,7 +242,7 @@ const EditWords = () => {
                         value={ word.category_id }
                         className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
                             <option value='-'>SELECT CATEGORY</option>
-                            { dropdown_options }
+                            { getSelection }
                     </select>
                 </div>
                 

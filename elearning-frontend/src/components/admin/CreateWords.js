@@ -10,6 +10,7 @@ import saveWord from '../../services/actions/saveWord'
 import labelArray from '../../constants/labelArray'
 import getWords from '../../services/actions/getWords'
 import getCategories from '../../services/actions/getCategories'
+import CategoriesDropdown from './CategoriesDropdown'
 
 const CreateWords = () => {
     // Cateogry List
@@ -135,7 +136,6 @@ const CreateWords = () => {
     }
 
     var view_element = ""
-    var dropdown_options = ""
 
     if (changeWordData) {
         view_element = <tr><td colSpan={4} className='text-center'> LOADING DATA</td></tr>
@@ -161,19 +161,7 @@ const CreateWords = () => {
         })
     }
 
-    if (isCategoryLoading) {
-        dropdown_options = ""
-    }
-    else {
-        dropdown_options = 
-        <>
-            {
-                categoryList.map((category) => {
-                    return <option key={ category.id } value={ category.id }>{ category.title }</option>
-                })
-            }
-        </>
-    }
+    const getSelection = CategoriesDropdown(categoryList)
 
   return (
     <>
@@ -217,7 +205,7 @@ const CreateWords = () => {
                             value={ word.category_id }
                             className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
                                 <option value='-'>SELECT CATEGORY</option>
-                                { dropdown_options }
+                                { getSelection }
                         </select>
                     </div>
                     
