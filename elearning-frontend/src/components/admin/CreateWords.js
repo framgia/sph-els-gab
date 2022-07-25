@@ -11,6 +11,7 @@ import labelArray from '../../constants/labelArray'
 import getWords from '../../services/actions/getWords'
 import getCategories from '../../services/actions/getCategories'
 import CategoriesDropdown from './CategoriesDropdown'
+import WordsTable from './WordsTable'
 
 const CreateWords = () => {
     // Cateogry List
@@ -135,34 +136,6 @@ const CreateWords = () => {
         })
     }
 
-    var view_element = ""
-
-    if (changeWordData) {
-        view_element = <tr><td colSpan={4} className='text-center'> LOADING DATA</td></tr>
-    }
-    else {
-        view_element =
-        wordList.map((word) => {
-            return <tr key={ word.id }>
-                <td className='text-center'>{ word.category.title }</td>
-                <td className='text-center'>{ word.word }</td>
-                <td className='text-center'>
-                    {
-                        Object.entries(word.choices).map(([key, value], index) => {
-                            return <p key={ key }
-                                        className={`text-center ${index % 2 == 0 ? 'bg-slate-200' : ''}`}>
-                                        { value.choice }
-                                    </p>
-                        })
-                    }
-                </td>
-                <td className='text-center'>{ word.correct_answer }</td>
-            </tr>
-        })
-    }
-
-    const getSelection = CategoriesDropdown(categoryList)
-
   return (
     <>
         <div className='dashboard py-5 px-10'>
@@ -181,7 +154,7 @@ const CreateWords = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        { view_element }
+                        { WordsTable(wordList) }
                     </tbody>
                 </table>
             </div>
@@ -205,7 +178,7 @@ const CreateWords = () => {
                             value={ word.category_id }
                             className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
                                 <option value='-'>SELECT CATEGORY</option>
-                                { getSelection }
+                                { CategoriesDropdown(categoryList) }
                         </select>
                     </div>
                     

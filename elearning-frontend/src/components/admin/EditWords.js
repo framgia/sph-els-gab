@@ -11,6 +11,7 @@ import labelArray from '../../constants/labelArray'
 import getWords from '../../services/actions/getWords'
 import getCategories from '../../services/actions/getCategories'
 import CategoriesDropdown from './CategoriesDropdown'
+import WordsTable from './WordsTable'
 
 const EditWords = () => {
     // Cateogry List
@@ -21,6 +22,7 @@ const EditWords = () => {
     // Word List
     const [changeWordData, setChangeWordData] = useState(true)
     const [wordList, setWordList] = useState([])
+    const [isWordListLoading, setIsWordListLoading] = useState(false)
     const choices =[
         'choice1', 'choice2', 'choice3', 'choice4'
     ]
@@ -66,7 +68,9 @@ const EditWords = () => {
     }, [changeWordData])
 
     // Get words into form
-    const fillWord = (wordId) => {
+    const fillWord = (e, wordId) => {
+        e.preventDefault()
+
         apiClient({
             method: 'get',
             url: '/api/admin/word/' + wordId
@@ -83,7 +87,7 @@ const EditWords = () => {
     useEffect(() => {
         getWordList()
         getCategoryList()
-    }, [changeWordData])
+    }, [getWordList])
 
     // Update word function placeholder
     const updateWord = (e) => {
@@ -151,38 +155,6 @@ const EditWords = () => {
         })
     }
 
-    var view_element = ""
-
-    if (changeWordData) {
-        view_element = <tr><td colSpan={5} className='text-center'> LOADING DATA</td></tr>
-    }
-    else {
-        view_element =
-        wordList.map((word) => {
-            return <tr key={ word.id }>
-                <td className='text-center'>{ word.category.title }</td>
-                <td className='text-center'>{ word.word }</td>
-                <td className='text-center'>
-                    {
-                        Object.entries(word.choices).map(([key, value], index) => {
-                            return <p key={ key }
-                                        className={`text-center ${index % 2 == 0 ? 'bg-slate-200' : ''}`}>
-                                        { value.choice }
-                                    </p>
-                        })
-                    }
-                </td>
-                <td className='text-center'>{ word.correct_answer }</td>
-                <td className='flex'>
-                    <button onClick={(e) => {
-                        e.preventDefault()
-                        fillWord(word.id)
-                    }}>Edit</button>
-                </td>
-            </tr>
-        })
-    }
-
     const getSelection = CategoriesDropdown(categoryList)
 
   return (
@@ -217,7 +189,7 @@ const EditWords = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    { view_element }
+                    { WordsTable(wordList, fillWord) }
                 </tbody>
             </table>
         </div>

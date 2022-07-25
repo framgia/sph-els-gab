@@ -12,8 +12,6 @@ class AdminWordsController extends Controller
     // Fetch words from selected category
     public function index($id = null)
     {
-        $words = "";
-
         if ($id === null)
         {
             $words = Word::with('category')->orderBy('category_id')->get();
