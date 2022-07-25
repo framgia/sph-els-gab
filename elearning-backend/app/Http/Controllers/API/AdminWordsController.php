@@ -127,4 +127,8 @@ class AdminWordsController extends Controller
     }
 
     // Delete word
+    public function delete($id)
+    {
+        Word::where('id', $id)->delete();
+    }
 }

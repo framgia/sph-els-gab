@@ -46,4 +46,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/word/{id}', [AdminWordsController::class, 'getSingleWord']);
     Route::post('/admin/word', [AdminWordsController::class, 'store']);
     Route::patch('/admin/word/{id}', [AdminWordsController::class, 'update']);
+    Route::delete('/admin/word/{id}', [AdminWordsController::class, 'delete']);
 });

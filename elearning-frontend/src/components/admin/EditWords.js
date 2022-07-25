@@ -157,22 +157,43 @@ const EditWords = () => {
                     }
                 </td>
                 <td className='text-center'>{ word.correct_answer }</td>
-                <td className='flex'>
-                    <button onClick={(e) => {
-                        e.preventDefault()
-                        
-                        apiClient({
-                            method: 'get',
-                            url: '/api/admin/word/' + word.id
-                        }).then((response) => {
-                            setSelectedWord({
-                                ...selectedWord,
-                                ...response.data
+                <td className='flex justify-center gap-x-2'>
+                    <Button
+                        text='EDIT'
+                        type='button'
+                        classes='bg-blue-500 hover:bg-blue-700'
+                        onClick={(e) => {
+                            e.preventDefault()
+                            
+                            apiClient({
+                                method: 'get',
+                                url: '/api/admin/word/' + word.id
+                            }).then((response) => {
+                                setSelectedWord({
+                                    ...selectedWord,
+                                    ...response.data
+                                })
+                            }).catch((error) => {
+                                Toastify("error", error)
                             })
-                        }).catch((error) => {
-                            Toastify("error", error)
-                        })
-                    }}>Edit</button>
+                        }} />
+                    <Button
+                        text='DELETE'
+                        type='button'
+                        classes='bg-red-500 hover:bg-red-700'
+                        onClick={(e) => {
+                            e.preventDefault()
+                            
+                            apiClient({
+                                method: 'delete',
+                                url: '/api/admin/word/' + word.id
+                            }).then((response) => {
+                                Toastify('success', "Succesfully deleted word!")
+                                setChangeWordData(true)
+                            }).catch((error) => {
+                                Toastify("error", error)
+                            })
+                        }} />
                 </td>
             </tr>
         })
@@ -213,7 +234,7 @@ const EditWords = () => {
             </select>
         </div>
         <div style={{ height: '250px', maxHeight: '250px', overflowY: 'scroll' }} className='border-2 border-slate-500'>
-            <table className='w-full border-collapse'>
+            <table className='w-full border-collapse table-fixed'>
                 <thead className='bg-black border-b sticky top-0'>
                     <tr>
                         <td className='text-center text-white py-4'>Category</td>
