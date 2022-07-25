@@ -10,16 +10,45 @@ use App\Models\Word;
 class AdminWordsController extends Controller
 {
     // Fetch words from selected category
-    public function index($id)
+    public function index($id = null)
     {
-        $words = Category::where('id', $id)->quizzes()->get();
+        if ($id === null)
+        {
+            $words = Word::with('category')->orderBy('category_id')->get();
+        }
+        else {
+            $words = Word::where("category_id", $id)->with('category')->orderBy('category_id')->get();
+        }
 
-        return response()->json([
-            'words'=> $words,
-        ]);
+        $data = collect($words)->map(function ($word) {
+            return [
+                "category" => $word->category,
+                "id" => $word->id,
+                "category_id" => $word->category_id,
+                "word" => $word->word,
+                "correct_answer" => $word->correct_answer,
+                "choices" => json_decode($word->choices)
+            ];
+        });
+
+        return response()->json($data);
     }
 
-    // Created category
+    // Fetch word by id
+    public function getSingleWord($id)
+    {
+        $word = Word::where('id', $id)->get()->first();
+        $choices = json_decode($word->choices);
+        $data = [
+            "category_id" => $word->category_id,
+            "word" => $word->word,
+            "choices" => $choices
+        ];
+
+        return response()->json($data);
+    }
+
+    // Create word
     public function store(CreateWordsPostRequest $request)
     {
         // Convert to JSON string for storing

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import apiClient from '../../services/api'
 
 import Toastify from '../../core/Toastify'
@@ -13,14 +13,16 @@ import getCategories from '../../services/actions/getCategories'
 import CategoriesDropdown from './CategoriesDropdown'
 import WordsTable from './WordsTable'
 
-const CreateWords = () => {
+const EditWords = () => {
     // Cateogry List
     const [categoryList, setCategoryList] = useState([])
     const [isCategoryLoading, setIsCategoryLoading] = useState(true)
+    const [selectedCategory, setSelectedCategory] = useState(null)
 
     // Word List
     const [changeWordData, setChangeWordData] = useState(true)
     const [wordList, setWordList] = useState([])
+    const [isWordListLoading, setIsWordListLoading] = useState(false)
     const choices =[
         'choice1', 'choice2', 'choice3', 'choice4'
     ]
@@ -54,31 +56,48 @@ const CreateWords = () => {
     })
 
     // Fetch all categories
-    const GetCategoryList = useCallback(async () => {
+    const getCategoryList = useCallback(async () => {
         getCategories(setCategoryList)
         setIsCategoryLoading(false)
     }, [])
 
     // Fetch all words
-    const GetWordList = useCallback(async () => {
-        getWords(setWordList)
+    const getWordList = useCallback(async () => {
+        getWords(setWordList, selectedCategory)
         setChangeWordData(false)
     }, [changeWordData])
 
-    useEffect(() => {
-        GetWordList()
-        GetCategoryList()
-    }, [GetWordList])
-
-    // Save word
-    const SaveWord = (e) => {
+    // Get words into form
+    const fillWord = (e, wordId) => {
         e.preventDefault()
-        saveWord(word, ClearFields)
-        setChangeWordData(true)
+
+        apiClient({
+            method: 'get',
+            url: '/api/admin/word/' + wordId
+        }).then(response => {
+            setWord({
+                ...word,
+                ...response.data
+            })
+        }).catch((error) => {
+            Toastify("error", error)
+        })
+    }
+
+    useEffect(() => {
+        getWordList()
+        getCategoryList()
+    }, [getWordList])
+
+    // Update word function placeholder
+    const updateWord = (e) => {
+        e.preventDefault()
+        
+        // TO DO
     }
 
     // Clear States
-    const ClearFields = () => {
+    const clearFields = () => {
         setWord({
             category_id: '',
             word: '',
@@ -137,73 +156,88 @@ const CreateWords = () => {
     }
 
   return (
-    <>
-        <div className='dashboard py-5 px-10'>
-            <div className="mb-5">
-                <h4 className='title text-left'>QUIZZES MANAGEMENT</h4>
+    <div className='dashboard py-5 px-10'>
+        <div className="mb-5">
+            <h4 className='title text-left'>QUIZZES MANAGEMENT</h4>
+        </div>
+        <div className='mb-5'>
+            <label>Category</label>
+            <select
+                name='category'
+                onChange={(e) => {
+                    setSelectedCategory(e.target.value === '-' ? null : e.target.value)
+                    setChangeWordData(true)
+                    clearFields()
+                }}
+                value={ selectedCategory === null ? '-' : selectedCategory }
+                className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
+                    <option value='-'>ALL</option>
+                    { CategoriesDropdown(categoryList) }
+            </select>
+        </div>
+        <div style={{ height: '250px', maxHeight: '250px', overflowY: 'scroll' }} className='border-2 border-slate-500'>
+            <table className='w-full border-collapse'>
+                <thead className='bg-black border-b sticky top-0'>
+                    <tr>
+                        <td className='text-center text-white py-4'>Category</td>
+                        <td className='text-center text-white py-4'>Word</td>
+                        <td className='text-center text-white py-4'>Choices</td>
+                        <td className='text-center text-white py-4'>Correct Answer</td>
+                        <td className='text-center text-white py-4'>Action</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    { WordsTable(wordList, fillWord) }
+                </tbody>
+            </table>
+        </div>
+        <Divider />
+        <div>
+            <div className='mb-5'>
+                <p>Add a new category by using the form below.</p>
             </div>
-            <div style={{ height: '250px', maxHeight: '250px', overflowY: 'scroll' }} className='border-2 border-slate-500'>
-                {/* Placeholder for retrieving words */}
-                <table className='w-full border-collapse'>
-                    <thead className='bg-black border-b sticky top-0'>
-                        <tr>
-                            <td className='text-center text-white py-4'>Category</td>
-                            <td className='text-center text-white py-4'>Word</td>
-                            <td className='text-center text-white py-4'>Choices</td>
-                            <td className='text-center text-white py-4'>Correct Answer</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { WordsTable(wordList) }
-                    </tbody>
-                </table>
-            </div>
-            <Divider />
-            <div>
-                <div className='mb-5'>
-                    <p>Add a new category by using the form below.</p>
+            {/* Placeholder for editing words */}
+            <form onSubmit={ updateWord } encType='application/json' className='border border-black py-5 px-10'>
+                {/* Category */}
+                <div className='form-group mb-8'>
+                    <label>Category</label>
+                    <select
+                        name='category'
+                        onChange={(e) => {
+                            setWord({
+                                ...word,
+                                category_id: e.target.value
+                            })
+                        }}
+                        value={ word.category_id }
+                        className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
+                            <option value='-'>SELECT CATEGORY</option>
+                            { CategoriesDropdown(categoryList) }
+                    </select>
                 </div>
-                <form onSubmit={ SaveWord } encType='application/json' className='border border-black py-5 px-10'>
-                    {/* Category */}
-                    <div className='form-group mb-8'>
-                        <label>Category</label>
-                        <select
-                            name='category'
-                            onChange={(e) => {
-                                setWord({
-                                    ...word,
-                                    category_id: e.target.value
-                                })
-                            }}
-                            value={ word.category_id }
-                            className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
-                                <option value='-'>SELECT CATEGORY</option>
-                                { CategoriesDropdown(categoryList) }
-                        </select>
-                    </div>
-                    
-                    {/* Word */}
-                    <div className="form-group mb-8">
-                        <label>Word</label>
-                        <InputField
-                            type="text"
-                            name="word"
-                            onChange={(e) => {
-                                setWord({
-                                    ...word,
-                                    word: e.target.value,
-                                })
-                            }}
-                            value={ word.word }
-                            require={ true } />
-                    </div>
-                    <table className='w-full'>
-                        <tbody>
-                            <tr>
-                                <th>Choices</th>
-                                <th>Mark as correct answer</th>
-                            </tr>
-                            {
+                
+                {/* Word */}
+                <div className="form-group mb-8">
+                    <label>Word</label>
+                    <InputField
+                        type="text"
+                        name="word"
+                        onChange={(e) => {
+                            setWord({
+                                ...word,
+                                word: e.target.value,
+                            })
+                        }}
+                        value={ word.word }
+                        require={ true } />
+                </div>
+                <table className='w-full'>
+                    <tbody>
+                        <tr>
+                            <th>Choices</th>
+                            <th>Mark as correct answer</th>
+                        </tr>
+                        {
                             Object.entries(word.choices).map(([key, value], index) => {
                                 var currentIndex = index + 1
                                 return (
@@ -232,29 +266,28 @@ const CreateWords = () => {
                                 )
                             })
                         }
-                        </tbody>
-                    </table>
-                    <Divider />
-                    <div className="mt-4 flex justify-end gap-5">
-                        <Button
-                            text='Clear'
-                            type='button'
-                            color='red'
-                            style={{width:'200px', minWidth:'200px'}}
-                            onClick={(e) => {
-                                e.preventDefault()
-                                ClearFields()
-                            }} />
-                        <Button
-                            text='Save Information'
-                            color='blue'
-                            style={{width:'200px', minWidth:'200px'}} />
-                    </div>
-                </form>
-            </div>
+                    </tbody>
+                </table>
+                <Divider />
+                <div className="mt-4 flex justify-end gap-5">
+                    <Button
+                        text='Clear'
+                        type='button'
+                        color='red'
+                        style={{width:'200px', minWidth:'200px'}}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            clearFields()
+                        }} />
+                    <Button
+                        text='Save Information'
+                        color='blue'
+                        style={{width:'200px', minWidth:'200px'}} />
+                </div>
+            </form>
         </div>
-    </>
+    </div>
   )
 }
 
-export default CreateWords
+export default EditWords
