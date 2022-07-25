@@ -19,7 +19,7 @@ class AdminWordsController extends Controller
     public function index($id = null)
     {
         $words = "";
-        $data = [];
+        // $data = [];
 
         if ($id === null)
         {
@@ -29,23 +29,18 @@ class AdminWordsController extends Controller
             $words = Word::where("category_id", $id)->with('category')->orderBy('category_id')->get();
         }
 
-        foreach ($words as $word) {
-            $choices = json_decode($word->choices);
-            $wordArray = [
+        $data = collect($words)->map(function ($word) {
+            return [
                 "category" => $word->category,
                 "id" => $word->id,
                 "category_id" => $word->category_id,
                 "word" => $word->word,
                 "correct_answer" => $word->correct_answer,
-                "choices" => $choices
+                "choices" => $this->getChoices($word->choices)
             ];
+        });
 
-            array_push($data, $wordArray);
-        }
-
-        return response()->json([
-            'words'=> $data,
-        ]);
+        return response()->json($data);
     }
 
     // Fetch word by id

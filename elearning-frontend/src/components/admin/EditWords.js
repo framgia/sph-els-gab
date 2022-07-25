@@ -20,6 +20,9 @@ const EditWords = () => {
     // Word List
     const [changeWordData, setChangeWordData] = useState(true)
     const [wordList, setWordList] = useState([])
+    const choices =[
+        'choice1', 'choice2', 'choice3', 'choice4'
+    ]
 
     // Word
     const [word, setWord] = useState({
@@ -163,14 +166,12 @@ const EditWords = () => {
                             method: 'get',
                             url: '/api/admin/word/' + word.id
                         }).then(response => {
-                            console.log(response)
                             setWord({
                                 ...word,
                                 ...response.data
                             })
-                            console.log(word)
                         }).catch((error) => {
-                            console.log(error)
+                            Toastify("error", error)
                         })
                     }}>Edit</button>
                 </td>
@@ -274,98 +275,35 @@ const EditWords = () => {
                             <th>Choices</th>
                             <th>Mark as correct answer</th>
                         </tr>
-                        {/* First Choice */}
-                        <tr>
-                            <td>
-                                <InputField
-                                        type="text"
-                                        name="choice1"
-                                        classes={`border-2`}
-                                        onChange={(e) => {
-                                            setChoiceValue(1, e.target.value)
-                                        }}
-                                        value={ word.choices.firstChoice.choice }
-                                        require={ true } />
-                            </td>
-                            <td className='text-center'>
-                                <input
-                                    type='checkbox'
-                                    name='choice1c'
-                                    onChange={() => {
-                                        setCorrectAnswer(1)
-                                    }}
-                                    checked={ word.choices.firstChoice.is_correct } />
-                            </td>
-                        </tr>
-                        {/* Second Choice */}
-                        <tr>
-                            <td>
-                                <InputField
-                                    type="text"
-                                    name="choice2"
-                                    classes={`border-2`}
-                                    onChange={(e) => {
-                                        setChoiceValue(2, e.target.value)
-                                    }}
-                                    value={ word.choices.secondChoice.choice }
-                                    require={ true } />
-                            </td>
-                            <td className='text-center'>
-                                <input
-                                    type='checkbox'
-                                    name='choice2c'
-                                    onChange={() => {
-                                        setCorrectAnswer(2)
-                                    }}
-                                    checked={ word.choices.secondChoice.is_correct } />
-                            </td>
-                        </tr>
-                        {/* Third Choice */}
-                        <tr>
-                            <td>
-                                <InputField
-                                    type="text"
-                                    name="choice3"
-                                    classes={`border-2`}
-                                    onChange={(e) => {
-                                        setChoiceValue(3, e.target.value)
-                                    }}
-                                    value={ word.choices.thirdChoice.choice }
-                                    require={ true } />
-                            </td>
-                            <td className='text-center'>
-                                <input
-                                    type='checkbox'
-                                    name='choice3c'
-                                    onChange={() => {
-                                        setCorrectAnswer(3)
-                                    }}
-                                    checked={ word.choices.thirdChoice.is_correct } />
-                            </td>
-                        </tr>
-                        {/* Fourth Choice */}
-                        <tr>
-                            <td>
-                                <InputField
-                                    type="text"
-                                    name="choice4"
-                                    classes={`border-2`}
-                                    onChange={(e) => {
-                                        setChoiceValue(4, e.target.value)
-                                    }}
-                                    value={ word.choices.fourthChoice.choice }
-                                    require={ true } />
-                            </td>
-                            <td className='text-center'>
-                                <input
-                                    type='checkbox'
-                                    name='choice4c'
-                                    onChange={() => {
-                                        setCorrectAnswer(4)
-                                    }}
-                                    checked={ word.choices.fourthChoice.is_correct } />
-                            </td>
-                        </tr>
+                        {
+                            Object.entries(word.choices).map(([key, value], index) => {
+                                var currentIndex = index + 1
+                                return (
+                                    <tr key={ index }>
+                                        <td>
+                                            <InputField
+                                                    type="text"
+                                                    name={ choices[index] }
+                                                    classes={`border-2`}
+                                                    onChange={(e) => {
+                                                        setChoiceValue(currentIndex, e.target.value)
+                                                    }}
+                                                    value={ value.choice }
+                                                    require={ true } />
+                                        </td>
+                                        <td className='text-center'>
+                                            <input
+                                                type='checkbox'
+                                                name={ `${choices[index]}c` }
+                                                onChange={() => {
+                                                    setCorrectAnswer(currentIndex)
+                                                }}
+                                                checked={ value.is_correct } />
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
                     </tbody>
                 </table>
                 <Divider />

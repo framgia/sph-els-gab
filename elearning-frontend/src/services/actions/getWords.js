@@ -6,7 +6,7 @@ const getWords = (setWordList, categoryId = null) => {
         method: 'get',
         url: (categoryId === null ? '/api/admin/words' : `/api/admin/category/${categoryId}/words`),
     }).then(response => {
-      setWordList(response.data.words)
+      setWordList(response.data)
     }).catch(error => {
       Toastify("error", error)
       console.log(error)
