@@ -7,7 +7,7 @@ const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
     const [loggedIn, setLoggedIn] = RenderReducer(SessionReducer, sessionStorage.getItem('loggedIn') === 'true' || false)
-    const [isAdmin, setIsAdmin] = usePersistentStorage('isAdmin', false)
+    const [isAdmin, setIsAdmin] = usePersistentStorage('isAdmin', sessionStorage.getItem('loggedIn') === 'true' || false)
 
     const login = async () => {
         const data = await setLoggedIn({

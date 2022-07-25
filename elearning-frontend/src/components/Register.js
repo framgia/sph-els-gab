@@ -149,7 +149,7 @@ const Register = (props) => {
                                             firstname: e.target.value
                                         })}
                                         value={ user.firstname }
-                                        require="true" />
+                                        rquire={ true } />
                                 </div>
                                 {/* Middle Name */}
                                 <div className="form-group mb-8">
@@ -174,7 +174,7 @@ const Register = (props) => {
                                             lastname: e.target.value
                                         })}
                                         value={ user.lastname }
-                                        require="true" />
+                                        rquire={ true } />
                                 </div>
                             </div>
                             <div className='grid grid-cols-3 gap-5'>
@@ -205,7 +205,7 @@ const Register = (props) => {
                                             birthdate: e.target.value
                                         })}
                                         value={ user.birthdate }
-                                        require="true" />
+                                        rquire={ true } />
                                 </div>
                             </div>
                             {/* Address */}
@@ -219,7 +219,7 @@ const Register = (props) => {
                                         address: e.target.value
                                     })}
                                     value={ user.address }
-                                    require="true" />
+                                    rquire={ true } />
                             </div>
                             <div className='grid grid-cols-2 gap-5'>
                                 {/* Email Address */}
@@ -233,7 +233,7 @@ const Register = (props) => {
                                             email: e.target.value
                                         })}
                                         value={ user.email }
-                                        require="true" />
+                                        rquire={ true } />
                                 </div>
                                 {/* Phone */}
                                 <div className="form-group mb-8">
@@ -259,7 +259,7 @@ const Register = (props) => {
                                         username: e.target.value
                                     })}
                                     value={ user.username }
-                                    require="true" />
+                                    rquire={ true } />
                             </div>
                             {/* Password */}
                             <div className="form-group mb-8">
@@ -272,12 +272,12 @@ const Register = (props) => {
                                         password: e.target.value
                                     })}
                                     value={ user.password }
-                                    require="true" />
+                                    rquire={ true } />
                             </div>
                             <div className="form-group text-right mt-4">
                                 <Button
                                     text='REGISTER'
-                                    color='blue'
+                                    classes='bg-blue-500 hover:bg-blue-700'
                                     style={{width:'200px', minWidth:'200px'}} />
                             </div>
                         </div>

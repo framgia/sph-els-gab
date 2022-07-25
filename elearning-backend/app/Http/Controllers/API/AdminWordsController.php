@@ -40,6 +40,7 @@ class AdminWordsController extends Controller
         $word = Word::where('id', $id)->get()->first();
         $choices = json_decode($word->choices);
         $data = [
+            "id" => $word->id,
             "category_id" => $word->category_id,
             "word" => $word->word,
             "choices" => $choices
@@ -53,17 +54,7 @@ class AdminWordsController extends Controller
     {
         // Convert to JSON string for storing
         $choices = json_encode($request->choices);
-        $correctAnswer = "";
-
-        // Get correct answer
-        foreach($request->choices as $key) {
-            if ($key['choice'] === null ) {
-                throw new \ErrorException('Please set all choices!');
-                return;
-            }
-
-            $correctAnswer = $key['is_correct'] ? $key['choice'] : $correctAnswer;
-        }
+        $correctAnswer = $this->getCorrectAnswer($request->choices);
         
         if ($correctAnswer === "") {
             throw new \ErrorException('No correct answer has been set!');
@@ -77,4 +68,43 @@ class AdminWordsController extends Controller
             'word' => $request->word,
         ]);
     }
+
+    // Get correct answer from array
+    private function getCorrectAnswer($choices)
+    {
+        $correctAnswer = "";
+
+        foreach($choices as $key) {
+            if ($key['choice'] === null ) {
+                throw new \ErrorException('Please set all choices!');
+                return;
+            }
+
+            $correctAnswer = $key['is_correct'] ? $key['choice'] : $correctAnswer;
+        }
+
+        return $correctAnswer;
+    }
+
+    // Update word
+    public function update($id, CreateWordsPostRequest $request)
+    {
+        // Convert to JSON string for storing
+        $choices = json_encode($request->choices);
+        $correctAnswer = $this->getCorrectAnswer($request->choices);
+        
+        if ($correctAnswer === "") {
+            throw new \ErrorException('No correct answer has been set!');
+            return;
+        }
+        
+        Word::where('id', $id)->update([
+            'category_id' => $request->category_id,
+            'choices' => $choices,
+            'correct_answer' => $correctAnswer,
+            'word' => $request->word,
+        ]);
+    }
+
+    // Delete word
 }
