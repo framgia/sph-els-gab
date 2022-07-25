@@ -33,7 +33,7 @@ const Navbar = () => {
                       </li>
                       : <></>
                 }
-                { isAdmin ?
+                { adminNav ?
                     <>
                         <li className='dropdown'>
                             <button

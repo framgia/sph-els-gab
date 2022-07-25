@@ -140,7 +140,7 @@ const CreateWords = () => {
     <>
         <div className='dashboard py-5 px-10'>
             <div className="mb-5">
-                <h4 className='title text-left'>QUIZZES MANAGEMENT</h4>
+                <h4 className='title text-left'>QUIZZES MANAGEMENT - ADD WORD(S)</h4>
             </div>
             <div style={{ height: '250px', maxHeight: '250px', overflowY: 'scroll' }} className='border-2 border-slate-500'>
                 {/* Placeholder for retrieving words */}
@@ -161,7 +161,7 @@ const CreateWords = () => {
             <Divider />
             <div>
                 <div className='mb-5'>
-                    <p>Add a new category by using the form below.</p>
+                    <p>Add a new word by using the form below.</p>
                 </div>
                 <form onSubmit={ SaveWord } encType='application/json' className='border border-black py-5 px-10'>
                     {/* Category */}
@@ -239,7 +239,7 @@ const CreateWords = () => {
                         <Button
                             text='Clear'
                             type='button'
-                            color='red'
+                            classes='bg-red-500 hover:bg-red-700'
                             style={{width:'200px', minWidth:'200px'}}
                             onClick={(e) => {
                                 e.preventDefault()
@@ -247,7 +247,7 @@ const CreateWords = () => {
                             }} />
                         <Button
                             text='Save Information'
-                            color='blue'
+                            classes='bg-blue-500 hover:bg-blue-700'
                             style={{width:'200px', minWidth:'200px'}} />
                     </div>
                 </form>
