@@ -345,7 +345,7 @@ const Users = () => {
                                 <div className="form-group text-right mt-4">
                                     <Button
                                         text='Save Information'
-                                        color='blue'
+                                        classes='bg-blue-500 hover:bg-blue-700'
                                         style={{width:'200px', minWidth:'200px'}} />
                                 </div>
                             </div>

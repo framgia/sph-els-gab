@@ -22,8 +22,9 @@ const EditWords = () => {
     const [wordList, setWordList] = useState([])
 
     // Word
-    const [word, setWord] = useState({
+    const [selectedWord, setSelectedWord] = useState({
         category_id: '',
+        id: '',
         word: '',
         choices: {
             firstChoice: {
@@ -64,19 +65,20 @@ const EditWords = () => {
     useEffect(() => {
         getWordList()
         getCategoryList()
-    }, [changeWordData])
+    }, [getWordList])
 
     // Update word function placeholder
     const updateWord = (e) => {
         e.preventDefault()
-        
-        // TO DO
+        saveWord(selectedWord, clearFields, 'update', selectedWord.id)
+        setChangeWordData(true)
     }
 
     // Clear States
     const clearFields = () => {
-        setWord({
+        setSelectedWord({
             category_id: '',
+            id: '',
             word: '',
             choices: {
                 firstChoice: {
@@ -102,10 +104,10 @@ const EditWords = () => {
 
     // Set checkbox states
     const setChoiceValue = (selectedIndex, input) => {
-        setWord({
-            ...word,
+        setSelectedWord({
+            ...selectedWord,
             choices:
-                Object.entries(word.choices).map(([key, value], index) => {
+                Object.entries(selectedWord.choices).map(([key, value], index) => {
                     var currentIndex = index + 1
                     return {
                         choice: (currentIndex === selectedIndex) ? input : value.choice,
@@ -118,10 +120,10 @@ const EditWords = () => {
 
     // Set checkbox states
     const setCorrectAnswer = (selectedIndex, type, input) => {
-        setWord({
-            ...word,
+        setSelectedWord({
+            ...selectedWord,
             choices:
-                Object.entries(word.choices).map(([key, value], index) => {
+                Object.entries(selectedWord.choices).map(([key, value], index) => {
                     var currentIndex = index + 1
                     return {
                         choice: value.choice,
@@ -162,15 +164,13 @@ const EditWords = () => {
                         apiClient({
                             method: 'get',
                             url: '/api/admin/word/' + word.id
-                        }).then(response => {
-                            console.log(response)
-                            setWord({
-                                ...word,
+                        }).then((response) => {
+                            setSelectedWord({
+                                ...selectedWord,
                                 ...response.data
                             })
-                            console.log(word)
                         }).catch((error) => {
-                            console.log(error)
+                            Toastify("error", error)
                         })
                     }}>Edit</button>
                 </td>
@@ -195,7 +195,7 @@ const EditWords = () => {
   return (
     <div className='dashboard py-5 px-10'>
         <div className="mb-5">
-            <h4 className='title text-left'>QUIZZES MANAGEMENT</h4>
+            <h4 className='title text-left'>QUIZZES MANAGEMENT - EDIT WORD(S)</h4>
         </div>
         <div className='mb-5'>
             <label>Category</label>
@@ -231,7 +231,7 @@ const EditWords = () => {
         <Divider />
         <div>
             <div className='mb-5'>
-                <p>Add a new category by using the form below.</p>
+                <p>Edit words by using the form below.</p>
             </div>
             {/* Placeholder for editing words */}
             <form onSubmit={ updateWord } encType='application/json' className='border border-black py-5 px-10'>
@@ -241,12 +241,12 @@ const EditWords = () => {
                     <select
                         name='category'
                         onChange={(e) => {
-                            setWord({
-                                ...word,
+                            setSelectedWord({
+                                ...selectedWord,
                                 category_id: e.target.value
                             })
                         }}
-                        value={ word.category_id }
+                        value={ selectedWord.category_id }
                         className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
                             <option value='-'>SELECT CATEGORY</option>
                             { dropdown_options }
@@ -260,12 +260,12 @@ const EditWords = () => {
                         type="text"
                         name="word"
                         onChange={(e) => {
-                            setWord({
-                                ...word,
+                            setSelectedWord({
+                                ...selectedWord,
                                 word: e.target.value,
                             })
                         }}
-                        value={ word.word }
+                        value={ selectedWord.word }
                         require={ true } />
                 </div>
                 <table className='w-full'>
@@ -284,7 +284,7 @@ const EditWords = () => {
                                         onChange={(e) => {
                                             setChoiceValue(1, e.target.value)
                                         }}
-                                        value={ word.choices.firstChoice.choice }
+                                        value={ selectedWord.choices.firstChoice.choice }
                                         require={ true } />
                             </td>
                             <td className='text-center'>
@@ -294,7 +294,7 @@ const EditWords = () => {
                                     onChange={() => {
                                         setCorrectAnswer(1)
                                     }}
-                                    checked={ word.choices.firstChoice.is_correct } />
+                                    checked={ selectedWord.choices.firstChoice.is_correct } />
                             </td>
                         </tr>
                         {/* Second Choice */}
@@ -307,7 +307,7 @@ const EditWords = () => {
                                     onChange={(e) => {
                                         setChoiceValue(2, e.target.value)
                                     }}
-                                    value={ word.choices.secondChoice.choice }
+                                    value={ selectedWord.choices.secondChoice.choice }
                                     require={ true } />
                             </td>
                             <td className='text-center'>
@@ -317,7 +317,7 @@ const EditWords = () => {
                                     onChange={() => {
                                         setCorrectAnswer(2)
                                     }}
-                                    checked={ word.choices.secondChoice.is_correct } />
+                                    checked={ selectedWord.choices.secondChoice.is_correct } />
                             </td>
                         </tr>
                         {/* Third Choice */}
@@ -330,7 +330,7 @@ const EditWords = () => {
                                     onChange={(e) => {
                                         setChoiceValue(3, e.target.value)
                                     }}
-                                    value={ word.choices.thirdChoice.choice }
+                                    value={ selectedWord.choices.thirdChoice.choice }
                                     require={ true } />
                             </td>
                             <td className='text-center'>
@@ -340,7 +340,7 @@ const EditWords = () => {
                                     onChange={() => {
                                         setCorrectAnswer(3)
                                     }}
-                                    checked={ word.choices.thirdChoice.is_correct } />
+                                    checked={ selectedWord.choices.thirdChoice.is_correct } />
                             </td>
                         </tr>
                         {/* Fourth Choice */}
@@ -353,7 +353,7 @@ const EditWords = () => {
                                     onChange={(e) => {
                                         setChoiceValue(4, e.target.value)
                                     }}
-                                    value={ word.choices.fourthChoice.choice }
+                                    value={ selectedWord.choices.fourthChoice.choice }
                                     require={ true } />
                             </td>
                             <td className='text-center'>
@@ -363,7 +363,7 @@ const EditWords = () => {
                                     onChange={() => {
                                         setCorrectAnswer(4)
                                     }}
-                                    checked={ word.choices.fourthChoice.is_correct } />
+                                    checked={ selectedWord.choices.fourthChoice.is_correct } />
                             </td>
                         </tr>
                     </tbody>
@@ -371,17 +371,8 @@ const EditWords = () => {
                 <Divider />
                 <div className="mt-4 flex justify-end gap-5">
                     <Button
-                        text='Clear'
-                        type='button'
-                        color='red'
-                        style={{width:'200px', minWidth:'200px'}}
-                        onClick={(e) => {
-                            e.preventDefault()
-                            clearFields()
-                        }} />
-                    <Button
                         text='Save Information'
-                        color='blue'
+                        classes='bg-blue-500 hover:bg-blue-700'
                         style={{width:'200px', minWidth:'200px'}} />
                 </div>
             </form>

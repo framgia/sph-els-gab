@@ -216,7 +216,7 @@ const Categories = () => {
                                         <Button
                                             text='Clear'
                                             type='button'
-                                            color='red'
+                                            classes='bg-red-500 hover:bg-red-700'
                                             style={{width:'200px', minWidth:'200px'}}
                                             onClick={(e) => {
                                                 e.preventDefault()
@@ -224,7 +224,7 @@ const Categories = () => {
                                             }} />
                                         <Button
                                             text={ hasSelectedCategory ? "Save Category" : "Add Category" }
-                                            color='blue'
+                                            classes='bg-blue-500 hover:bg-blue-700'
                                             style={{width:'200px', minWidth:'200px'}} />
                                     </div>
                                 </div>
