@@ -85,6 +85,20 @@ const EditWords = () => {
         })
     }
 
+    const deleteWord =(e, wordId) => {
+        e.preventDefault()
+
+        apiClient({
+            method: 'delete',
+            url: '/api/admin/word/' + wordId
+        }).then((response) => {
+            Toastify('success', "Succesfully deleted word!")
+            setChangeWordData(true)
+        }).catch((error) => {
+            Toastify("error", error)
+        })
+    }
+
     useEffect(() => {
         getWordList()
         getCategoryList()
@@ -189,7 +203,7 @@ const EditWords = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    { WordsTable(wordList, fillWord) }
+                    { WordsTable(wordList, fillWord, deleteWord) }
                 </tbody>
             </table>
         </div>

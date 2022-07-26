@@ -144,7 +144,7 @@ const CreateWords = () => {
             </div>
             <div style={{ height: '250px', maxHeight: '250px', overflowY: 'scroll' }} className='border-2 border-slate-500'>
                 {/* Placeholder for retrieving words */}
-                <table className='w-full border-collapse'>
+                <table className='w-full border-collapse table-fixed'>
                     <thead className='bg-black border-b sticky top-0'>
                         <tr>
                             <td className='text-center text-white py-4'>Category</td>

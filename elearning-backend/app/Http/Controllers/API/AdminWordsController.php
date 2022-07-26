@@ -90,4 +90,9 @@ class AdminWordsController extends Controller
             'word' => $request->word,
         ]);
     }
+
+    public function delete($id)
+    {
+        Word::where('id', $id)->delete();
+    }
 }

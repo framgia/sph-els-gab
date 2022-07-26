@@ -133,49 +133,57 @@ const Users = () => {
                             <tr key={user.id}>
                                 <td>{user.profile.firstname + " " + (user.profile.middlename !== null && user.profile.middlename !== "" ? user.profile.middlename + " " : "") + user.profile.lastname}</td>
                                 <td>
-                                    <div className='flex'>
-                                        <button onClick={(e) => {
-                                            e.preventDefault()
+                                    <div className='flex gap-2'>
+                                        <Button
+                                            text='EDIT'
+                                            type='button'
+                                            classes='bg-blue-500 hover:bg-blue-700'
+                                            onClick={(e) => {
+                                                e.preventDefault()
 
-                                            apiClient({
-                                                method: "get",
-                                                url: "/api/admin/user/" + user.id,
-                                            }).then(response => {
-                                                ClearFields()
-
-                                                setHasSelectedUser(true)
-                                                setSelectedUser(response.data.user.id)
-                                                setUser({
-                                                    ...user,
-                                                    ...response.data.user.profile,
-                                                    profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : defaultPicture),
-                                                    avatar: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? response.data.user.profile.avatar : null),
-                                                })
-                                
-                                                if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
-                                                    setHasAvatar(true)
-                                                }
-                                            }).catch(error => {
-                                                Toastify("error", error)
-                                            })
-                                        }}>EDIT</button>
-                                        <button onClick={(e) => {
-                                            e.preventDefault()
-
-                                            if (window.confirm('Are you sure you want to delete this user?')) {
                                                 apiClient({
-                                                    method: "delete",
+                                                    method: "get",
                                                     url: "/api/admin/user/" + user.id,
-                                                    headers: {
-                                                        'Content-Type': 'multipart/form-data'
-                                                    }
                                                 }).then(response => {
-                                                    Toastify("success", "Succesfully deleted user")
+                                                    ClearFields()
+
+                                                    setHasSelectedUser(true)
+                                                    setSelectedUser(response.data.user.id)
+                                                    setUser({
+                                                        ...user,
+                                                        ...response.data.user.profile,
+                                                        profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : defaultPicture),
+                                                        avatar: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? response.data.user.profile.avatar : null),
+                                                    })
+                                    
+                                                    if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
+                                                        setHasAvatar(true)
+                                                    }
                                                 }).catch(error => {
                                                     Toastify("error", error)
                                                 })
-                                            }
-                                        }}>DELETE</button>
+                                        }} />
+                                        <Button
+                                            text='DELETE'
+                                            type='button'
+                                            classes='bg-red-500 hover:bg-red-700'
+                                            onClick={(e) => {
+                                                e.preventDefault()
+
+                                                if (window.confirm('Are you sure you want to delete this user?')) {
+                                                    apiClient({
+                                                        method: "delete",
+                                                        url: "/api/admin/user/" + user.id,
+                                                        headers: {
+                                                            'Content-Type': 'multipart/form-data'
+                                                        }
+                                                    }).then(response => {
+                                                        Toastify("success", "Succesfully deleted user")
+                                                    }).catch(error => {
+                                                        Toastify("error", error)
+                                                    })
+                                                }
+                                        }} />
                                     </div>
                                 </td>
                             </tr>
@@ -190,9 +198,9 @@ const Users = () => {
             <div className="mb-5">
                 <h4 className='title text-left'>USER MANAGEMENT</h4>
             </div>
-            <div className='grid grid-cols-5 gap-5'>
-                <div className='col-span-1'>
-                    <table className='border-separate [border-spacing:1rem]'>
+            <div className='grid grid-cols-6 gap-5'>
+                <div className='col-span-2'>
+                    <table className='border-separate [border-spacing:1rem] table-fixed'>
                         <tbody>
                             <tr>
                                 <td>Name</td>
