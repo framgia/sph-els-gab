@@ -4,12 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateWordsPostRequest;
-use App\Models\Category;
 use App\Models\Word;
 
 class AdminWordsController extends Controller
 {
-    // Fetch words from selected category
     public function index($id = null)
     {
         if ($id === null)
@@ -34,25 +32,15 @@ class AdminWordsController extends Controller
         return response()->json($data);
     }
 
-    // Fetch word by id
     public function getSingleWord($id)
     {
-        $word = Word::where('id', $id)->get()->first();
-        $choices = json_decode($word->choices);
-        $data = [
-            "id" => $word->id,
-            "category_id" => $word->category_id,
-            "word" => $word->word,
-            "choices" => $choices
-        ];
-
-        return response()->json($data);
+        $word = Word::where('id', $id)->get()->first(); 
+        $word->choices = json_decode($word->choices);
+        return response()->json($word);
     }
 
-    // Create word
     public function store(CreateWordsPostRequest $request)
     {
-        // Convert to JSON string for storing
         $choices = json_encode($request->choices);
         $correctAnswer = $this->getCorrectAnswer($request->choices);
         
@@ -69,7 +57,6 @@ class AdminWordsController extends Controller
         ]);
     }
 
-    // Get correct answer from array
     private function getCorrectAnswer($choices)
     {
         $correctAnswer = "";
@@ -86,10 +73,8 @@ class AdminWordsController extends Controller
         return $correctAnswer;
     }
 
-    // Update word
     public function update($id, CreateWordsPostRequest $request)
     {
-        // Convert to JSON string for storing
         $choices = json_encode($request->choices);
         $correctAnswer = $this->getCorrectAnswer($request->choices);
         
@@ -105,6 +90,4 @@ class AdminWordsController extends Controller
             'word' => $request->word,
         ]);
     }
-
-    // Delete word
 }

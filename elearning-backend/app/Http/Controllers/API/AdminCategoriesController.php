@@ -10,7 +10,6 @@ use Illuminate\Validation\Rule;
 
 class AdminCategoriesController extends Controller
 {
-    // Fetch all categories
     public function index()
     {
         $categories = Category::all();
@@ -20,7 +19,6 @@ class AdminCategoriesController extends Controller
         ]);
     }
 
-    // Get selected category
     public function getCategory($id)
     {
         $category = Category::find($id);
@@ -28,7 +26,6 @@ class AdminCategoriesController extends Controller
         return response()->json($category);
     }
 
-    // Create category
     public function store(CreateCategoriesPostRequest $request)
     {
         Category::create([
@@ -38,7 +35,6 @@ class AdminCategoriesController extends Controller
         ]);
     }
 
-    // Update selected category
     public function update(UpdateCategoriesPostRequest $request)
     {   
         $currentCategory = $request->id;
