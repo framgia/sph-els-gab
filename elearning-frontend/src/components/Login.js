@@ -35,6 +35,7 @@ const Login = () => {
             }
         }).then((response) => {
             localStorage.setItem('user', response.data.token)
+            sessionStorage.setItem('isAdmin', response.data.user.profile.is_admin)
             setIsAdmin(response.data.user.profile.is_admin)
             login()
             navigate('/dashboard')
@@ -81,7 +82,7 @@ const Login = () => {
                         <div className="form-group mt-4 text-center">
                             <Button
                                 text='LOG IN'
-                                color='blue'
+                                classes='bg-blue-500 hover:bg-blue-700'
                                 style={{width:'200px', minWidth:'200px'}} />
                         </div>
                     </form>

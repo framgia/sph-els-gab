@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\File;
 
 class AdminUsersController extends Controller
 {
-    // Retrieve all users
     public function index()
     {
         // Exculde current user
@@ -23,7 +22,6 @@ class AdminUsersController extends Controller
         ]);
     }
 
-    // Get selected user and its profile
     public function getUser($id)
     {
         $user = User::where("id", $id)->with('profile')->get()->first();
@@ -33,7 +31,6 @@ class AdminUsersController extends Controller
         ]);
     }
 
-    // Update selected user's profile
     public function update($id, AdminUsersPostRequest $request)
     {
         $user = User::where("id", $id)->with('profile')->get()->first();
@@ -67,8 +64,7 @@ class AdminUsersController extends Controller
             'birthdate' => $request->birthdate,
         ]);
     }
-
-    // Delete selected user
+    
     public function delete(Request $request)
     {
         $user = User::where("id", $request->id)->with('profile')->get()->first();

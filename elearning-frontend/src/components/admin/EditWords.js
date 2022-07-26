@@ -28,8 +28,9 @@ const EditWords = () => {
     ]
 
     // Word
-    const [word, setWord] = useState({
+    const [selectedWord, setSelectedWord] = useState({
         category_id: '',
+        id: '',
         word: '',
         choices: {
             firstChoice: {
@@ -75,8 +76,8 @@ const EditWords = () => {
             method: 'get',
             url: '/api/admin/word/' + wordId
         }).then(response => {
-            setWord({
-                ...word,
+            setSelectedWord({
+                ...selectedWord,
                 ...response.data
             })
         }).catch((error) => {
@@ -92,14 +93,15 @@ const EditWords = () => {
     // Update word function placeholder
     const updateWord = (e) => {
         e.preventDefault()
-        
-        // TO DO
+        saveWord(selectedWord, clearFields, 'update', selectedWord.id)
+        setChangeWordData(true)
     }
 
     // Clear States
     const clearFields = () => {
-        setWord({
+        setSelectedWord({
             category_id: '',
+            id: '',
             word: '',
             choices: {
                 firstChoice: {
@@ -125,10 +127,10 @@ const EditWords = () => {
 
     // Set checkbox states
     const setChoiceValue = (selectedIndex, input) => {
-        setWord({
-            ...word,
+        setSelectedWord({
+            ...selectedWord,
             choices:
-                Object.entries(word.choices).map(([key, value], index) => {
+                Object.entries(selectedWord.choices).map(([key, value], index) => {
                     var currentIndex = index + 1
                     return {
                         choice: (currentIndex === selectedIndex) ? input : value.choice,
@@ -141,10 +143,10 @@ const EditWords = () => {
 
     // Set checkbox states
     const setCorrectAnswer = (selectedIndex, type, input) => {
-        setWord({
-            ...word,
+        setSelectedWord({
+            ...selectedWord,
             choices:
-                Object.entries(word.choices).map(([key, value], index) => {
+                Object.entries(selectedWord.choices).map(([key, value], index) => {
                     var currentIndex = index + 1
                     return {
                         choice: value.choice,
@@ -158,7 +160,7 @@ const EditWords = () => {
   return (
     <div className='dashboard py-5 px-10'>
         <div className="mb-5">
-            <h4 className='title text-left'>QUIZZES MANAGEMENT</h4>
+            <h4 className='title text-left'>QUIZZES MANAGEMENT - EDIT WORD(S)</h4>
         </div>
         <div className='mb-5'>
             <label>Category</label>
@@ -194,7 +196,7 @@ const EditWords = () => {
         <Divider />
         <div>
             <div className='mb-5'>
-                <p>Add a new category by using the form below.</p>
+                <p>Edit words by using the form below.</p>
             </div>
             {/* Placeholder for editing words */}
             <form onSubmit={ updateWord } encType='application/json' className='border border-black py-5 px-10'>
@@ -204,12 +206,12 @@ const EditWords = () => {
                     <select
                         name='category'
                         onChange={(e) => {
-                            setWord({
-                                ...word,
+                            setSelectedWord({
+                                ...selectedWord,
                                 category_id: e.target.value
                             })
                         }}
-                        value={ word.category_id }
+                        value={ selectedWord.category_id }
                         className="appearance-none border-b-2 w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none">
                             <option value='-'>SELECT CATEGORY</option>
                             { CategoriesDropdown(categoryList) }
@@ -223,12 +225,12 @@ const EditWords = () => {
                         type="text"
                         name="word"
                         onChange={(e) => {
-                            setWord({
-                                ...word,
+                            setSelectedWord({
+                                ...selectedWord,
                                 word: e.target.value,
                             })
                         }}
-                        value={ word.word }
+                        value={ selectedWord.word }
                         require={ true } />
                 </div>
                 <table className='w-full'>
@@ -238,7 +240,7 @@ const EditWords = () => {
                             <th>Mark as correct answer</th>
                         </tr>
                         {
-                            Object.entries(word.choices).map(([key, value], index) => {
+                            Object.entries(selectedWord.choices).map(([key, value], index) => {
                                 var currentIndex = index + 1
                                 return (
                                     <tr key={ index }>
@@ -271,17 +273,8 @@ const EditWords = () => {
                 <Divider />
                 <div className="mt-4 flex justify-end gap-5">
                     <Button
-                        text='Clear'
-                        type='button'
-                        color='red'
-                        style={{width:'200px', minWidth:'200px'}}
-                        onClick={(e) => {
-                            e.preventDefault()
-                            clearFields()
-                        }} />
-                    <Button
                         text='Save Information'
-                        color='blue'
+                        classes='bg-blue-500 hover:bg-blue-700'
                         style={{width:'200px', minWidth:'200px'}} />
                 </div>
             </form>
