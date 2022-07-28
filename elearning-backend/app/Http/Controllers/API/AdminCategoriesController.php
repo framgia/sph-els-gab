@@ -13,16 +13,12 @@ class AdminCategoriesController extends Controller
     public function index()
     {
         $categories = Category::all();
-
-        return response()->json([
-            'categories'=> $categories,
-        ]);
+        return response()->json($categories);
     }
 
     public function getCategory($id)
     {
         $category = Category::find($id);
-
         return response()->json($category);
     }
 

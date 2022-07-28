@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import apiClient from '../../services/api'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import Toastify from '../../core/Toastify'
 import InputField from '../../core/InputField'
 import Button from '../../core/Button'
 import Divider from '../../core/Divider'
@@ -16,12 +14,11 @@ import WordsTable from './WordsTable'
 const CreateWords = () => {
     // Cateogry List
     const [categoryList, setCategoryList] = useState([])
-    const [isCategoryLoading, setIsCategoryLoading] = useState(true)
 
     // Word List
     const [changeWordData, setChangeWordData] = useState(true)
     const [wordList, setWordList] = useState([])
-    const choices =[
+    const choices = [
         'choice1', 'choice2', 'choice3', 'choice4'
     ]
 
@@ -54,31 +51,29 @@ const CreateWords = () => {
     })
 
     // Fetch all categories
-    const GetCategoryList = useCallback(async () => {
+    const getCategoryList = useMemo(() => {
         getCategories(setCategoryList)
-        setIsCategoryLoading(false)
     }, [])
 
     // Fetch all words
-    const GetWordList = useCallback(async () => {
+    const getWordList = useCallback(async () => {
         getWords(setWordList)
         setChangeWordData(false)
     }, [changeWordData])
 
     useEffect(() => {
-        GetWordList()
-        GetCategoryList()
-    }, [GetWordList])
+        getWordList()
+    }, [getWordList])
 
     // Save word
     const SaveWord = (e) => {
         e.preventDefault()
-        saveWord(word, ClearFields)
+        saveWord(word, clearFields)
         setChangeWordData(true)
     }
 
     // Clear States
-    const ClearFields = () => {
+    const clearFields = () => {
         setWord({
             category_id: '',
             word: '',
@@ -104,7 +99,7 @@ const CreateWords = () => {
         })
     }
 
-    // Set checkbox states
+    // Set field choices
     const setChoiceValue = (selectedIndex, input) => {
         setWord({
             ...word,
@@ -143,7 +138,6 @@ const CreateWords = () => {
                 <h4 className='title text-left'>QUIZZES MANAGEMENT - ADD WORD(S)</h4>
             </div>
             <div style={{ height: '250px', maxHeight: '250px', overflowY: 'scroll' }} className='border-2 border-slate-500'>
-                {/* Placeholder for retrieving words */}
                 <table className='w-full border-collapse table-fixed'>
                     <thead className='bg-black border-b sticky top-0'>
                         <tr>
@@ -204,34 +198,34 @@ const CreateWords = () => {
                                 <th>Mark as correct answer</th>
                             </tr>
                             {
-                            Object.entries(word.choices).map(([key, value], index) => {
-                                var currentIndex = index + 1
-                                return (
-                                    <tr key={ index }>
-                                        <td>
-                                            <InputField
-                                                    type="text"
-                                                    name={ choices[index] }
-                                                    classes={`border-2`}
-                                                    onChange={(e) => {
-                                                        setChoiceValue(currentIndex, e.target.value)
+                                Object.entries(word.choices).map(([key, value], index) => {
+                                    var currentIndex = index + 1
+                                    return (
+                                        <tr key={ index }>
+                                            <td>
+                                                <InputField
+                                                        type="text"
+                                                        name={ choices[index] }
+                                                        classes={`border-2`}
+                                                        onChange={(e) => {
+                                                            setChoiceValue(currentIndex, e.target.value)
+                                                        }}
+                                                        value={ value.choice }
+                                                        require={ true } />
+                                            </td>
+                                            <td className='text-center'>
+                                                <input
+                                                    type='checkbox'
+                                                    name={ `${choices[index]}c` }
+                                                    onChange={() => {
+                                                        setCorrectAnswer(currentIndex)
                                                     }}
-                                                    value={ value.choice }
-                                                    require={ true } />
-                                        </td>
-                                        <td className='text-center'>
-                                            <input
-                                                type='checkbox'
-                                                name={ `${choices[index]}c` }
-                                                onChange={() => {
-                                                    setCorrectAnswer(currentIndex)
-                                                }}
-                                                checked={ value.is_correct } />
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
+                                                    checked={ value.is_correct } />
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
                         </tbody>
                     </table>
                     <Divider />
@@ -243,7 +237,7 @@ const CreateWords = () => {
                             style={{width:'200px', minWidth:'200px'}}
                             onClick={(e) => {
                                 e.preventDefault()
-                                ClearFields()
+                                clearFields()
                             }} />
                         <Button
                             text='Save Information'

@@ -6,7 +6,7 @@ const getCategories = (setCategoryList) => {
         method: "get",
         url: "/api/admin/categories"
     }).then(response => {
-        setCategoryList(response.data.categories)
+        setCategoryList(response.data)
     }).catch(error => {
         Toastify("error", error)
     })

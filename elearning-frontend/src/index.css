@@ -68,7 +68,7 @@ p, a, label, table, tr, td, div, input, button {
 
 .dropdown .dropdownitems {
   position: absolute;
-  bottom: -230%;
+  top: 100%;
   left: -10px
 }
 

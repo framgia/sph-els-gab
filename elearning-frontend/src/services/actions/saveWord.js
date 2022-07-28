@@ -11,7 +11,6 @@ const saveWord = (data, clearFields, option, wordId) => {
         clearFields()
     }).catch(error => {
         Toastify('error', error)
-        console.log(error)
     })
 }
 

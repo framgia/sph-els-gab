@@ -16,14 +16,12 @@ import WordsTable from './WordsTable'
 const EditWords = () => {
     // Cateogry List
     const [categoryList, setCategoryList] = useState([])
-    const [isCategoryLoading, setIsCategoryLoading] = useState(true)
     const [selectedCategory, setSelectedCategory] = useState(null)
 
     // Word List
     const [changeWordData, setChangeWordData] = useState(true)
     const [wordList, setWordList] = useState([])
-    const [isWordListLoading, setIsWordListLoading] = useState(false)
-    const choices =[
+    const choices = [
         'choice1', 'choice2', 'choice3', 'choice4'
     ]
 
@@ -57,9 +55,8 @@ const EditWords = () => {
     })
 
     // Fetch all categories
-    const getCategoryList = useCallback(async () => {
+    const getCategoryList = useMemo(() => {
         getCategories(setCategoryList)
-        setIsCategoryLoading(false)
     }, [])
 
     // Fetch all words
@@ -74,12 +71,9 @@ const EditWords = () => {
 
         apiClient({
             method: 'get',
-            url: '/api/admin/word/' + wordId
+            url: `/api/admin/word/${wordId}`
         }).then(response => {
-            setSelectedWord({
-                ...selectedWord,
-                ...response.data
-            })
+            setSelectedWord({...response.data})
         }).catch((error) => {
             Toastify("error", error)
         })
@@ -90,7 +84,7 @@ const EditWords = () => {
 
         apiClient({
             method: 'delete',
-            url: '/api/admin/word/' + wordId
+            url: `/api/admin/word/${wordId}`
         }).then((response) => {
             Toastify('success', "Succesfully deleted word!")
             setChangeWordData(true)
@@ -101,7 +95,6 @@ const EditWords = () => {
 
     useEffect(() => {
         getWordList()
-        getCategoryList()
     }, [getWordList])
 
     // Update word function placeholder

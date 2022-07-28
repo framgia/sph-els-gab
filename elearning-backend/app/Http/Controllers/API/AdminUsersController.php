@@ -16,24 +16,18 @@ class AdminUsersController extends Controller
         // Exculde current user
         $currentUser = auth()->user()->id;
         $users = User::where("id", "!=", $currentUser)->with('profile')->get();
-
-        return response()->json([
-            'users'=> $users,
-        ]);
+        return response()->json($users);
     }
 
     public function getUser($id)
     {
-        $user = User::where("id", $id)->with('profile')->get()->first();
-
-        return response()->json([
-            'user'=> $user,
-        ]);
+        $user = User::with('profile')->find($id);
+        return response()->json($user);
     }
 
     public function update($id, AdminUsersPostRequest $request)
     {
-        $user = User::where("id", $id)->with('profile')->get()->first();
+        $user = User::with('profile')->find($id);
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
@@ -41,7 +35,7 @@ class AdminUsersController extends Controller
             $filename = $user->username . '.' . $extension;
             $file->move(public_path() . '\\uploads\\avatar\\', $filename);
 
-            UserProfile::where("user_id", $user->id)->update(['avatar' => $filename]);
+            UserProfile::where("user_id", $user->id)->update(['avatar' => env('FILE_STORAGE') . 'avatar/' . $filename]);
         }
 
         if ($request->input('hasAvatar') == 'false') {
@@ -69,6 +63,6 @@ class AdminUsersController extends Controller
     {
         $user = User::where("id", $request->id)->with('profile')->get()->first();
         File::delete(public_path() . '\\uploads\\avatar\\' . $user->profile['avatar']);
-        User::where("id", $request->id)->delete();
+        User::find($request->id)->delete();
     }
 }

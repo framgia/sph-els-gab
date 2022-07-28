@@ -4,10 +4,10 @@ import { AuthProvider } from './services/AuthProvider'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AdminRoute } from './components/AdminRoute'
 
-import Login from './components/Login'
+import Login from './pages/Login'
+import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Navbar from './components/Navbar'
-import Register from './components/Register'
 import ProfileSettings from './components/ProfileSettings'
 
 // Action
@@ -15,15 +15,24 @@ import Users from './components/admin/Users';
 import Categories from './components/admin/Categories'
 import CreateWords from './components/admin/CreateWords'
 import EditWords from './components/admin/EditWords'
+import { AuthRoute } from './components/AuthRoute'
+import { ToastContainer } from 'react-toastify'
 
 const App = () => {
   return (
     <AuthProvider>
         <Navbar />
         <Routes>
-            <Route path='/' element={ <Login /> } />
-            <Route path="/register" element={ <Register /> } />
-
+            <Route path='/' element={
+                <AuthRoute>
+                    <Login />
+                </AuthRoute>
+            } />
+            <Route path="/register" element={
+                <AuthRoute>
+                    <Register />
+                </AuthRoute>
+            } />
             {/* Authenticated Modules */}
             <Route path='/dashboard' element={
                 <ProtectedRoute>
@@ -58,6 +67,7 @@ const App = () => {
                 </AdminRoute>
             } /> 
         </Routes>
+        <ToastContainer />
     </AuthProvider>
   )
 }

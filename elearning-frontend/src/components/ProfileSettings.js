@@ -5,14 +5,13 @@ import Toastify from '../core/Toastify'
 import InputField from '../core/InputField'
 import Button from '../core/Button'
 import Divider from '../core/Divider'
+import UserAvatar from './UserAvatar'
 
 const ProfileSettings = () => {
     // User Details
     const [hasAvatar, setHasAvatar] = useState(false)
-    const defaultPicture = 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
     const avatarRef = useRef(null)
     const [user, setUser] = useState({
-        profilepic: defaultPicture,
         avatar: null,
         firstname: '',
         middlename: null,
@@ -27,26 +26,20 @@ const ProfileSettings = () => {
     const usertoken = localStorage.getItem('user')
 
     useEffect(() => {
-        apiClient({
-            method: "get",
-            url: "/api/user",
-        }).then(response => {
-            setUser({
-                ...user,
-                ...response.data,
-                email: response.data.email,
-                profilepic: (response.data.avatar !== null && response.data.avatar !== "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.avatar : defaultPicture),
-                avatar: (response.data.avatar !== null && response.data.avatar !== "" ? response.data.avatar : null),
+        const fetchUser = async () => {
+            const data = apiClient({
+                method: "get",
+                url: "/api/user",
+            }).then(response => {
+                setUser({...response.data})
+                setHasAvatar(response.data.avatar !== null && response.data.avatar !== "" ? true : false)
+                setLoading(false)
+            }).catch(error => {
+                Toastify("error", error)
             })
+        }
 
-            if (response.data.avatar !== null && response.data.avatar !== "") {
-                setHasAvatar(true)
-            }
-
-            setLoading(false)
-        }).catch( error => {
-            Toastify("error", error)
-            })
+        fetchUser()
     }, [])
 
     const saveUser = (e) => {
@@ -62,7 +55,6 @@ const ProfileSettings = () => {
                 _method: "patch",
                 token: usertoken,
                 hasAvatar: hasAvatar,
-                profilepic: user.profilepic,
                 avatar: user.avatar,
                 firstname: user.firstname,
                 middlename: user.middlename,
@@ -84,7 +76,6 @@ const ProfileSettings = () => {
         setUser({
             ...user,
             avatar: null,
-            profilepic: 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
         })
         setHasAvatar(false)
     }
@@ -102,7 +93,7 @@ const ProfileSettings = () => {
                         <div className="col-span-1">
                             {/* Avatar */}
                             <div className="form-group mb-8 avatar-section">
-                                <img src={ user.profilepic } alt="dp" className='mb-5' />
+                                <UserAvatar avatar={ user.avatar } />
                                 <label>Profile Picture</label>
                                 <div className='grid grid-cols-5 items-center gap-2'>
                                     <div className='col-span-4'>
@@ -233,7 +224,7 @@ const ProfileSettings = () => {
                             <div className="form-group text-right mt-4">
                                 <Button
                                     text='Save Information'
-                                    color='blue'
+                                    classes='bg-blue-500 hover:bg-blue-700'
                                     style={{width:'200px', minWidth:'200px'}} />
                             </div>
                         </div>
@@ -243,17 +234,15 @@ const ProfileSettings = () => {
     }
 
     return (
-        <>
-            <div className="dashboard py-20 px-10">
-                <div className="mb-5">
-                    <h4 className='title text-left'>ACCOUNT SETTINGS</h4>
-                </div>
-                <hr className='mb-5'/>
-                <div>
-                    { view_element }
-                </div>
+        <div className="dashboard py-20 px-10">
+            <div className="mb-5">
+                <h4 className='title text-left'>ACCOUNT SETTINGS</h4>
             </div>
-        </>
+            <hr className='mb-5'/>
+            <div>
+                { view_element }
+            </div>
+        </div>
     )
 }
 

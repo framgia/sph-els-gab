@@ -23,7 +23,7 @@ const WordsTable = (wordList, fillWord = null, deleteWord = null) => {
                             <td className='text-center'>{ word.correct_answer }</td>
                             {
                                 (fillWord !== null && deleteWord !== null) ?
-                                    <td className='flex justify-center'>
+                                    <td className='flex justify-center gap-2'>
                                         <Button
                                             text='EDIT'
                                             type='button'
