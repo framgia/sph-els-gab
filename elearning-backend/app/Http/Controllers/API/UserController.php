@@ -13,8 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = auth()->user()->profile();
-
+        $user = auth()->user()->profile;
         return response()->json($user);
     }
 
@@ -51,16 +50,13 @@ class UserController extends Controller
 
         $token = $user->createToken('myapptoken')->plainTextToken;
         auth()->login($user);
-
-        return response()->json([
-            'token'=> $token,
-        ]);
+        return response()->json($token);
     }
     
     public function update(UserProfileInformationPostRequest $request)
     {
         $currentUser = auth()->user()->id;
-        $user = auth()->user()->profile();
+        $user = User::with('profile')->find($currentUser);
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
@@ -68,7 +64,7 @@ class UserController extends Controller
             $filename = $user->username . '.' . $extension;
             $file->move(public_path() . '\\uploads\\avatar\\', $filename);
 
-            UserProfile::where("user_id", $currentUser)->update(['avatar' => $filename]);
+            UserProfile::where("user_id", $currentUser)->update(['avatar' => env('FILE_STORAGE') . 'avatar/' . $filename]);
         }
 
         if ($request->input('hasAvatar') == 'false') {

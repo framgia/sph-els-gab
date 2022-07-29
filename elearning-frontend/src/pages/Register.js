@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react'
+import React, {useState, useRef} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../services/AuthProvider'
 import apiClient from '../services/api'
@@ -7,6 +7,7 @@ import Toastify from '../core/Toastify'
 import InputField from '../core/InputField'
 import Button from '../core/Button'
 import Divider from '../core/Divider'
+import UserAvatar from '../components/UserAvatar'
 
 const Register = (props) => {
     const { login, loggedIn } = useAuth()
@@ -15,7 +16,6 @@ const Register = (props) => {
 
     const avatarRef = useRef(null)
     const [user, setUser] = useState({
-        profilepic: 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg',
         avatar: null,
         firstname: '',
         middlename: '',
@@ -28,12 +28,6 @@ const Register = (props) => {
         username: '',
         password: ''
     })
-
-    useEffect(() => {
-        if (loggedIn) {
-            navigate('/dashboard')
-        }
-    }, [])
     
     const saveUser = async (e) => {
         e.preventDefault()
@@ -48,7 +42,6 @@ const Register = (props) => {
                 'Content-Type': 'multipart/form-data'
             },
             data: {
-                profilepic: user.profilepic,
                 avatar: user.avatar,
                 firstname: user.firstname,
                 middlename: user.middlename,
@@ -64,7 +57,6 @@ const Register = (props) => {
         }).then((response) => {
             setUser({
                 ...user,
-                profilepic: 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg',
                 avatar: null,
                 firstname: '',
                 middlename: '',
@@ -78,7 +70,7 @@ const Register = (props) => {
                 password: '',
             })
 
-            localStorage.setItem('user', response.data.token)
+            localStorage.setItem('user', response.data)
             login()
             navigate('/dashboard')
         }).catch((error) => {
@@ -91,7 +83,6 @@ const Register = (props) => {
         setUser({
             ...user,
             avatar: null,
-            profilepic: 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
         })
     }
 
@@ -108,7 +99,7 @@ const Register = (props) => {
                         <div className="col-span-1">
                             {/* Avatar */}
                             <div className="form-group mb-8 avatar-section">
-                                <img src={ user.profilepic } alt="dp" className='mb-5' />
+                                <UserAvatar avatar={ user.avatar } /> 
                                 <label>Profile Picture</label>
                                 <div className='grid grid-cols-5 items-center gap-2'>
                                     <div className='col-span-4'>
@@ -120,7 +111,6 @@ const Register = (props) => {
                                                 setUser({
                                                     ...user,
                                                     avatar: e.target.files[0],
-                                                    profilepic: URL.createObjectURL(e.target.files[0])
                                                 })
                                             }}
                                             className="appearance-none w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none"

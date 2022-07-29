@@ -5,14 +5,14 @@ import Toastify from '../../core/Toastify'
 import InputField from '../../core/InputField'
 import Button from '../../core/Button'
 import Divider from '../../core/Divider'
+import CategoriesTable from './CategoriesTable'
+import getCategories from '../../services/actions/getCategories'
 
 
 const Categories = () => {
     // Cateogry List
     const [categoryList, setCategoryList] = useState([])
-
     const [changeData, setChangeData] = useState(true)
-    const [isLoading, setIsLoading] = useState(true)
 
     // Category
     const [hasSelectedCategory, setHasSelectedCategory] = useState(false)
@@ -24,26 +24,18 @@ const Categories = () => {
     })
 
     // Fetch all categories
-    const FetchCategories = useCallback(async () => {
-        const data = await apiClient({
-            method: "get",
-            url: "/api/admin/categories"
-        }).then(response => {
-            setCategoryList(response.data.categories)
-            setChangeData(false)
-        }).catch(error => {
-            Toastify("error", error)
-        })
+    const fetchCategories = useCallback(async () => {
+        const data = await getCategories(setCategoryList)
+        setChangeData(false)
     }, [changeData])
 
     // Component Mount
     useEffect(() => {
-        FetchCategories()
-        setIsLoading(false)
-    }, [FetchCategories, changeData])
+        fetchCategories()
+    }, [fetchCategories, changeData])
 
     // Save selected category
-    const SaveCategory = (e) => {
+    const saveCategory = (e) => {
         e.preventDefault()
 
         if (!hasSelectedCategory && (category.title === '' || category.description === '' || category.slug === '')) {
@@ -53,14 +45,14 @@ const Categories = () => {
 
         apiClient({
             method: (hasSelectedCategory ? "put" : "post"),
-            url: (hasSelectedCategory ? "/api/admin/category/" + category.id : "/api/admin/category"),
+            url: (hasSelectedCategory ? `/api/admin/category/${category.id}` : "/api/admin/category"),
             data: {
                 title: category.title,
                 description: category.description,
                 slug: category.slug,
             }
         }).then(response => {
-            ClearFields()
+            clearFields()
             Toastify("success", "Succesfully saved the category")
         }).catch(error => {
             Toastify("error", error)
@@ -68,7 +60,7 @@ const Categories = () => {
     }
 
     // Clear input fields
-    const ClearFields = () => {
+    const clearFields = () => {
         setCategory({
             ...category,
             id: '',
@@ -81,59 +73,20 @@ const Categories = () => {
         setChangeData(true)
     }
 
-    var view_element = ""
-
-    if (isLoading) {
-        view_element = <tr><td colSpan={2}>LOADING DATA</td></tr>
-    }
-    else {
-        view_element =
-            <>
-                {
-                    categoryList.map((category) => {
-                        return (
-                            <tr key={category.id}>
-                                <td>{category.title}</td>
-                                <td>
-                                    <div className='flex'>
-                                        <button onClick={(e) => {
-                                            e.preventDefault()
-
-                                            apiClient({
-                                                method: "get",
-                                                url: "/api/admin/category/" + category.id
-                                            }).then(response => { 
-                                                setCategory({
-                                                    ...category,
-                                                    ...response.data.category
-                                                })
-                                                setHasSelectedCategory(true)
-                                            }).catch(error => {
-                                                Toastify("error", error)
-                                            })
-                                        }}>EDIT</button>
-                                        <button onClick={(e) => {
-                                            e.preventDefault()
-
-                                            if (window.confirm('Are you sure you want to delete this category?')) {
-                                                apiClient({
-                                                    method: "delete",
-                                                    url: "/api/admin/category/" + category.id
-                                                }).then(response => {
-                                                    ClearFields()
-                                                    Toastify("success", "Succesfully deleted the category")
-                                                }).catch(error => {
-                                                    Toastify("error", error)
-                                                })
-                                            }
-                                        }}>DELETE</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        )
-                    })
-                }
-            </>
+    const WriteTitle = (e) => {
+        if (!hasSelectedCategory) {
+            setCategory({
+                ...category,
+                title: e.target.value,
+                slug: (e.target.value).replace(' ', '-').toLowerCase()
+            })
+        }
+        else {
+            setCategory({
+                ...category,
+                title: e.target.value,
+            })
+        }
     }
 
     return (
@@ -150,7 +103,7 @@ const Categories = () => {
                                     <td>Title</td>
                                     <td>Actions</td>
                                 </tr>
-                                { view_element }
+                                { CategoriesTable(categoryList, setCategory, setHasSelectedCategory, clearFields) }
                             </tbody>
                         </table>
                     </div>
@@ -158,7 +111,7 @@ const Categories = () => {
                         <div className='mb-5'>
                             <p>Add a new category by using the form below or select any cateogry to edit.</p>
                         </div>
-                        <form onSubmit={ SaveCategory } encType="application/json">
+                        <form onSubmit={ saveCategory } encType="application/json">
                             <div className='grid grid-cols-1 gap-5'>
                                 <div className="col-span-3">
                                     {/* Title */}
@@ -167,21 +120,7 @@ const Categories = () => {
                                         <InputField
                                             type="text"
                                             name="title"
-                                            onChange={(e) => {
-                                                if (!hasSelectedCategory) {
-                                                    setCategory({
-                                                        ...category,
-                                                        title: e.target.value,
-                                                        slug: (e.target.value).replace(' ', '-').toLowerCase()
-                                                    })
-                                                }
-                                                else {
-                                                    setCategory({
-                                                        ...category,
-                                                        title: e.target.value,
-                                                    })
-                                                }
-                                            }}
+                                            onChange={e => WriteTitle(e)}
                                             value={ category.title }
                                             require={ true } />
                                     </div>
@@ -220,7 +159,7 @@ const Categories = () => {
                                             style={{width:'200px', minWidth:'200px'}}
                                             onClick={(e) => {
                                                 e.preventDefault()
-                                                ClearFields()
+                                                clearFields()
                                             }} />
                                         <Button
                                             text={ hasSelectedCategory ? "Save Category" : "Add Category" }

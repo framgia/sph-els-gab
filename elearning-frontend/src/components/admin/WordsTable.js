@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
+import Button from '../../core/Button'
 
-const WordsTable = (wordList, fillWord = null) => {
+const WordsTable = (wordList, fillWord = null, deleteWord = null) => {
     return (
         useMemo(() => {
             return (
@@ -21,9 +22,19 @@ const WordsTable = (wordList, fillWord = null) => {
                             </td>
                             <td className='text-center'>{ word.correct_answer }</td>
                             {
-                                fillWord !== null ?
-                                    <td className='flex'>
-                                        <button onClick={e => fillWord(e, word.id) }>Edit</button>
+                                (fillWord !== null && deleteWord !== null) ?
+                                    <td className='flex justify-center gap-2'>
+                                        <Button
+                                            text='EDIT'
+                                            type='button'
+                                            classes='bg-blue-500 hover:bg-blue-700'
+                                            onClick={e => fillWord(e, word.id) } />
+
+                                        <Button
+                                            text='DELETE'
+                                            type='button'
+                                            classes='bg-red-500 hover:bg-red-700'
+                                            onClick={e => deleteWord(e, word.id) } />
                                     </td>
                                 :
                                 <></>

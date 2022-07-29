@@ -5,7 +5,6 @@ use App\Http\Controllers\API\AdminUsersController;
 use App\Http\Controllers\API\AdminCategoriesController;
 use App\Http\Controllers\API\SessionsController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,8 +23,7 @@ Route::post('/register', [UserController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Authenticated Routes
-    Route::get('/user', [UserProfileController::class, 'index']);
-    Route::post('/user', [UserProfileController::class, 'index']);
+    Route::get('/user', [UserController::class, 'index']);
     Route::patch('/user', [UserController::class, 'update']);
     Route::post('/logout', [SessionsController::class, 'logout']);
 
@@ -42,8 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/admin/category/{id}', [AdminCategoriesController::class, 'delete']);
 
     Route::get('/admin/words', [AdminWordsController::class, 'index']);
-    Route::get('/admin/category/{id}/words', [AdminWordsController::class, 'index']);
+    Route::get('/admin/category/{id}/words', [AdminWordsController::class, 'show']);
     Route::get('/admin/word/{id}', [AdminWordsController::class, 'getSingleWord']);
     Route::post('/admin/word', [AdminWordsController::class, 'store']);
     Route::patch('/admin/word/{id}', [AdminWordsController::class, 'update']);
+    Route::delete('/admin/word/{id}', [AdminWordsController::class, 'delete']);
 });

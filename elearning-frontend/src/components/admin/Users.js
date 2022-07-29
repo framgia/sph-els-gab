@@ -5,6 +5,8 @@ import Toastify from '../../core/Toastify'
 import InputField from '../../core/InputField'
 import Button from '../../core/Button'
 import Divider from '../../core/Divider'
+import UserAvatar from '../UserAvatar'
+import UsersTable from './UsersTable'
 
 
 const Users = () => {
@@ -18,11 +20,9 @@ const Users = () => {
     const [hasSelectedUser, setHasSelectedUser] = useState(false)
     const [selectedUser, setSelectedUser] = useState('')
     const [hasAvatar, setHasAvatar] = useState(false)
-    const defaultPicture = 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'
     const avatarRef = useRef(null)
     const [user, setUser] = useState({
         id: '',
-        profilepic: defaultPicture,
         avatar: null,
         firstname: '',
         middlename: null,
@@ -33,13 +33,12 @@ const Users = () => {
         address: '',
     })
 
-    // Fetch User
-    const GetUsers = useCallback(async () => {
+    const getUsers = useCallback(async () => {
         const data = await apiClient({
             method: "get",
             url: "/api/admin/users",
         }).then(response => {
-            setUserList(response.data.users)
+            setUserList(response.data)
             setChangeData(false)
         }).catch(error => {
             Toastify("error", error)
@@ -47,12 +46,29 @@ const Users = () => {
     }, [changeData])
     
     useEffect(() => {
-        GetUsers()
+        getUsers()
         setIsLoading(false)
-    }, [GetUsers, changeData])
+    }, [getUsers])
 
-    // Save User
-    const SaveUser = async (e) => {
+    // Spread user information to fields
+    const fillUser = async (e, userId) => {
+        e.preventDefault()
+
+        apiClient({
+            method: "get",
+            url: `/api/admin/user/${userId}`
+        }).then(response => {
+            clearFields()
+            setHasSelectedUser(true)
+            setSelectedUser(response.data.id)
+            setUser(response.data.profile)
+            setHasAvatar(response.data.profile.avatar !== null && response.data.profile.avatar != "" ? true : false)
+        }).catch(error => {
+            Toastify("error", error)
+        })
+    }
+
+    const saveUser = async (e) => {
         e.preventDefault()
 
         if(!hasSelectedUser) {
@@ -62,14 +78,13 @@ const Users = () => {
 
         apiClient({
             method: "post",
-            url: `/api/admin/user/` + selectedUser,
+            url: `/api/admin/user/${selectedUser}`,
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
             data: {
                 _method: "patch",
                 hasAvatar: hasAvatar,
-                profilepic: user.profilepic,
                 avatar: user.avatar,
                 firstname: user.firstname,
                 middlename: user.middlename,
@@ -80,14 +95,14 @@ const Users = () => {
                 address: user.address,
             }
         }).then(response => {
-            ClearFields()
+            clearFields()
             Toastify("success", "Succesfully saved user information")
         }).catch(error => {
             Toastify("error", error)
         })
     }
 
-    const ClearFields = () => {
+    const clearFields = () => {
         DeleteAvatar()
 
         setHasSelectedUser(false)
@@ -95,7 +110,6 @@ const Users = () => {
 
         setUser({
             ...user, 
-            profilepic: defaultPicture,
             avatar: null,
             firstname: '',
             middlename: null,
@@ -114,104 +128,34 @@ const Users = () => {
         setUser({
             ...user,
             avatar: null,
-            profilepic: defaultPicture,
         })
         setHasAvatar(false)
     }
-
-    var view_element = ""
-
-    if (isLoading) {
-        view_element = <tr><td colSpan={2}>LOADING DATA</td></tr>
-    }
-    else {
-        view_element =
-            <>
-                {
-                    userList.map((user) => {
-                        return (
-                            <tr key={user.id}>
-                                <td>{user.profile.firstname + " " + (user.profile.middlename !== null && user.profile.middlename !== "" ? user.profile.middlename + " " : "") + user.profile.lastname}</td>
-                                <td>
-                                    <div className='flex'>
-                                        <button onClick={(e) => {
-                                            e.preventDefault()
-
-                                            apiClient({
-                                                method: "get",
-                                                url: "/api/admin/user/" + user.id,
-                                            }).then(response => {
-                                                ClearFields()
-
-                                                setHasSelectedUser(true)
-                                                setSelectedUser(response.data.user.id)
-                                                setUser({
-                                                    ...user,
-                                                    ...response.data.user.profile,
-                                                    profilepic: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? 'http://127.0.0.1:8000/uploads/avatar/' + response.data.user.profile.avatar : defaultPicture),
-                                                    avatar: (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "" ? response.data.user.profile.avatar : null),
-                                                })
-                                
-                                                if (response.data.user.profile.avatar !== null && response.data.user.profile.avatar != "") {
-                                                    setHasAvatar(true)
-                                                }
-                                            }).catch(error => {
-                                                Toastify("error", error)
-                                            })
-                                        }}>EDIT</button>
-                                        <button onClick={(e) => {
-                                            e.preventDefault()
-
-                                            if (window.confirm('Are you sure you want to delete this user?')) {
-                                                apiClient({
-                                                    method: "delete",
-                                                    url: "/api/admin/user/" + user.id,
-                                                    headers: {
-                                                        'Content-Type': 'multipart/form-data'
-                                                    }
-                                                }).then(response => {
-                                                    Toastify("success", "Succesfully deleted user")
-                                                }).catch(error => {
-                                                    Toastify("error", error)
-                                                })
-                                            }
-                                        }}>DELETE</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        )
-                    })
-                }
-            </>
-    }
-
+    
     return (
         <div className='dashboard py-20 px-10'>
             <div className="mb-5">
                 <h4 className='title text-left'>USER MANAGEMENT</h4>
             </div>
-            <div className='grid grid-cols-5 gap-5'>
-                <div className='col-span-1'>
-                    <table className='border-separate [border-spacing:1rem]'>
+            <div className='grid grid-cols-6 gap-5'>
+                <div className='col-span-2'>
+                    <table className='border-separate [border-spacing:1rem] table-fixed'>
                         <tbody>
                             <tr>
                                 <td>Name</td>
                                 <td>Actions</td>
                             </tr>
-                            { view_element }
+                            { UsersTable(userList, fillUser) }
                         </tbody>
                     </table>
                 </div>
                 <div className='col-span-4'>
-                    <form onSubmit={ SaveUser } encType='multipart/form-data'>
+                    <form onSubmit={ saveUser } encType='multipart/form-data'>
                         <div className='grid grid-cols-4 gap-5'>
                             <div className="col-span-1">
                                 {/* Avatar */}
                                 <div className="form-group mb-8 avatar-section">
-                                    <img
-                                        src={ user.profilepic }
-                                        alt="dp"
-                                        className='mb-5' />
+                                    <UserAvatar avatar={ user.avatar } />
                                     <label>Avatar</label>
                                     <div className='grid grid-cols-5 items-center gap-2'>
                                         <div className='col-span-4'>
@@ -224,7 +168,6 @@ const Users = () => {
                                                     setUser({
                                                         ...user,
                                                         avatar: e.target.files[0],
-                                                        profilepic: URL.createObjectURL(e.target.files[0])
                                                     })
                                                 }}
                                                 className="appearance-none w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none avatar"
@@ -267,8 +210,7 @@ const Users = () => {
                                                 ...user,
                                                 middlename: e.target.value
                                             })}
-                                            value={ user.middlename === null ? '' : user.middlename }
-                                            require={ true } />
+                                            value={ user.middlename === null ? '' : user.middlename } />
                                     </div>
                                     {/* Last Name */}
                                     <div className="form-group mb-8">

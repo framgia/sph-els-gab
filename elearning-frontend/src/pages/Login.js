@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../services/AuthProvider'
 import apiClient from '../services/api'
@@ -10,17 +10,10 @@ import Divider from '../core/Divider'
 
 const Login = () => {
     const { login, setIsAdmin, loggedIn } = useAuth()
-    // const Auth = useAuth()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
-
-    useEffect(() => {
-        if (loggedIn) {
-            navigate('/dashboard')
-        }
-    }, [loggedIn])
 
     const handleSubmit = (e) => {
         e.preventDefault()

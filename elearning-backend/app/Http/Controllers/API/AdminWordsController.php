@@ -4,29 +4,29 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateWordsPostRequest;
+use App\Models\Category;
 use App\Models\Word;
 
 class AdminWordsController extends Controller
 {
-    public function index($id = null)
+    public function index()
     {
-        if ($id === null)
-        {
-            $words = Word::with('category')->orderBy('category_id')->get();
-        }
-        else {
-            $words = Word::where("category_id", $id)->with('category')->orderBy('category_id')->get();
-        }
-
+        $words = Word::with('category')->orderBy('category_id')->get();
         $data = collect($words)->map(function ($word) {
-            return [
-                "category" => $word->category,
-                "id" => $word->id,
-                "category_id" => $word->category_id,
-                "word" => $word->word,
-                "correct_answer" => $word->correct_answer,
-                "choices" => json_decode($word->choices)
-            ];
+            $word->choices = json_decode($word->choices);
+            return $word;
+        });
+
+        return response()->json($data);
+    }
+
+    public function show($param)
+    {
+        $queryValue = intval($param) ? $param : Category::where('slug', $param)->first()->id;
+        $words = Word::where("category_id", $queryValue)->with('category')->orderBy('category_id')->get();
+        $data = collect($words)->map(function ($word) {
+            $word->choices = json_decode($word->choices);
+            return $word;
         });
 
         return response()->json($data);
@@ -34,7 +34,7 @@ class AdminWordsController extends Controller
 
     public function getSingleWord($id)
     {
-        $word = Word::where('id', $id)->get()->first(); 
+        $word = Word::find($id); 
         $word->choices = json_decode($word->choices);
         return response()->json($word);
     }
@@ -89,5 +89,10 @@ class AdminWordsController extends Controller
             'correct_answer' => $correctAnswer,
             'word' => $request->word,
         ]);
+    }
+
+    public function delete($id)
+    {
+        Word::find($id)->delete();
     }
 }

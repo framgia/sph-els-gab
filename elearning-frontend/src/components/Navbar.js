@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../services/AuthProvider'
+import { navigation } from '../constants/navigation' 
+import NavbarItem from './NavbarItem'
 
 const Navbar = () => {
     const { loggedIn, logout, isAdmin } = useAuth()
 
-    const [dropDown, setDropdown] = useState(false)
     const [adminNav, setAdminNav] = useState(false)
 
     useEffect(() => {
@@ -27,84 +27,42 @@ const Navbar = () => {
           </button>
           <div className="hidden w-full md:block md:w-auto" id="mobile-menu">
             <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
-                { loggedIn ?
-                      <li>
-                          <a href="/" className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page">Home</a>
-                      </li>
-                      : <></>
-                }
-                { adminNav ?
-                    <>
-                        <li className='dropdown'>
-                            <button
-                                id="dropdownmenu"
-                                data-dropdown-toggle="dropdown"
-                                className="text-center inline-flex items-center"
-                                type="button"
-                                onClick={() => {
-                                  setDropdown(!dropDown)
-                                }}>Dropdown button
-                                <svg
-                                    className="w-4 h-4 ml-2"
-                                    aria-hidden="true"
-                                    fillRule="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                            <div
-                                className={`z-10 ${dropDown ? 'block' : 'hidden'} bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dropdownitems`}>
-                                <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefault">
-                                    <li>
-                                        <Link
-                                            to="/admin/users"
-                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            onClick={() => {
-                                              setDropdown(!dropDown)
-                                            }}>User Management</Link>
-                                        <Link
-                                            to="/admin/categories"
-                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            onClick={() => {
-                                              setDropdown(!dropDown)
-                                            }}>Category Management</Link>
-                                            <Link
-                                                to="/admin/words/"
-                                                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                onClick={() => {
-                                                  setDropdown(!dropDown)
-                                                }}>Add Words</Link>
-                                            <Link
-                                                to="/admin/words/edit"
-                                                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                onClick={() => {
-                                                  setDropdown(!dropDown)
-                                                }}>Edit Words</Link>
-                                    </li>
-                                </ul>
-                            </div>
-                          </li>
-                      </>
-                  : <></>
-                }
-                { loggedIn ?
-                      <li>
-                          <button onClick={ logout } className="nav-link btn btn-link">Logout</button>
-                      </li>
-                      : <>
+                {
+                    !loggedIn ?
+                        navigation.unauthenticated.map((item, index) => {
+                            return (
+                                <NavbarItem
+                                      key={ index }
+                                      name={ item.name }
+                                      path={ item.path }
+                                      hasDropDown={ item.hasDropDown } />
+                            )
+                        })
+                    :
+                        <>
+                            {
+                                navigation.authenticated.map((item, index) => {
+                                  if (!adminNav) {
+                                      if (item.adminOnly) {
+                                          return
+                                      }
+                                  }
+
+                                  return (
+                                      <NavbarItem
+                                          key={ index }
+                                          name={ item.name }
+                                          path={ item.path }
+                                          hasDropDown={ item.hasDropDown }
+                                          children={ item.submeu } />
+                                    )
+                                })
+                            }
                             <li>
-                              <NavLink className="py-2 px-4" to="/">LOGIN</NavLink>
-                            </li>
-                            <li>
-                              <NavLink className="py-2 px-4 " to='/register'>REGISTER</NavLink>
+                                <button onClick={ logout } className="nav-link btn btn-link h-full">Logout</button>
                             </li>
                         </>
-                  }
+                }
             </ul>
           </div>
         </div>
