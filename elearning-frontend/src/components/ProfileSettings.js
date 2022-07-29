@@ -25,20 +25,20 @@ const ProfileSettings = () => {
     const [loading, setLoading] = useState(true)
     const usertoken = localStorage.getItem('user')
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            const data = apiClient({
-                method: "get",
-                url: "/api/user",
-            }).then(response => {
-                setUser(response.data)
-                setHasAvatar(response.data.avatar !== null && response.data.avatar !== "" ? true : false)
-                setLoading(false)
-            }).catch(error => {
-                Toastify("error", error)
-            })
-        }
+    const fetchUser = async () => {
+        const data = apiClient({
+            method: "get",
+            url: "/api/user",
+        }).then(response => {
+            setUser(response.data)
+            setHasAvatar(response.data.avatar !== null && response.data.avatar !== "" ? true : false)
+            setLoading(false)
+        }).catch(error => {
+            Toastify("error", error)
+        })
+    }
 
+    useEffect(() => {
         fetchUser()
     }, [])
 

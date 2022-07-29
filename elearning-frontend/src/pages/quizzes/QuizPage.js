@@ -15,18 +15,9 @@ const QuizPage = () => {
     const [pageCount, setPageCount] = useState(0)
     const [itemOffset, setItemOffset] = useState(0)
 
-    // Fetch all words
-    const getWordList = () => {
+    useEffect(() => {
         getWords(setWordList, slug)
         setChangeWordData(false)
-    }
-
-    useEffect(() => {
-        const fetchWords = async() => {
-            const data = getWordList()
-        }
-
-        fetchWords()
     }, [])
 
     useEffect(() => {
