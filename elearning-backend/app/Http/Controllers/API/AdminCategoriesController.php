@@ -16,7 +16,7 @@ class AdminCategoriesController extends Controller
         return response()->json($categories);
     }
 
-    public function getCategory($id)
+    public function show($id)
     {
         $category = Category::find($id);
         return response()->json($category);

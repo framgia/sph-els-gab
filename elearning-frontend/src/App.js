@@ -17,6 +17,8 @@ import CreateWords from './components/admin/CreateWords'
 import EditWords from './components/admin/EditWords'
 import { AuthRoute } from './components/AuthRoute'
 import { ToastContainer } from 'react-toastify'
+import SelectQuiz from './pages/quizzes/SelectQuiz'
+import QuizPage from './pages/quizzes/QuizPage'
 
 const App = () => {
   return (
@@ -64,6 +66,16 @@ const App = () => {
             <Route path='/admin/words/edit' element={
                 <AdminRoute>
                     <EditWords />
+                </AdminRoute>
+            } /> 
+            <Route path='/quiz' element={
+                <AdminRoute>
+                    <SelectQuiz />
+                </AdminRoute>
+            } /> 
+            <Route path='/quiz/:slug' element={
+                <AdminRoute>
+                    <QuizPage />
                 </AdminRoute>
             } /> 
         </Routes>

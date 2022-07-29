@@ -1,10 +1,10 @@
 import Toastify from '../../core/Toastify'
 import apiClient from '../api'
 
-const getWords = (setWordList, categoryId = null) => {
+const getWords = (setWordList, param = null) => {
     apiClient({
         method: 'get',
-        url: (categoryId === null ? '/api/admin/words' : `/api/admin/category/${categoryId}/words`),
+        url: (param === null ? '/api/admin/words' : `/api/admin/category/${param}/words`),
     }).then(response => {
       setWordList(response.data)
     }).catch(error => {

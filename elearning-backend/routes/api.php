@@ -34,14 +34,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/admin/user/{id}', [AdminUsersController::class, 'delete']);
     
     Route::get('/admin/categories', [AdminCategoriesController::class, 'index']);
-    Route::get('/admin/category/{id}', [AdminCategoriesController::class, 'getCategory']);
+    Route::get('/admin/category/{id}', [AdminCategoriesController::class, 'show']);
     Route::post('/admin/category', [AdminCategoriesController::class, 'store']);
     Route::put('/admin/category/{id}', [AdminCategoriesController::class, 'update']);
     Route::delete('/admin/category/{id}', [AdminCategoriesController::class, 'delete']);
 
     Route::get('/admin/words', [AdminWordsController::class, 'index']);
     Route::get('/admin/category/{id}/words', [AdminWordsController::class, 'show']);
-    Route::get('/admin/word/{id}', [AdminWordsController::class, 'getSingleWord']);
+    Route::get('/admin/word/{id}', [AdminWordsController::class, 'showSingleWord']);
     Route::post('/admin/word', [AdminWordsController::class, 'store']);
     Route::patch('/admin/word/{id}', [AdminWordsController::class, 'update']);
     Route::delete('/admin/word/{id}', [AdminWordsController::class, 'delete']);
