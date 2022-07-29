@@ -93,3 +93,35 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.category-selection a {
+  color: white;
+  background: cornflowerblue;
+  padding: 10px 20px;
+  width: 200px;
+  text-align: center;
+}
+
+.category-selection a:hover {
+  background: rgb(76, 128, 225);
+}
+
+.quiz-pagination ul {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.quiz-pagination ul li:not(:last-child) {
+  margin-right: 10px;
+}
+
+.answer-form {
+  max-width: 400px;
+  line-height: 1;
+}
+
+.answer-form label {
+  font-size: 18px !important;
+}

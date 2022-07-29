@@ -32,7 +32,7 @@ class AdminWordsController extends Controller
         return response()->json($data);
     }
 
-    public function getSingleWord($id)
+    public function showSingleWord($id)
     {
         $word = Word::find($id); 
         $word->choices = json_decode($word->choices);

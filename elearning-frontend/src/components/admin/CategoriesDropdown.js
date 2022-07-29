@@ -1,13 +1,19 @@
 import React, { useMemo } from 'react'
+import { Link } from 'react-router-dom'
 
-const CategoriesDropdown = (categoryList) => {
+const CategoriesDropdown = (categoryList, displayType = null) => {
     return (
         useMemo(() => {
             return (
                 <>
                     {
                         categoryList.map((category) => {
-                            return <option key={ category.id } value={ category.id }>{ category.title }</option>
+                            return (
+                                displayType !== null ?
+                                    <Link key={ category.id } to={`/quiz/${category.slug}`}>{ category.title }</Link>
+                                :
+                                    <option key={ category.id } value={ category.id }>{ category.title }</option>
+                            )
                         })
                     }
                 </>
