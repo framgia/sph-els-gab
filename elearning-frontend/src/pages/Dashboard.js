@@ -20,7 +20,7 @@ const Dashboard = () => {
                 method: "get",
                 url: "/api/user"
             }).then(response => {
-                setUser({...response.data})
+                setUser(response.data)
                 setLoading(false)
             }).catch(error => {
                 Toastify("error", error)

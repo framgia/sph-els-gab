@@ -31,7 +31,7 @@ const ProfileSettings = () => {
                 method: "get",
                 url: "/api/user",
             }).then(response => {
-                setUser({...response.data})
+                setUser(response.data)
                 setHasAvatar(response.data.avatar !== null && response.data.avatar !== "" ? true : false)
                 setLoading(false)
             }).catch(error => {

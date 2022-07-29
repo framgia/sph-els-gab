@@ -73,7 +73,7 @@ const EditWords = () => {
             method: 'get',
             url: `/api/admin/word/${wordId}`
         }).then(response => {
-            setSelectedWord({...response.data})
+            setSelectedWord(response.data)
         }).catch((error) => {
             Toastify("error", error)
         })
