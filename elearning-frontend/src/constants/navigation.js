@@ -34,6 +34,12 @@ export const navigation = {
                 }
             ]
         },
+        {
+            name: 'Users',
+            path: '/users',
+            hasDropDown: false,
+            adminOnly: false
+        }
     ],
     unauthenticated: [
         {

@@ -19,6 +19,8 @@ import { AuthRoute } from './components/AuthRoute'
 import { ToastContainer } from 'react-toastify'
 import SelectQuiz from './pages/quizzes/SelectQuiz'
 import QuizPage from './pages/quizzes/QuizPage'
+import UserList from './pages/UserList'
+import UserSinglePage from './pages/UserSinglePage'
 
 const App = () => {
   return (
@@ -44,6 +46,16 @@ const App = () => {
             <Route path='/settings' element={
                 <ProtectedRoute>
                     <ProfileSettings />
+                </ProtectedRoute>
+            } />
+            <Route path='/users' element={
+                <ProtectedRoute>
+                    <UserList />
+                </ProtectedRoute>
+            } />
+            <Route path='/users/:id' element={
+                <ProtectedRoute>
+                    <UserSinglePage />
                 </ProtectedRoute>
             } />
 
