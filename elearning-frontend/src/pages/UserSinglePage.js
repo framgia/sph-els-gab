@@ -66,7 +66,7 @@ const UserSinglePage = () => {
                             onClick={e => unfollowUser(e) } />
                     </div>
                 </> :
-                <></>
+                <p>LOADING...</p>
             }
         </div>
     )
