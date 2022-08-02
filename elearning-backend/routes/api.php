@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ActivitiesController;
 use App\Http\Controllers\API\AdminWordsController;
 use App\Http\Controllers\API\AdminUsersController;
 use App\Http\Controllers\API\AdminCategoriesController;
@@ -26,6 +27,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'index']);
     Route::patch('/user', [UserController::class, 'update']);
     Route::post('/logout', [SessionsController::class, 'logout']);
+
+    Route::get('/user/{id}', [UserController::class, 'show']);
+    Route::post('/user/{id}/follow', [ActivitiesController::class, 'storeFollowActivity']);
+    Route::delete('/user/{id}/unfollow', [ActivitiesController::class, 'deleteFollowActivity']);
 
     // Admin Routes
     Route::get('/admin/users', [AdminUsersController::class, 'index']);

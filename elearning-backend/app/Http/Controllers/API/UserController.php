@@ -17,6 +17,12 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public function show($id)
+    {
+        $user = User::with('profile')->find($id);
+        return response()->json($user);
+    }
+
     public function store(UserRegisterPostRequest $request)
     {
         $avatarfile = "";

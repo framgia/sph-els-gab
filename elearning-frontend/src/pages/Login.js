@@ -58,7 +58,6 @@ const Login = () => {
                                 require={ true }
                             />
                         </div>
-
                         {/* Password */}
                         <div className="form-group mb-8">
                             <label>Password</label>
@@ -71,7 +70,6 @@ const Login = () => {
                                 require={ true }
                             />
                         </div>
-
                         <div className="form-group mt-4 text-center">
                             <Button
                                 text='LOG IN'
