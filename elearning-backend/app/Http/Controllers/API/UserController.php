@@ -93,4 +93,12 @@ class UserController extends Controller
             'birthdate' => $request->birthdate,
         ]);
     }
+
+    public function getFollowCount($id)
+    {
+        return response()->json([
+            'followers' => User::find($id)->followee()->count(),
+            'followees' => User::find($id)->follower()->count(),
+        ]);
+    }
 }

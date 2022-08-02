@@ -42,11 +42,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function setPasswordAttribute($password) {
+    public function setPasswordAttribute($password)
+    {
         $this->attributes['password'] = bcrypt($password);
     }
 
-    public function profile() {
+    public function profile()
+    {
         return $this->hasOne(Userprofile::class, 'user_id', 'id');
+    }
+
+    public function followee()
+    {
+        return $this->hasMany(FollowStatistic::class, 'followee_user_id', 'id');
+    }
+
+    public function follower()
+    {
+        return $this->hasMany(FollowStatistic::class, 'follower_user_id', 'id');
+    }
+
+    public function activity() 
+    {
+        return $this->hasMany(UserActivity::class, 'user_id', 'id');
     }
 }
