@@ -25,8 +25,8 @@ const ProfileSettings = () => {
     const [loading, setLoading] = useState(true)
     const usertoken = localStorage.getItem('user')
 
-    const fetchUser = async () => {
-        const data = apiClient({
+    useEffect(() => {
+        apiClient({
             method: "get",
             url: "/api/user",
         }).then(response => {
@@ -36,10 +36,6 @@ const ProfileSettings = () => {
         }).catch(error => {
             Toastify("error", error)
         })
-    }
-
-    useEffect(() => {
-        fetchUser()
     }, [])
 
     const saveUser = (e) => {

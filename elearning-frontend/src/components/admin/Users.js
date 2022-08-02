@@ -104,10 +104,8 @@ const Users = () => {
 
     const clearFields = () => {
         DeleteAvatar()
-
         setHasSelectedUser(false)
         setSelectedUser('')
-
         setUser({
             ...user, 
             avatar: null,
