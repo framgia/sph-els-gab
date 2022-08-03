@@ -26,15 +26,19 @@ const ActivityList = (activities, currentUser) => (
                                             }
                                             
                                             &nbsp;followed&nbsp;
-                                            <Link to={ `/users/${activity.followee_user_id}` } className='text-blue-500'>
-                                                {
-                                                    activity.followee_user_id === activity.user ? 'you' :
-                                                    activity.followee.firstname +
-                                                    ' ' +
-                                                    (activity.followee.middlename !== null && activity.followee.middlename !== '' ? activity.followee.middlename + ' ' : '') +
-                                                    activity.followee.lastname
-                                                }
-                                            </Link>
+                                            {
+                                                activity.followee_user_id === activity.user ? 
+                                                    'You' :
+                                                <Link to={ `/users/${activity.followee_user_id}` } className='text-blue-500'>
+                                                    {
+                                                        activity.followee_user_id === activity.user ? 'you' :
+                                                        activity.followee.firstname +
+                                                        ' ' +
+                                                        (activity.followee.middlename !== null && activity.followee.middlename !== '' ? activity.followee.middlename + ' ' : '') +
+                                                        activity.followee.lastname
+                                                    }
+                                                </Link>
+                                            }
                                         </>
                                     )
                                     : activity.type === 'words' ?
