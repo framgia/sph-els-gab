@@ -3,11 +3,27 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\FollowStatistic;
+use App\Models\User;
 use App\Models\UserActivity;
+use App\Models\UserProfile;
+use App\Models\WordsLearned;
 
 class ActivitiesController extends Controller
 {
+    public function index()
+    {
+        $activities = UserActivity::with('user.profile')->orderBy('created_at', 'DESC')->get();
+        return response()->json($this->setActivityInfo($activities));
+    }
+
+    public function show($id)
+    {
+        $activities = UserActivity::with('user.profile')->where('user_id', $id)->get();
+        return response()->json($this->setActivityInfo($activities));
+    }
+
     public function storeFollowActivity($id)
     {
         $user = auth()->user()->id;
@@ -37,5 +53,29 @@ class ActivitiesController extends Controller
         $followActivity = FollowStatistic::where('follower_user_id', auth()->user()->id)->where('followee_user_id', $id)->first();
         $followActivity->delete();
         UserActivity::find($followActivity->activity->id)->delete();
+    }
+
+    public function setActivityInfo($activities)
+    {
+        $data = collect($activities)->map(function($activity) {
+            $user = $activity->user_id;
+            $activity = $activity->activity_type;
+            $activity->user = $user;
+            
+            if (get_class($activity) === FollowStatistic::class) {
+                $activity->type = 'follow';
+                $activity->follower = UserProfile::where('user_id', $activity->follower_user_id)->first();
+                $activity->followee = UserProfile::where('user_id', $activity->followee_user_id)->first();
+            }
+            else if (get_class($activity) === WordsLearned::class) {
+                $activity->type = 'words';
+                $activity->category_info = Category::find($activity->category_id);
+                $activity->user_profile = User::with('profile')->find($user);
+            }
+
+            return $activity;
+        });
+
+        return $data;
     }
 }

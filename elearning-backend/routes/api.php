@@ -29,8 +29,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [SessionsController::class, 'logout']);
 
     Route::get('/user/{id}', [UserController::class, 'show']);
+    Route::get('/user/{id}/followactivity', [UserController::class, 'getFollowCount']);
     Route::post('/user/{id}/follow', [ActivitiesController::class, 'storeFollowActivity']);
     Route::delete('/user/{id}/unfollow', [ActivitiesController::class, 'deleteFollowActivity']);
+
+    Route::get('/activities', [ActivitiesController::class, 'index']);
+    Route::get('/activities/{id}', [ActivitiesController::class, 'show']);
 
     // Admin Routes
     Route::get('/admin/users', [AdminUsersController::class, 'index']);
