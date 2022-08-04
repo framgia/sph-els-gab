@@ -7,7 +7,6 @@ import { AdminRoute } from './components/AdminRoute'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
-import Navbar from './components/Navbar'
 import ProfileSettings from './components/ProfileSettings'
 
 // Action
@@ -25,15 +24,14 @@ import UserSinglePage from './pages/UserSinglePage'
 const App = () => {
   return (
     <AuthProvider>
-        <Navbar />
         <Routes>
             <Route path='/' element={
-                <AuthRoute>
+                <AuthRoute currentPage={'login'}>
                     <Login />
                 </AuthRoute>
             } />
             <Route path="/register" element={
-                <AuthRoute>
+                <AuthRoute currentPage={'register'}>
                     <Register />
                 </AuthRoute>
             } />

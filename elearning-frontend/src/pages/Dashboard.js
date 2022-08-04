@@ -1,18 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import apiClient from '../services/api'
-import { Link } from 'react-router-dom'
 import Toastify from '../core/Toastify'
-import UserAvatar from '../components/UserAvatar'
 import ActivityList from '../components/admin/ActivityList'
 import Divider from '../core/Divider'
+import DatePicker from 'sassy-datepicker'
 
 const Dashboard = () => {
-    const [user, setUser] = useState({
-        avatar: '',
-        firstname: '',
-        middlename: '',
-        lastname: ''
-    })
     const [activities, setActivities] = useState([])
 
     const getActivities = useMemo(() => {
@@ -26,32 +19,32 @@ const Dashboard = () => {
         })
     }, [])
 
-    useEffect(() => {
-        apiClient({
-            method: "get",
-            url: "/api/user"
-        }).then(response => {
-            setUser(response.data)
-        }).catch(error => {
-            Toastify("error", error)
-        })
-    }, [])
-
     return (
-        <div className='dashboard py-20 px-10'>
-            <div className="mb-5">
-                <h4 className='title text-left'>DASHBOARD</h4>
-            </div>
-            <div className='grid grid-cols-5 gap-5'>
-                <div className='col-span-2 flex flex-col items-center'>
-                    <UserAvatar page='dashboard' avatar={ user.avatar } />
-                    <small className='mb-2'>{ `${user.firstname} ${(user.middlename === '' || user.middlename === null ? '' : user.middlename + ' ')}${user.lastname}` }</small>
-                    <Link to='/settings' className='text-white bg-blue-600 px-2 py-1 rounded'>Settings</Link>
+        <div id='dashboard' className='grid grid-cols-8 gap-5 px-8 py-5'>
+            <div className='col-span-2 flex flex-col items-center'>
+                <div className='w-full mb-5'>
+                    <h4 className='text-lg font-medium mb-2'>Activity Calendar</h4>
+                    <Divider />
+                    <DatePicker />
                 </div>
-                <div className='col-span-3 px-5'>
-                    <h3 className='font-semibold text-lg'>Other Activities</h3>
+                <div className='w-full'>
+                    <h4 className='text-lg font-medium mb-2'>To do List</h4>
+                    <Divider />
+                </div>
+            </div>
+            <div className='col-span-2 px-5 border-r border-l border-slate-500'>
+                <div className='w-full'>
+                    <h3 className='font-medium text-lg'>News Feed</h3>
                     <Divider />
                     { ActivityList(activities) }
+                </div>
+            </div>
+            <div className='col-span-4 px-5'>
+                <div className='grid grid-cols-2'>
+                    <div className='p-2'>
+                        <h3 className='font-medium text-lg'>Courses</h3>
+                        <Divider />
+                    </div>
                 </div>
             </div>
         </div>

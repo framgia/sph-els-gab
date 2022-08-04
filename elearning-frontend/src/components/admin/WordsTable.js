@@ -27,7 +27,7 @@ const WordsTable = (wordList, fillWord = null, deleteWord = null) => {
                                         <Button
                                             text='EDIT'
                                             type='button'
-                                            classes='bg-blue-500 hover:bg-blue-700'
+                                            classes='bg-primary-base hover:bg-primary-hover'
                                             onClick={e => fillWord(e, word.id) } />
 
                                         <Button

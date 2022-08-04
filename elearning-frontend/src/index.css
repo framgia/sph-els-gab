@@ -5,79 +5,178 @@
 #root {
   min-height: 100vh;
   position: relative;
+  background-color: whitesmoke;
 }
 
 p, a, label, table, tr, td, div, input, button {
   font-size: 12px;
 }
 
-.register-card, .login-card {
+a, button, input[type=submit], .btn {
+  transition: 0.15s all ease;
+  cursor: pointer;
+}
+
+tr:nth-child(odd) a {
+  color: #693dff;
+  background: white;
+}
+
+tr:nth-child(odd) a:hover {
+  color: white;
+  background-color: rgb(173, 173, 173);
+}
+
+tr:nth-child(even) a {
+  color: white;
+  background-color: #693dff;
+}
+
+tr:nth-child(even) a:hover {
+  background: #5231c4;
+}
+
+.auth-container {
+  height: 100vh;
+  width: 100%;
+}
+
+.auth-container .card {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 40px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.327);
   min-width: 280px !important;
 }
 
-.register-card .title,
-.login-card .title,
-.dashboard .title {
-  font-weight: 700;
-  font-size: 25px;
+#login-form .form-group {
+    position: relative;
 }
 
-.register-card .form-group,
-.login-card .form-group,
-.dashboard .form-group {
+#login-form .form-group input + label {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translate(0, -50%);
+    transition: 0.25s all ease;
+}
+
+#login-form .form-group input:focus + label,
+#login-form .form-group input.active + label {
+  font-size: 9px;
+  transform: translate(0, -140%);
+  color: gray
+}
+
+#register-form .form-group input,
+#register-form .form-group select {
+  background: rgba(0,0,0,0.001);
+}
+
+#register-form .form-group .validator {
+  width: 100%;
+  position: relative;
+  height: 2px;
+}
+
+#register-form .form-group .validator::after {
+  content: '';
+  width: 0;
+  height: 2px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: 0.5s all ease;
+  background: rgb(86, 225, 58)
+}
+
+#register-form .form-group .validator.active::after {
+  width: 100%
+}
+
+#register-form .form-group:not(.avatar-section) {
   position: relative;
 }
 
-.register-card .form-group label,
-.login-card .form-group label,
-.dashboard .form-group.avatar-section label {
+#register-form .form-group:not(.avatar-section) label {
   position: absolute;
   bottom: -18px;
   font-size: 12px;
   width: 100%;
 }
 
-.register-card .form-group:not(.avatar-section) label,
-.login-card label,
-.dashboard label {
+#register-form .form-group:not(.avatar-section) label {
   text-align: left;
   left: 0.75rem;
 }
 
-.register-card .form-group.avatar-section label,
-.dashboard .form-group.avatar-section label {
-  text-align: center;
+/* navbar */
+#sidebar {
+  left: -240px;
+  transition: 0.5s all ease;
+}
+
+#sidebar.active {
   left: 0;
 }
 
-.avatar {
-  width: 100%;
-  max-width: 150px;
+.sidebar-btn {
+  right: -34px;
 }
 
-/* navbar */
-.dropdown {
-  position: relative;
-}
-
-.dropdown .dropdownitems {
-  position: absolute;
-  top: 100%;
-  left: -10px
+/* topbar */
+.account-dropdown ul li:hover {
+  cursor: pointer;
 }
 
 /* dashboard */
+#welcome-banner {
+  height: 130px;
+  background: linear-gradient(180deg, #3b82f6, #693dff);
+}
+
 .dashboard input:not([type=file]),
 .dashboard select,
 .dashboard .input {
   font-weight: 900;
   font-size: 15px;
+}
+
+#welcome-banner .avatar-section {
+  overflow: hidden;
+}
+
+#welcome-banner .avatar-section .overlay {
+  opacity: 0.2;
+  background: rgba(0, 0, 0, 0.25);
+  transition: 0.25s all ease;
+}
+
+#welcome-banner .avatar-section .overlay:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+#welcome-banner .avatar-section .overlay .icon {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.search-container .search-icon {
+  top: 50%;
+  left: 15px;
+  transform: translate(0, -50%);
+}
+
+.search-container input {
+  padding-left: 35px;
+}
+
+#dashboard .sdp {
+  --theme-color: #693dff;
+  --selected-date-color: white !important;
+  width: 100% !important;
 }
 
 body {
@@ -89,32 +188,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.category-selection .card {
+  transition: 0.5s all ease;
 }
-
-.category-selection a {
-  color: white;
-  background: cornflowerblue;
-  padding: 10px 20px;
-  width: 200px;
-  text-align: center;
-}
-
-.category-selection a:hover {
-  background: rgb(76, 128, 225);
-}
-
-.quiz-pagination ul {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-.quiz-pagination ul li:not(:last-child) {
-  margin-right: 10px;
+.category-selection .card:hover {
+  transform: scale(1.025)
 }
 
 .answer-form {

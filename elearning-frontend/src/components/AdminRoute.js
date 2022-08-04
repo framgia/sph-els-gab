@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../services/AuthProvider'
+import ProtectedLayout from './layouts/ProtectedLayout'
 
 export const AdminRoute = ({ children }) => {
     const { loggedIn, isAdmin } = useAuth()
@@ -11,5 +12,9 @@ export const AdminRoute = ({ children }) => {
         return <Navigate to='/dashboard' />
     }
     
-    return children
+    return (
+        <ProtectedLayout>
+            { children }
+        </ProtectedLayout>
+    )
 }

@@ -7,12 +7,19 @@ import Toastify from '../core/Toastify'
 import InputField from '../core/InputField'
 import Button from '../core/Button'
 import Divider from '../core/Divider'
+import LoginFormImage from '../assets/images/LoginFormImage.png'
 
 const Login = () => {
     const { login, setIsAdmin, loggedIn } = useAuth()
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState({
+        value: '',
+        active: false
+    })
+    const [password, setPassword] = useState({
+        value: '',
+        active: false
+    })
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
@@ -23,8 +30,8 @@ const Login = () => {
             method: "post",
             url: "/api/login",
             data: {
-                email: email,
-                password: password
+                email: email.value,
+                password: password.value
             }
         }).then((response) => {
             localStorage.setItem('user', response.data.token)
@@ -38,48 +45,53 @@ const Login = () => {
     }
     
     return (
-        <>
-            <div className="login-card w-1/3 mx-auto">
-                <div className="mb-5">
-                    <h4 className='title text-center'>ELEARNING PORTAL</h4>
+        <div className='grid grid-cols-2 items-center' style={{ minHeight: '305px' }}>
+            <form id='login-form' onSubmit={handleSubmit}>
+                <h3 className='font-bold text-lg'>Login to your account</h3>
+                <Divider />
+                {/* Email */}
+                <div className="form-group mb-8">
+                    <InputField
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        value={ email.value }
+                        onChange={e => setEmail({
+                            ...email,
+                            value: e.target.value,
+                            active: e.target.value.length > 0 ? true : false
+                        })}
+                        classes={`pb-2 pt-5 border-b-0${email.active ? ' active' : ''}`}
+                        require={ true }
+                    />
+                    <label htmlFor='email'>EMAIL</label>
                 </div>
-                <hr className='mb-5'/>
-                <div>
-                    <form onSubmit={handleSubmit}>
-                        {/* Email */}
-                        <div className="form-group mb-8">
-                            <label>User Email</label>
-                            <InputField
-                                type="email"
-                                name="email"
-                                placeholder="Email"
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                require={ true }
-                            />
-                        </div>
-                        {/* Password */}
-                        <div className="form-group mb-8">
-                            <label>Password</label>
-                            <InputField
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={e => setPassword(e.target.value)}
-                                require={ true }
-                            />
-                        </div>
-                        <div className="form-group mt-4 text-center">
-                            <Button
-                                text='LOG IN'
-                                classes='bg-blue-500 hover:bg-blue-700'
-                                style={{width:'200px', minWidth:'200px'}} />
-                        </div>
-                    </form>
+                {/* Password */}
+                <div className="form-group mb-8">
+                    <InputField
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={ password.value }
+                        onChange={e => setPassword({
+                            ...password,
+                            value: e.target.value,
+                            active: e.target.value.length > 0 ? true : false
+                        })}
+                        classes={`pb-2 pt-5 border-b-0${password.active ? ' active' : ''}`}
+                        require={ true }
+                    />
+                    <label htmlFor='password'>PASSWORD</label>
                 </div>
-            </div>
-        </>
+                <div className="form-group mt-4 text-right">
+                    <Button
+                        text='LOG IN'
+                        classes='bg-primary-base hover:bg-primary-hover rounded-full'
+                        style={{width:'120px'}} />
+                </div>
+            </form>
+            <div className='h-full' style={{ backgroundImage: `url(${LoginFormImage})`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
+        </div>
     )
 }
 

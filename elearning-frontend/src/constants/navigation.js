@@ -1,13 +1,18 @@
+import { ImBook, ImUsers, ImHome } from 'react-icons/im'
+import { MdAdminPanelSettings } from 'react-icons/md'
+
 export const navigation = {
     authenticated: [
         {
-            name: 'Dashboard',
+            name: 'Home',
+            icon: <ImHome />,
             path: '/dashboard',
             hasDropDown: false,
             adminOnly: false,
         },
         {
             name: 'Admin Management ',
+            icon: <MdAdminPanelSettings />,
             path: '',
             hasDropDown: true,
             adminOnly: true,
@@ -36,9 +41,17 @@ export const navigation = {
         },
         {
             name: 'Users',
+            icon: <ImUsers />,
             path: '/users',
             hasDropDown: false,
-            adminOnly: false
+            adminOnly: false,
+        },
+        {
+            name: 'Courses',
+            icon: <ImBook />,
+            path: '/quiz',
+            hasDropDown: false,
+            adminOnly: false,
         }
     ],
     unauthenticated: [

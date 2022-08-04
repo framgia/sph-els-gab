@@ -8,17 +8,18 @@ const QuizItem = ({ wordList, currentWord, updateCurrentWord }) => (
             return (
                 <div key={ index } className='mb-10'>
                     <Divider />
-                    <h3 className='text-2xl font-black text-center'>{ item.word }</h3>
+                    <h4 className='text-lg font-bold text-center'>{ item.word.toUpperCase() }</h4>
                     <Divider />
                         <div className='flex flex-col gap-10 mx-auto items-center answer-form mb-10'>
-                            <ul className='space-y-10'>
+                            <ul className='space-y-5'>
                                 {
                                     Object.entries(item.choices).map(([keyName, value], index) => {
                                         var currentIndex = index + 1
                                         return (
                                             <div key={ currentIndex } className='flex items-center'>
                                                 <li
-                                                    className='cursor-pointer font-semibold bg-slate-500 hover:bg-slate-700 text-white py-3 px-6 rounded-sm'
+                                                    className='cursor-pointer font-medium text-md border-2 border-primary-hover text-primary-hover hover:bg-primary-hover hover:text-white py-2 px-4 rounded-full text-center btn'
+                                                    style={{ minWidth: '250px' }}
                                                     onClick={e => updateCurrentWord(value.choice)} >
                                                     {value.choice}
                                                 </li>

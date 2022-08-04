@@ -12,9 +12,9 @@ const SelectQuiz = () => {
 
     return (
       <div className='w-full py-10 px-20'>
-          <h2 className='font-bold text-2xl text-center'>CHOOSE A CATEGORY</h2>
+          <h2 className='font-medium text-2xl text-center'>CHOOSE A CATEGORY</h2>
           <Divider />
-          <div className='flex flex-col items-center gap-4 category-selection'>
+          <div className='grid grid-cols-3 gap-4 category-selection'>
               { CategoriesDropdown(categoryList, 'buttons') }
           </div>
       </div>

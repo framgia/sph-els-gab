@@ -281,7 +281,7 @@ const EditWords = () => {
                 <div className="mt-4 flex justify-end gap-5">
                     <Button
                         text='Save Information'
-                        classes='bg-blue-500 hover:bg-blue-700'
+                        classes='bg-primary-base hover:bg-primary-hover'
                         style={{width:'200px', minWidth:'200px'}} />
                 </div>
             </form>

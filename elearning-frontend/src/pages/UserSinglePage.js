@@ -70,47 +70,50 @@ const UserSinglePage = () => {
             method: 'delete',
             url: `/api/user/${user.id}/unfollow`,
         }).then(response => {
-            Toastify('success', `You are now a follower of ${user.profile.firstname}`)
+            Toastify('success', `You unfollowed ${user.profile.firstname}`)
         }).catch(error => {
             Toastify("error", error)
         })
     }
 
     return (
-        <div className='grid grid-cols-3 w-full' style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-            <div className='col-span-1 flex flex-col items-center justify-center'>
-                {
-                    user ?
-                        <>
-                            <UserAvatar avatar={ user.profile.avatar } />
-                            <small className='mb-2 font-bold text-lg'>{ `${user.profile.firstname} ${(user.profile.middlename === '' || user.profile.middlename === null ? '' : user.profile.middlename + ' ')}${user.profile.lastname}` }</small>
-                            <div className='grid grid-cols-2 gap-2'>
-                                <div className='flex flex-col items-center'>
-                                    { followCount.followees }
-                                    <p className='font-semibold mt-2'>FOLLOWING</p>
+        <div className='grid grid-cols-3 w-full px-8 py-5' style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            <div className='col-span-1'>
+                <div className='flex flex-col items-center justify-center p-5 mx-auto rounded-sm shadow-md bg-white' style={{ maxWidth: '300px' }}>
+                    {
+                        user ?
+                            <>
+                                <div className='overflow-hidden rounded-full mb-4'>
+                                    <UserAvatar avatar={ user.profile.avatar } />
                                 </div>
-                                <div className='flex flex-col items-center'>
-                                    { followCount.followers }
-                                    <p className='font-semibold mt-2'>FOLLOWERS</p>
+                                <small className='mb-2 font-medium text-lg'>{ `${user.profile.firstname} ${(user.profile.middlename === '' || user.profile.middlename === null ? '' : user.profile.middlename + ' ')}${user.profile.lastname}` }</small>
+                                <div className='grid grid-cols-2 gap-4 mb-5'>
+                                    <div className='flex flex-col items-center'>
+                                        { followCount.followees }
+                                        <p className='font-medium mt-2' style={{ fontSize: '0.6rem' }}>FOLLOWING</p>
+                                    </div>
+                                    <div className='flex flex-col items-center'>
+                                        { followCount.followers }
+                                        <p className='font-medium mt-2' style={{ fontSize: '0.6rem' }}>FOLLOWERS</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <Divider />
-                            <div className='flex flex-row items-center gap-2'>
-                                <Button
-                                    text='FOLLOW'
-                                    type='button'
-                                    classes='bg-blue-500 hover:bg-blue-700'
-                                    onClick={e => followUser(e) } />
-                                <Button
-                                    text='UNFOLLOW'
-                                    type='button'
-                                    classes='bg-red-500 hover:bg-red-700'
-                                    onClick={e => unfollowUser(e) } />
-                            </div>
-                        </>
-                    :
-                        <p>LOADING...</p>
-                }
+                                <div className='flex flex-row items-center gap-2'>
+                                    <Button
+                                        text='FOLLOW'
+                                        type='button'
+                                        classes='bg-primary-base hover:bg-primary-hover rounded-sm'
+                                        onClick={e => followUser(e) } />
+                                    <Button
+                                        text='UNFOLLOW'
+                                        type='button'
+                                        classes='bg-red-500 hover:bg-red-700 rounded-sm'
+                                        onClick={e => unfollowUser(e) } />
+                                </div>
+                            </>
+                        :
+                            <p>LOADING...</p>
+                    }
+                </div>
             </div>
             <div className='col-span-2'>
                 <div className='col-span-3 px-5'>

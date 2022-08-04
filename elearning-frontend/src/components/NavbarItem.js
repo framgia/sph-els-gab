@@ -1,45 +1,48 @@
 import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
-const NavbarItem = ({name, path, hasDropDown, children = null }) => {
+const NavbarItem = ({name, icon, path, hasDropDown, children = null }) => {
     const [dropDown, setDropdown] = useState(false)
 
     return (
         hasDropDown ?
             <li className='dropdown'>
                 <button
-                    id="dropdownmenu"
-                    data-dropdown-toggle="dropdown"
-                    className="text-center inline-flex items-center h-full"
-                    type="button"
+                    id='dropdownmenu'
+                    data-dropdown-toggle='dropdown'
+                    className={`flex items-center p-3 pl-11 w-full text-md font-normal group hover:bg-primary-hover hover:text-white${dropDown ? ' bg-primary-hover text-white' : ''}`}
+                    type='button'
                     onClick={() => {
                         setDropdown(!dropDown)
-                    }}>{ name }
+                    }}>
+                        <span className='mr-2'>{ icon }</span>
+                        { name }
                     <svg
-                        className="w-4 h-4 ml-2"
-                        aria-hidden="true"
-                        fillRule="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
+                        className='w-4 h-4 ml-2'
+                        aria-hidden='true'
+                        fillRule='none'
+                        stroke='white'
+                        viewBox='0 0 24 24'
+                        xmlns='http://www.w3.org/2000/svg'>
                             <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                strokeWidth='2' d='M19 9l-7 7-7-7'></path>
                     </svg>
                 </button>
-                <div className={`z-10 ${dropDown ? 'block' : 'hidden'} bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dropdownitems`}>
-                    <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefault">
+                <div className={` ${dropDown ? '' : 'hidden'}`}>
+                    <ul className='bg-primary-base' aria-labelledby='dropdownDefault'>
                         {
                             children.map((submenu, index) => {
                                 return (
-                                    <Link
-                                        key={ index }
-                                        to={ submenu.path }
-                                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        onClick={() => {
-                                          setDropdown(!dropDown)
-                                        }}>{ submenu.name }</Link>
+                                    <li key={ index }>
+                                        <Link
+                                            to={ submenu.path }
+                                            className='flex items-center p-3 pl-11 w-full text-md font-normal text-white group hover:bg-primary-hover'
+                                            onClick={() => {
+                                                setDropdown(!dropDown)
+                                            }}>{ submenu.name }</Link>
+                                        </li>
                                 )
                             })
                         }
@@ -47,7 +50,12 @@ const NavbarItem = ({name, path, hasDropDown, children = null }) => {
                 </div>
             </li>
         :
-            <NavLink className="py-2 px-4" to={ path }>{ name }</NavLink>
+            <li>
+                <NavLink className='flex items-center p-3 pl-11 w-full text-md font-normal group hover:bg-primary-hover hover:text-white' to={ path }>
+                    <span className='mr-2'>{ icon }</span>
+                    { name }
+                </NavLink>
+            </li>
     )
 }
 

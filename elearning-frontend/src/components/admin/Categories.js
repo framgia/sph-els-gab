@@ -163,7 +163,7 @@ const Categories = () => {
                                             }} />
                                         <Button
                                             text={ hasSelectedCategory ? "Save Category" : "Add Category" }
-                                            classes='bg-blue-500 hover:bg-blue-700'
+                                            classes='bg-primary-base hover:bg-primary-hover'
                                             style={{width:'200px', minWidth:'200px'}} />
                                     </div>
                                 </div>
