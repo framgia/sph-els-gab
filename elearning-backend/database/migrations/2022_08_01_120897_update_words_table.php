@@ -29,7 +29,7 @@ class UpdateWordsTable extends Migration
     public function down()
     {
         Schema::table('words_learned', function(Blueprint $table) {
-            $table->dropForeign('words_learned_category_id_foreign');
+            $table->dropForeign('words_learned_word_id_foreign');
             $table->dropColumn('category_id');
             $table->unsignedBigInteger('word_id');
             $table->foreign('word_id')->references('id')->on('words')->cascadeOnDelete();
