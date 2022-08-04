@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/activities', [ActivitiesController::class, 'index']);
     Route::get('/activities/{id}', [ActivitiesController::class, 'show']);
+    Route::post('/quiz', [ActivitiesController::class, 'storeQuizActivity']);
 
     // Admin Routes
     Route::get('/admin/users', [AdminUsersController::class, 'index']);

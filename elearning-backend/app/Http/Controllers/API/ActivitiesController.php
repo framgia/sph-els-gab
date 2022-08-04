@@ -25,6 +25,16 @@ class ActivitiesController extends Controller
         return response()->json($this->setActivityInfo($activities));
     }
 
+    public function storeActivity($data, $user)
+    {
+        UserActivity::create([
+            'activity_id' => $data->id,
+            'activity_type_type' => get_class($data),
+            'activity_type_id' => $data->id,
+            'user_id' => $user
+        ]);
+    }
+
     public function storeFollowActivity($id)
     {
         $user = auth()->user()->id;
@@ -41,12 +51,27 @@ class ActivitiesController extends Controller
             'followee_user_id' => $id
         ]);
         
-        UserActivity::create([
-            'activity_id' => $followActivity->id,
-            'activity_type_type' => get_class($followActivity),
-            'activity_type_id' => $followActivity->id,
-            'user_id' => $user
-        ]);
+        $this->storeActivity($followActivity, $user);
+    }
+
+    public function storeQuizActivity(Request $request)
+    {
+        $user = auth()->user()->id;
+        $category_id = Category::where('slug', $request->input('slug'))->first()->id;
+
+        $countWordActivity = WordsLearned::where('user_id', auth()->user()->id)->where('category_id', $category_id)->count();
+        
+        if ($countWordActivity > 0) {
+            return;
+        }
+        else {
+            $quizActivity = WordsLearned::create([
+                'user_id' => $user,
+                'category_id' => $category_id
+            ]);
+            
+            $this->storeActivity($quizActivity, $user);
+        }
     }
 
     public function deleteFollowActivity($id)
