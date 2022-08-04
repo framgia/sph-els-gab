@@ -1,51 +1,54 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import getWords from '../../services/actions/getWords'
-import ReactPaginate from 'react-paginate'
-import QuizItem from './QuizItem'
 import Divider from '../../core/Divider'
+import QuizItem from './QuizItem'
+import Results from './Results'
 
 const QuizPage = () => {
     let { slug } = useParams()
 
-    const [changeWordData, setChangeWordData] = useState(true)
     const [wordList, setWordList] = useState([])
 
-    const [currentItem, setCurrentItem] = useState(null)
-    const [pageCount, setPageCount] = useState(0)
-    const [itemOffset, setItemOffset] = useState(0)
+    const [showResults, setShowResults] = useState(false)
+    const [score, setScore] = useState(0)
+    const [currentWord, setcurrentWord] = useState(0)   
 
-    useEffect(() => {
+    const data = useMemo(() => {
         getWords(setWordList, slug)
-        setChangeWordData(false)
     }, [])
 
-    useEffect(() => {
-        const endOffset = itemOffset + 1
-        setCurrentItem(wordList.slice(itemOffset, endOffset))
-        setPageCount(Math.ceil(wordList.length / 1))
-    }, [wordList, itemOffset])
+    const updateCurrentWord = (answer) => {
+        wordList[currentWord].is_correct = wordList[currentWord].correct_answer === answer ? true : false
+        wordList[currentWord].selected_answer = answer
 
-    const nextQuestion = (e) => {
-        const newOffset = (e.selected * 1) % wordList.length
-        setItemOffset(newOffset)
+        if (wordList[currentWord].correct_answer === answer ? true : false) {
+            setScore(score + 1)
+        }
+    
+        if (currentWord + 1 < wordList.length) {
+            setcurrentWord(currentWord + 1)
+        }
+        else {
+            setShowResults(true)
+        }
     }
 
     return (
         <>
-            <QuizItem currentItem={ currentItem } />
-            <Divider />
-            <div className='quiz-pagination'>
-                <ReactPaginate
-                    breakLabel='...'
-                    nextLabel='next >'
-                    onPageChange={ nextQuestion }
-                    pageRangeDisplayed={5}
-                    pageCount={ pageCount }
-                    previousLabel='< previous'
-                    renderOnZeroPageCount={ null }
-                />
-            </div>
+            {
+                showResults ?
+                    <>
+                        { Results(wordList, score) }
+                    </>
+                :
+                    <>
+                        <QuizItem
+                            wordList={ wordList }
+                            updateCurrentWord={ updateCurrentWord }
+                            currentWord={ currentWord } />
+                    </>
+            }
         </>
     )
 }

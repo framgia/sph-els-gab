@@ -81,14 +81,14 @@ const App = () => {
                 </AdminRoute>
             } /> 
             <Route path='/quiz' element={
-                <AdminRoute>
+                <ProtectedRoute>
                     <SelectQuiz />
-                </AdminRoute>
+                </ProtectedRoute>
             } /> 
             <Route path='/quiz/:slug' element={
-                <AdminRoute>
+                <ProtectedRoute>
                     <QuizPage />
-                </AdminRoute>
+                </ProtectedRoute>
             } /> 
         </Routes>
         <ToastContainer />

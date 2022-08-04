@@ -122,6 +122,6 @@ code {
   line-height: 1;
 }
 
-.answer-form label {
+.answer-form li {
   font-size: 18px !important;
 }

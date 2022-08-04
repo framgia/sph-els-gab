@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserActivity;
 use App\Models\UserProfile;
 use App\Models\WordsLearned;
+use Illuminate\Http\Request;
 
 class ActivitiesController extends Controller
 {
@@ -39,7 +40,7 @@ class ActivitiesController extends Controller
             'follower_user_id' => $user,
             'followee_user_id' => $id
         ]);
-
+        
         UserActivity::create([
             'activity_id' => $followActivity->id,
             'activity_type_type' => get_class($followActivity),
@@ -58,9 +59,8 @@ class ActivitiesController extends Controller
     public function setActivityInfo($activities)
     {
         $data = collect($activities)->map(function($activity) {
-            $user = $activity->user_id;
             $activity = $activity->activity_type;
-            $activity->user = $user;
+            $activity->user = auth()->user()->id;
             
             if (get_class($activity) === FollowStatistic::class) {
                 $activity->type = 'follow';
@@ -70,7 +70,7 @@ class ActivitiesController extends Controller
             else if (get_class($activity) === WordsLearned::class) {
                 $activity->type = 'words';
                 $activity->category_info = Category::find($activity->category_id);
-                $activity->user_profile = User::with('profile')->find($user);
+                $activity->user_profile = User::with('profile')->find($activity->user_id);
             }
 
             return $activity;

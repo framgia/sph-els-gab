@@ -26,6 +26,8 @@ class AdminWordsController extends Controller
         $words = Word::where("category_id", $queryValue)->with('category')->orderBy('category_id')->get();
         $data = collect($words)->map(function ($word) {
             $word->choices = json_decode($word->choices);
+            $word->is_correct = false;
+            $word->selected_answer = '';
             return $word;
         });
 
